@@ -2,7 +2,7 @@
 // RMKAAV Solutions — Main JavaScript
 // ============================================
 
-// ---- Firebase Initialization ----
+// ---- Firebase Initialization (loads synchronously before this script) ----
 (function() {
     var config = window.RMKAAV_CONFIG || {};
     if (typeof firebase !== 'undefined' && config.FIREBASE) {
@@ -11,19 +11,16 @@
     }
 })();
 
-// ---- EmailJS Initialization ----
-(function() {
-    var config = window.RMKAAV_CONFIG || {};
-    if (typeof emailjs !== 'undefined' && config.EMAILJS_PUBLIC_KEY) {
-        emailjs.init(config.EMAILJS_PUBLIC_KEY);
-    }
-})();
-
 document.addEventListener('DOMContentLoaded', () => {
 
     // ---- Shared Constants ----
     const config = window.RMKAAV_CONFIG || {};
     const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // ---- EmailJS Initialization (deferred script loaded by now) ----
+    if (typeof emailjs !== 'undefined' && config.EMAILJS_PUBLIC_KEY) {
+        emailjs.init(config.EMAILJS_PUBLIC_KEY);
+    }
 
     // ---- Sanitization Helper ----
     function sanitize(str) {
@@ -513,13 +510,9 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Honeypot check — bots fill hidden fields
+            // Honeypot check — bots fill hidden fields, silently reject
             const honeypot = document.getElementById('honeypot');
-            if (honeypot && honeypot.value) {
-                // Silently reject bot submissions
-                showToast('Message sent successfully!', 'success');
-                return;
-            }
+            if (honeypot && honeypot.value) return;
 
             // Rate limiting
             const now = Date.now();
@@ -608,6 +601,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- Analytics Helper ----
+    function trackEvent(eventName, params) {
+        if (typeof gtag === 'function') gtag('event', eventName, params || {});
+    }
+
     // ---- Form Submit Success Handler ----
     function formSubmitSuccess(submitBtn, btnText, btnLoading, btnIcon) {
         if (btnLoading) btnLoading.style.display = 'none';
@@ -617,6 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
         showToast('Message sent successfully! We\'ll get back to you within 24 hours.', 'success');
+        trackEvent('form_submit', { form_name: 'contact' });
 
         setTimeout(() => {
             if (btnText) btnText.textContent = 'Send Message';
@@ -676,10 +675,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
                 showToast('Subscribed successfully! Check your inbox for growth tips.', 'success');
+                trackEvent('form_submit', { form_name: 'newsletter' });
                 emailInput.value = '';
             }).catch(function() {
                 showToast('Subscription failed. Please try again later.', 'error');
-            }
+            });
         });
     }
 

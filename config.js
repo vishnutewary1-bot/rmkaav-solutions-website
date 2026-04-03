@@ -8,8 +8,10 @@ window.RMKAAV_CONFIG = {
     CONTACT_EMAIL: 'vishnutewary1@gmail.com',
 
     // reCAPTCHA v3 — get your key at https://www.google.com/recaptcha/admin
-    // Leave empty string to disable reCAPTCHA
     RECAPTCHA_SITE_KEY: '',
+
+    // Google Analytics 4 — get your ID at https://analytics.google.com
+    GA_MEASUREMENT_ID: '',
 
     // Firebase
     FIREBASE: {

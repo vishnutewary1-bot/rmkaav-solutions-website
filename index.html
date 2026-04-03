@@ -37,17 +37,30 @@
         "priceRange": "$$"
     }
     </script>
+    <!-- Configuration (loaded early so other scripts can reference it) -->
+    <script src="config.js"></script>
     <!-- EmailJS SDK -->
     <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- reCAPTCHA v3 — loads only if site key is configured -->
     <script>
     (function() {
-        var cfg = (window.RMKAAV_CONFIG || {}).RECAPTCHA_SITE_KEY;
-        if (cfg) {
+        var cfg = (window.RMKAAV_CONFIG || {});
+        if (cfg.RECAPTCHA_SITE_KEY) {
             var s = document.createElement('script');
-            s.src = 'https://www.google.com/recaptcha/api.js?render=' + cfg;
+            s.src = 'https://www.google.com/recaptcha/api.js?render=' + cfg.RECAPTCHA_SITE_KEY;
             s.defer = true;
             document.head.appendChild(s);
+        }
+        if (cfg.GA_MEASUREMENT_ID) {
+            var g = document.createElement('script');
+            g.src = 'https://www.googletagmanager.com/gtag/js?id=' + cfg.GA_MEASUREMENT_ID;
+            g.async = true;
+            document.head.appendChild(g);
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', cfg.GA_MEASUREMENT_ID);
+            window.gtag = gtag;
         }
     })();
     </script>
@@ -744,7 +757,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
