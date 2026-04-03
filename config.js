@@ -8,7 +8,7 @@ window.RMKAAV_CONFIG = {
     CONTACT_EMAIL: 'vishnutewary1@gmail.com',
 
     // reCAPTCHA v3 — get your key at https://www.google.com/recaptcha/admin
-    RECAPTCHA_SITE_KEY: '',
+    RECAPTCHA_SITE_KEY: '6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd',
 
     // Google Analytics 4 — get your ID at https://analytics.google.com
     GA_MEASUREMENT_ID: '',
