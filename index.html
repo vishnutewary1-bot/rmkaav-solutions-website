@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMKAAV Solutions | Digital Marketing, AI Automation & Web Design - Mumbai</title>
+    <meta name="description" content="RMKAAV Solutions is a Mumbai-based digital agency offering social media marketing, AI automation, and website design services to grow your business.">
+    <meta name="keywords" content="digital marketing mumbai, social media marketing, AI automation, website design, RMKAAV Solutions">
+    <meta name="author" content="RMKAAV Solutions">
+    <meta property="og:title" content="RMKAAV Solutions | Grow Your Business Digitally">
+    <meta property="og:description" content="Social Media Marketing, AI Automation & Website Design services in Mumbai.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-logo">
+                <span class="logo-rm">RM</span><span class="logo-kaav">KAAV</span>
+            </div>
+            <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+            <p class="preloader-text">Loading Experience...</p>
+        </div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-rm">RM</span><span class="logo-kaav">KAAV</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="theme-icon sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="theme-icon moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <a href="#contact" class="btn btn-primary nav-cta">Get Free Audit</a>
+            </div>
+            <button type="button" class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="container hero-container">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Mumbai's Newest Digital Growth Partner
+            </div>
+            <h1 class="hero-title">
+                We Build Brands That
+                <br>
+                <span class="gradient-text" id="typingText"></span><span class="typing-cursor">|</span>
+            </h1>
+            <p class="hero-subtitle">
+                Social media marketing, AI-powered automation, and stunning websites — all under one roof.
+                We help businesses in Mumbai and beyond scale faster with data-driven strategies.
+            </p>
+            <div class="hero-ctas">
+                <a href="#contact" class="btn btn-primary btn-lg btn-glow">
+                    Book a Free Strategy Call
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#services" class="btn btn-outline btn-lg">
+                    Explore Services
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-target="50">0</span><span class="stat-plus">+</span>
+                    <span class="stat-label">Projects Delivered</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number" data-target="30">0</span><span class="stat-plus">+</span>
+                    <span class="stat-label">Happy Clients</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number" data-target="3">0</span><span class="stat-plus">x</span>
+                    <span class="stat-label">Avg. Growth Rate</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+            <span>Scroll Down</span>
+        </div>
+    </section>
+
+    <!-- Trusted By / Logos -->
+    <section class="logos-section">
+        <div class="container">
+            <p class="logos-title">Trusted by businesses across industries</p>
+            <div class="logos-marquee">
+                <div class="logos-track">
+                    <span class="logo-item">Healthcare</span>
+                    <span class="logo-item">Real Estate</span>
+                    <span class="logo-item">E-Commerce</span>
+                    <span class="logo-item">Restaurants</span>
+                    <span class="logo-item">Education</span>
+                    <span class="logo-item">B2B SaaS</span>
+                    <span class="logo-item">Fitness</span>
+                    <span class="logo-item">Legal</span>
+                    <span class="logo-item">Healthcare</span>
+                    <span class="logo-item">Real Estate</span>
+                    <span class="logo-item">E-Commerce</span>
+                    <span class="logo-item">Restaurants</span>
+                    <span class="logo-item">Education</span>
+                    <span class="logo-item">B2B SaaS</span>
+                    <span class="logo-item">Fitness</span>
+                    <span class="logo-item">Legal</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">What We Do</span>
+                <h2 class="section-title">Services That <span class="gradient-text">Drive Results</span></h2>
+                <p class="section-subtitle">End-to-end digital solutions tailored for your business growth</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="url(#grad1)" stroke-width="1.5">
+                            <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#8b5cf6"/></linearGradient></defs>
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M7 17l-4 1 1-4L16.5 1.5a2.12 2.12 0 0 1 3 3L7 17z"/>
+                            <circle cx="18" cy="5" r="3"/>
+                            <path d="M4 21v-1a4 4 0 0 1 4-4h.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Social Media Marketing</h3>
+                    <p class="service-desc">Engaging content, strategic campaigns, and community management across Instagram, Facebook, LinkedIn & more.</p>
+                    <ul class="service-features">
+                        <li>Content Strategy & Calendar</li>
+                        <li>Reels, Stories & Post Design</li>
+                        <li>Paid Ad Campaigns (Meta & Google)</li>
+                        <li>Community Management</li>
+                        <li>Monthly Analytics Reports</li>
+                    </ul>
+                    <a href="#contact" class="service-link">Get Started <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                </div>
+                <div class="service-card featured">
+                    <div class="featured-badge">Most Popular</div>
+                    <div class="service-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="url(#grad2)" stroke-width="1.5">
+                            <defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#8b5cf6"/><stop offset="100%" style="stop-color:#ec4899"/></linearGradient></defs>
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                            <path d="M7 8h2m2 0h2m2 0h2"/>
+                            <path d="M7 12h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">AI Automation</h3>
+                    <p class="service-desc">Automate repetitive tasks, supercharge your workflows, and deploy AI chatbots that work 24/7.</p>
+                    <ul class="service-features">
+                        <li>WhatsApp & Website AI Chatbots</li>
+                        <li>CRM & Lead Nurturing Automation</li>
+                        <li>AI Content Generation Workflows</li>
+                        <li>Email & Follow-up Sequences</li>
+                        <li>Custom Integrations (Zapier, Make)</li>
+                    </ul>
+                    <a href="#contact" class="service-link">Get Started <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="url(#grad3)" stroke-width="1.5">
+                            <defs><linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ec4899"/><stop offset="100%" style="stop-color:#f97316"/></linearGradient></defs>
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                            <path d="M2 2l7.586 7.586"/>
+                            <circle cx="11" cy="11" r="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Website Design & Dev</h3>
+                    <p class="service-desc">Beautiful, fast, SEO-optimized websites that convert visitors into leads.</p>
+                    <ul class="service-features">
+                        <li>Custom UI/UX Design</li>
+                        <li>Mobile-First Responsive Build</li>
+                        <li>SEO Optimized Architecture</li>
+                        <li>E-Commerce Solutions</li>
+                        <li>Ongoing Maintenance & Support</li>
+                    </ul>
+                    <a href="#contact" class="service-link">Get Started <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Work</span>
+                <h2 class="section-title">Featured <span class="gradient-text">Case Studies</span></h2>
+                <p class="section-subtitle">Real results from real businesses we've helped grow</p>
+            </div>
+            <div class="portfolio-filters">
+                <button type="button" class="portfolio-filter active" data-filter="all">All</button>
+                <button type="button" class="portfolio-filter" data-filter="smm">Social Media</button>
+                <button type="button" class="portfolio-filter" data-filter="ai">AI Automation</button>
+                <button type="button" class="portfolio-filter" data-filter="web">Web Design</button>
+            </div>
+            <div class="portfolio-grid" id="portfolioGrid">
+                <div class="portfolio-item" data-category="smm">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                            <div class="portfolio-overlay">
+                                <span class="portfolio-category">Social Media</span>
+                                <h3>Spice Garden Restaurant</h3>
+                                <p>500 to 5,000+ followers in 3 months</p>
+                                <div class="portfolio-stats-row">
+                                    <div class="portfolio-stat-item"><strong>900%</strong><span>Follower Growth</span></div>
+                                    <div class="portfolio-stat-item"><strong>3.2x</strong><span>Engagement</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="ai">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+                            <div class="portfolio-overlay">
+                                <span class="portfolio-category">AI Automation</span>
+                                <h3>ShopEasy E-Commerce</h3>
+                                <p>70% queries automated via WhatsApp AI</p>
+                                <div class="portfolio-stats-row">
+                                    <div class="portfolio-stat-item"><strong>70%</strong><span>Auto-Resolved</span></div>
+                                    <div class="portfolio-stat-item"><strong>2s</strong><span>Response Time</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="web">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image" style="background: linear-gradient(135deg, #ec4899, #f97316);">
+                            <div class="portfolio-overlay">
+                                <span class="portfolio-category">Web Design</span>
+                                <h3>Skyline Realty</h3>
+                                <p>200% increase in organic leads</p>
+                                <div class="portfolio-stats-row">
+                                    <div class="portfolio-stat-item"><strong>200%</strong><span>Lead Growth</span></div>
+                                    <div class="portfolio-stat-item"><strong>1.8s</strong><span>Load Time</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="smm">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image" style="background: linear-gradient(135deg, #10b981, #6366f1);">
+                            <div class="portfolio-overlay">
+                                <span class="portfolio-category">Social Media</span>
+                                <h3>FitLife Gym Chain</h3>
+                                <p>4x membership inquiries via Instagram</p>
+                                <div class="portfolio-stats-row">
+                                    <div class="portfolio-stat-item"><strong>4x</strong><span>Inquiries</span></div>
+                                    <div class="portfolio-stat-item"><strong>45%</strong><span>Cost Down</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="ai">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+                            <div class="portfolio-overlay">
+                                <span class="portfolio-category">AI Automation</span>
+                                <h3>EduPro Coaching</h3>
+                                <p>Automated lead nurturing +60% conversions</p>
+                                <div class="portfolio-stats-row">
+                                    <div class="portfolio-stat-item"><strong>60%</strong><span>Conversions</span></div>
+                                    <div class="portfolio-stat-item"><strong>15hrs</strong><span>Saved/Week</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="web">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image" style="background: linear-gradient(135deg, #06b6d4, #8b5cf6);">
+                            <div class="portfolio-overlay">
+                                <span class="portfolio-category">Web Design</span>
+                                <h3>LegalEase Law Firm</h3>
+                                <p>Modern website with client portal</p>
+                                <div class="portfolio-stats-row">
+                                    <div class="portfolio-stat-item"><strong>150%</strong><span>Bookings</span></div>
+                                    <div class="portfolio-stat-item"><strong>98</strong><span>PageSpeed</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <span class="section-tag">Who We Are</span>
+                    <h2 class="section-title">Built in Mumbai, <span class="gradient-text">Built for Growth</span></h2>
+                    <p class="about-text">RMKAAV Solutions is a digital agency founded with one mission — to help businesses harness the full power of digital marketing, AI, and modern web technology.</p>
+                    <p class="about-text">Based in Mumbai, we combine creative storytelling with data-driven strategy and cutting-edge AI tools to deliver results that matter.</p>
+                    <div class="about-values">
+                        <div class="value-item">
+                            <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                            <div><h4>Results-Driven</h4><p>Every strategy is backed by data, not guesswork</p></div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                            <div><h4>AI-First Approach</h4><p>Leverage the latest in AI for maximum efficiency</p></div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                            <div><h4>Transparent</h4><p>Clear communication, honest reporting, no fluff</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="about-card-stack">
+                        <div class="about-card ac-1"><span class="ac-number">01</span><span class="ac-text">Strategy First</span></div>
+                        <div class="about-card ac-2"><span class="ac-number">02</span><span class="ac-text">Creative Execution</span></div>
+                        <div class="about-card ac-3"><span class="ac-number">03</span><span class="ac-text">Measurable Results</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process" id="process">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">How We Work</span>
+                <h2 class="section-title">Our Proven <span class="gradient-text">5-Step Process</span></h2>
+                <p class="section-subtitle">A systematic approach that delivers results every time</p>
+            </div>
+            <div class="process-timeline">
+                <div class="process-step"><div class="step-number">01</div><div class="step-content"><h3>Discovery</h3><p>We deep-dive into your business, audience, competitors, and goals.</p></div></div>
+                <div class="process-step"><div class="step-number">02</div><div class="step-content"><h3>Strategy</h3><p>Custom roadmap with clear milestones, KPIs, and a channel-specific game plan.</p></div></div>
+                <div class="process-step"><div class="step-number">03</div><div class="step-content"><h3>Execution</h3><p>Our team creates, designs, builds, and launches — handling everything end to end.</p></div></div>
+                <div class="process-step"><div class="step-number">04</div><div class="step-content"><h3>Reporting</h3><p>Transparent analytics with weekly/monthly reports so you always know what's working.</p></div></div>
+                <div class="process-step"><div class="step-number">05</div><div class="step-content"><h3>Optimize</h3><p>Continuous A/B testing, iteration, and scaling of what delivers the best ROI.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Pricing</span>
+                <h2 class="section-title">Simple, Transparent <span class="gradient-text">Pricing</span></h2>
+                <p class="section-subtitle">Choose a plan that fits your business. All prices in INR + 18% GST.</p>
+            </div>
+            <div class="pricing-tabs">
+                <button type="button" class="pricing-tab active" data-tab="smm">Social Media</button>
+                <button type="button" class="pricing-tab" data-tab="ai">AI Automation</button>
+                <button type="button" class="pricing-tab" data-tab="web">Website Design</button>
+            </div>
+            <div class="pricing-grid" id="tab-smm">
+                <div class="price-card">
+                    <div class="price-tier">Starter</div>
+                    <div class="price-amount">&#8377;15,000<span>/month</span></div>
+                    <p class="price-desc">Perfect for small businesses just getting started</p>
+                    <ul class="price-features"><li>2 Social Media Platforms</li><li>15 Posts Per Month</li><li>Basic Graphic Design</li><li>Monthly Performance Report</li><li>Community Management</li></ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+                <div class="price-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="price-tier">Growth</div>
+                    <div class="price-amount">&#8377;35,000<span>/month</span></div>
+                    <p class="price-desc">For businesses ready to scale their social presence</p>
+                    <ul class="price-features"><li>4 Social Media Platforms</li><li>30 Posts + 8 Reels/Month</li><li>Premium Graphic Design</li><li>Paid Ad Management</li><li>Bi-Weekly Reports & Calls</li><li>Influencer Outreach</li></ul>
+                    <a href="#contact" class="btn btn-primary btn-block">Get Started</a>
+                </div>
+                <div class="price-card">
+                    <div class="price-tier">Premium</div>
+                    <div class="price-amount">&#8377;75,000<span>/month</span></div>
+                    <p class="price-desc">Full-service management for maximum growth</p>
+                    <ul class="price-features"><li>All Platforms Managed</li><li>Daily Content + Reels</li><li>Dedicated Account Manager</li><li>Advanced Ad Campaigns</li><li>Weekly Strategy Calls</li><li>Competitor Monitoring</li><li>Priority Support</li></ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+            </div>
+            <div class="pricing-grid hidden" id="tab-ai">
+                <div class="price-card">
+                    <div class="price-tier">Chatbot Setup</div>
+                    <div class="price-amount">&#8377;25,000<span>one-time</span></div>
+                    <p class="price-desc">AI chatbot for your website or WhatsApp</p>
+                    <ul class="price-features"><li>WhatsApp or Website Chatbot</li><li>Up to 50 FAQ Responses</li><li>Lead Capture Integration</li><li>Basic Training & Setup</li><li>&#8377;5,000/month maintenance</li></ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+                <div class="price-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="price-tier">Business Automation</div>
+                    <div class="price-amount">&#8377;60,000<span>one-time</span></div>
+                    <p class="price-desc">Full workflow automation for growing businesses</p>
+                    <ul class="price-features"><li>CRM Setup & Automation</li><li>Email Sequence Automation</li><li>Lead Scoring & Nurturing</li><li>Zapier/Make Integrations</li><li>AI Content Workflows</li><li>&#8377;8,000/month maintenance</li></ul>
+                    <a href="#contact" class="btn btn-primary btn-block">Get Started</a>
+                </div>
+                <div class="price-card">
+                    <div class="price-tier">Enterprise AI</div>
+                    <div class="price-amount">Custom<span>project-based</span></div>
+                    <p class="price-desc">Custom AI solutions for your unique needs</p>
+                    <ul class="price-features"><li>Custom AI Model Integration</li><li>Multi-Platform Automation</li><li>Advanced Analytics Dashboard</li><li>API Development</li><li>Dedicated Support Team</li><li>SLA Guarantee</li></ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Contact Us</a>
+                </div>
+            </div>
+            <div class="pricing-grid hidden" id="tab-web">
+                <div class="price-card">
+                    <div class="price-tier">Landing Page</div>
+                    <div class="price-amount">&#8377;15,000<span>one-time</span></div>
+                    <p class="price-desc">High-converting single page for campaigns</p>
+                    <ul class="price-features"><li>Single Page Design</li><li>Mobile Responsive</li><li>Contact Form Integration</li><li>Basic SEO Setup</li><li>3 Revisions</li></ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+                <div class="price-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="price-tier">Business Website</div>
+                    <div class="price-amount">&#8377;45,000<span>one-time</span></div>
+                    <p class="price-desc">Professional multi-page website for your brand</p>
+                    <ul class="price-features"><li>5-8 Custom Pages</li><li>CMS Integration</li><li>SEO Optimized</li><li>Blog Setup</li><li>WhatsApp Integration</li><li>5 Revisions</li></ul>
+                    <a href="#contact" class="btn btn-primary btn-block">Get Started</a>
+                </div>
+                <div class="price-card">
+                    <div class="price-tier">E-Commerce</div>
+                    <div class="price-amount">&#8377;1,20,000<span>one-time</span></div>
+                    <p class="price-desc">Full-featured online store ready to sell</p>
+                    <ul class="price-features"><li>Product Catalog (up to 100)</li><li>Payment Gateway (Razorpay)</li><li>Inventory Management</li><li>Order Tracking</li><li>SEO & Performance Optimized</li><li>Admin Dashboard</li><li>Unlimited Revisions</li></ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2 class="section-title">What Our <span class="gradient-text">Clients Say</span></h2>
+            </div>
+            <div class="testimonial-carousel" id="testimonialCarousel">
+                <div class="testimonial-track" id="testimonialTrack">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <p class="testimonial-text">"RMKAAV completely transformed our Instagram presence. We went from 500 followers to 5,000+ in just 3 months with real, engaged followers."</p>
+                        <div class="testimonial-author"><div class="author-avatar">RK</div><div><strong>Rajesh K.</strong><span>Restaurant Owner, Mumbai</span></div></div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <p class="testimonial-text">"The AI chatbot they built for our WhatsApp handles 70% of our customer queries automatically. Response time went from hours to seconds!"</p>
+                        <div class="testimonial-author"><div class="author-avatar">PS</div><div><strong>Priya S.</strong><span>E-Commerce Founder</span></div></div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <p class="testimonial-text">"Our new website looks incredible and loads in under 2 seconds. Leads from organic search have increased by 200% since launch."</p>
+                        <div class="testimonial-author"><div class="author-avatar">AM</div><div><strong>Amit M.</strong><span>Real Estate Developer</span></div></div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <p class="testimonial-text">"RMKAAV's email automation sequences saved us 3 hours daily on follow-ups. Fully automated and conversion rate is up 60%."</p>
+                        <div class="testimonial-author"><div class="author-avatar">NK</div><div><strong>Neha K.</strong><span>Coaching Institute, Pune</span></div></div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <p class="testimonial-text">"Professional, creative, and incredibly responsive. They redesigned our entire brand identity and website. Clients love our online presence now."</p>
+                        <div class="testimonial-author"><div class="author-avatar">VT</div><div><strong>Vikram T.</strong><span>Law Firm Partner, Mumbai</span></div></div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button type="button" class="carousel-btn" id="carouselPrev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                    <button type="button" class="carousel-btn" id="carouselNext" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">FAQ</span>
+                <h2 class="section-title">Got <span class="gradient-text">Questions?</span></h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button type="button" class="faq-question">How long before I see results from social media marketing?<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="faq-answer"><p>Most clients start seeing noticeable engagement improvements within the first 30 days. Significant follower growth and lead generation typically kicks in by month 2-3.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question">Do I need a big budget for paid ads?<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="faq-answer"><p>Not at all! We work with ad budgets starting from &#8377;10,000/month. Our team optimizes every rupee to maximize your ROI.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question">What kind of AI automation can you set up?<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="faq-answer"><p>We can automate almost any repetitive business process — from WhatsApp chatbots and email sequences to full CRM workflows, lead scoring, and multi-tool integrations.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question">How long does it take to build a website?<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="faq-answer"><p>A landing page takes 5-7 days. A full business website typically takes 2-3 weeks. E-commerce sites take 4-6 weeks depending on complexity.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question">Can I cancel my subscription anytime?<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="faq-answer"><p>Yes! Our monthly retainers have no long-term lock-in. You can cancel with 15 days' notice. Quarterly plans come with a 15% discount.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question">Do you offer custom packages?<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="faq-answer"><p>Absolutely! Contact us for a free consultation and we'll create a custom package tailored to your specific needs, goals, and budget.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <span class="section-tag">Get In Touch</span>
+                    <h2 class="section-title">Let's Grow Your <span class="gradient-text">Business Together</span></h2>
+                    <p class="contact-text">Book a free 30-minute strategy call and we'll show you exactly how we can help your business grow digitally.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                            <div><strong>Location</strong><p>Mumbai, Maharashtra, India</p></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                            <div><strong>Email</strong><p>vishnutewary1@gmail.com</p></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                            <div><strong>Phone / WhatsApp</strong><p>+91 79779 92054</p></div>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                        <a href="#" class="social-link" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                        <a href="#" class="social-link" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm" novalidate>
+                    <div class="form-group">
+                        <input type="text" name="name" id="formName" placeholder="Your Name *" required>
+                        <span class="form-error" id="nameError"></span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="email" name="email" id="formEmail" placeholder="Email Address *" required>
+                            <span class="form-error" id="emailError"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" name="phone" id="formPhone" placeholder="Phone / WhatsApp">
+                            <span class="form-error" id="phoneError"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select name="service" id="formService" required>
+                            <option value="" disabled selected>Select Service *</option>
+                            <option value="smm">Social Media Marketing</option>
+                            <option value="ai">AI Automation</option>
+                            <option value="web">Website Design & Development</option>
+                            <option value="bundle">Multiple Services (Bundle)</option>
+                        </select>
+                        <span class="form-error" id="serviceError"></span>
+                    </div>
+                    <div class="form-group">
+                        <select name="budget" id="formBudget">
+                            <option value="" disabled selected>Monthly Budget (Optional)</option>
+                            <option value="10-25k">&#8377;10,000 - &#8377;25,000</option>
+                            <option value="25-50k">&#8377;25,000 - &#8377;50,000</option>
+                            <option value="50-1L">&#8377;50,000 - &#8377;1,00,000</option>
+                            <option value="1L+">&#8377;1,00,000+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" id="formMessage" rows="4" placeholder="Tell us about your project..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+                        <span class="btn-text">Send Message</span>
+                        <span class="btn-loading" style="display:none;">Sending...</span>
+                        <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <div class="container">
+            <h2>Ready to <span class="gradient-text">10x Your Digital Presence?</span></h2>
+            <p>Get a free audit of your current digital strategy. No strings attached.</p>
+            <a href="#contact" class="btn btn-primary btn-lg btn-glow">Claim Your Free Audit <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo"><span class="logo-rm">RM</span><span class="logo-kaav">KAAV</span></a>
+                    <p>Mumbai's digital growth partner. We help businesses scale through social media, AI automation, and stunning web experiences.</p>
+                    <div class="newsletter">
+                        <h4>Get Growth Tips</h4>
+                        <form class="newsletter-form" id="newsletterForm">
+                            <input type="email" name="newsletter_email" id="newsletterEmail" placeholder="Enter your email" required>
+                            <button type="submit" aria-label="Subscribe"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="#home">Home</a><a href="#services">Services</a><a href="#portfolio">Portfolio</a><a href="#about">About Us</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <a href="#services">Social Media Marketing</a><a href="#services">AI Automation</a><a href="#services">Website Design</a><a href="#services">Paid Advertising</a><a href="#services">SEO Optimization</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <a href="mailto:vishnutewary1@gmail.com">vishnutewary1@gmail.com</a><a href="tel:+917977992054">+91 79779 92054</a><span>Mumbai, Maharashtra</span><span>India</span>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 RMKAAV Solutions. All rights reserved.</p>
+                <div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/917977992054?text=Hi%20RMKAAV!%20I'm%20interested%20in%20your%20services." class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span class="whatsapp-tooltip">Chat with us!</span>
+    </a>
+
+    <!-- Back to Top -->
+    <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <!-- Cookie Consent -->
+    <div class="cookie-consent" id="cookieConsent">
+        <div class="cookie-content">
+            <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</p>
+            <div class="cookie-actions">
+                <button type="button" class="btn btn-outline cookie-btn" id="cookieDecline">Decline</button>
+                <button type="button" class="btn btn-primary cookie-btn" id="cookieAccept">Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
