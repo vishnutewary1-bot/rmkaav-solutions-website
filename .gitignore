@@ -3,3 +3,5 @@ Thumbs.db
 *.log
 .vscode/
 .claude/
+.vercel
+firebase-debug.log

@@ -1,0 +1,70 @@
+{
+    "items": [
+        {
+            "category": "smm",
+            "categoryLabel": "Social Media",
+            "title": "Spice Garden Restaurant",
+            "description": "500 to 5,000+ followers in 3 months",
+            "stats": [
+                { "value": "900%", "label": "Follower Growth" },
+                { "value": "3.2x", "label": "Engagement" }
+            ],
+            "gradient": "linear-gradient(135deg, #6366f1, #8b5cf6)"
+        },
+        {
+            "category": "ai",
+            "categoryLabel": "AI Automation",
+            "title": "ShopEasy E-Commerce",
+            "description": "70% queries automated via WhatsApp AI",
+            "stats": [
+                { "value": "70%", "label": "Auto-Resolved" },
+                { "value": "2s", "label": "Response Time" }
+            ],
+            "gradient": "linear-gradient(135deg, #8b5cf6, #ec4899)"
+        },
+        {
+            "category": "web",
+            "categoryLabel": "Web Design",
+            "title": "Skyline Realty",
+            "description": "200% increase in organic leads",
+            "stats": [
+                { "value": "200%", "label": "Lead Growth" },
+                { "value": "1.8s", "label": "Load Time" }
+            ],
+            "gradient": "linear-gradient(135deg, #ec4899, #f97316)"
+        },
+        {
+            "category": "smm",
+            "categoryLabel": "Social Media",
+            "title": "FitLife Gym Chain",
+            "description": "4x membership inquiries via Instagram",
+            "stats": [
+                { "value": "4x", "label": "Inquiries" },
+                { "value": "45%", "label": "Cost Down" }
+            ],
+            "gradient": "linear-gradient(135deg, #10b981, #6366f1)"
+        },
+        {
+            "category": "ai",
+            "categoryLabel": "AI Automation",
+            "title": "EduPro Coaching",
+            "description": "Automated lead nurturing +60% conversions",
+            "stats": [
+                { "value": "60%", "label": "Conversions" },
+                { "value": "15hrs", "label": "Saved/Week" }
+            ],
+            "gradient": "linear-gradient(135deg, #f59e0b, #ef4444)"
+        },
+        {
+            "category": "web",
+            "categoryLabel": "Web Design",
+            "title": "LegalEase Law Firm",
+            "description": "Modern website with client portal",
+            "stats": [
+                { "value": "150%", "label": "Bookings" },
+                { "value": "98", "label": "PageSpeed" }
+            ],
+            "gradient": "linear-gradient(135deg, #06b6d4, #8b5cf6)"
+        }
+    ]
+}

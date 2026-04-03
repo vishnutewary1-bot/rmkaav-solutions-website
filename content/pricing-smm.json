@@ -1,0 +1,33 @@
+{
+    "tab": "smm",
+    "tabLabel": "Social Media",
+    "plans": [
+        {
+            "tier": "Starter",
+            "price": "\u20b915,000",
+            "period": "/month",
+            "description": "Perfect for small businesses just getting started",
+            "features": ["2 Social Media Platforms", "15 Posts Per Month", "Basic Graphic Design", "Monthly Performance Report", "Community Management"],
+            "popular": false,
+            "ctaText": "Get Started"
+        },
+        {
+            "tier": "Growth",
+            "price": "\u20b935,000",
+            "period": "/month",
+            "description": "For businesses ready to scale their social presence",
+            "features": ["4 Social Media Platforms", "30 Posts + 8 Reels/Month", "Premium Graphic Design", "Paid Ad Management", "Bi-Weekly Reports & Calls", "Influencer Outreach"],
+            "popular": true,
+            "ctaText": "Get Started"
+        },
+        {
+            "tier": "Premium",
+            "price": "\u20b975,000",
+            "period": "/month",
+            "description": "Full-service management for maximum growth",
+            "features": ["All Platforms Managed", "Daily Content + Reels", "Dedicated Account Manager", "Advanced Ad Campaigns", "Weekly Strategy Calls", "Competitor Monitoring", "Priority Support"],
+            "popular": false,
+            "ctaText": "Get Started"
+        }
+    ]
+}

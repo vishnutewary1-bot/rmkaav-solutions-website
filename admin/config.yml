@@ -1,0 +1,171 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "site-settings"
+    label: "Site Settings"
+    files:
+      - name: "settings"
+        label: "General Settings"
+        file: "content/site-settings.json"
+        fields:
+          - { name: "companyName", label: "Company Name", widget: "string" }
+          - { name: "tagline", label: "Hero Badge Text", widget: "string" }
+          - { name: "heroSubtitle", label: "Hero Subtitle", widget: "text" }
+          - { name: "typingWords", label: "Typing Animation Words", widget: "list", field: { name: "word", label: "Word", widget: "string" } }
+          - { name: "phone", label: "Phone Number", widget: "string" }
+          - { name: "email", label: "Email Address", widget: "string" }
+          - { name: "whatsappNumber", label: "WhatsApp Number (no +)", widget: "string" }
+          - { name: "location", label: "Location", widget: "string" }
+          - name: "socialLinks"
+            label: "Social Media Links"
+            widget: "object"
+            fields:
+              - { name: "instagram", label: "Instagram URL", widget: "string", required: false }
+              - { name: "linkedin", label: "LinkedIn URL", widget: "string", required: false }
+              - { name: "twitter", label: "Twitter/X URL", widget: "string", required: false }
+              - { name: "facebook", label: "Facebook URL", widget: "string", required: false }
+
+      - name: "stats"
+        label: "Hero Stats"
+        file: "content/stats.json"
+        fields:
+          - name: "stats"
+            label: "Stats"
+            widget: "list"
+            fields:
+              - { name: "target", label: "Number", widget: "number" }
+              - { name: "suffix", label: "Suffix (+, x, %)", widget: "string" }
+              - { name: "label", label: "Label", widget: "string" }
+
+  - name: "services"
+    label: "Services"
+    files:
+      - name: "services"
+        label: "Services"
+        file: "content/services.json"
+        fields:
+          - name: "services"
+            label: "Services"
+            widget: "list"
+            fields:
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "description", label: "Description", widget: "text" }
+              - { name: "features", label: "Features", widget: "list", field: { name: "feature", label: "Feature", widget: "string" } }
+              - { name: "featured", label: "Featured (Most Popular)?", widget: "boolean", default: false }
+
+  - name: "portfolio"
+    label: "Portfolio"
+    files:
+      - name: "portfolio"
+        label: "Case Studies"
+        file: "content/portfolio.json"
+        fields:
+          - name: "items"
+            label: "Portfolio Items"
+            widget: "list"
+            fields:
+              - { name: "category", label: "Category ID", widget: "select", options: ["smm", "ai", "web"] }
+              - { name: "categoryLabel", label: "Category Label", widget: "string" }
+              - { name: "title", label: "Client Name", widget: "string" }
+              - { name: "description", label: "Short Result", widget: "string" }
+              - name: "stats"
+                label: "Stats"
+                widget: "list"
+                max: 2
+                fields:
+                  - { name: "value", label: "Value", widget: "string" }
+                  - { name: "label", label: "Label", widget: "string" }
+              - { name: "gradient", label: "Card Gradient CSS", widget: "string" }
+
+  - name: "pricing"
+    label: "Pricing"
+    files:
+      - name: "pricing-smm"
+        label: "Social Media Pricing"
+        file: "content/pricing-smm.json"
+        fields:
+          - { name: "tab", label: "Tab ID", widget: "hidden", default: "smm" }
+          - { name: "tabLabel", label: "Tab Label", widget: "string" }
+          - name: "plans"
+            label: "Plans"
+            widget: "list"
+            fields:
+              - { name: "tier", label: "Tier Name", widget: "string" }
+              - { name: "price", label: "Price", widget: "string" }
+              - { name: "period", label: "Period (/month, one-time)", widget: "string" }
+              - { name: "description", label: "Description", widget: "string" }
+              - { name: "features", label: "Features", widget: "list", field: { name: "feature", label: "Feature", widget: "string" } }
+              - { name: "popular", label: "Most Popular?", widget: "boolean", default: false }
+              - { name: "ctaText", label: "Button Text", widget: "string", default: "Get Started" }
+
+      - name: "pricing-ai"
+        label: "AI Automation Pricing"
+        file: "content/pricing-ai.json"
+        fields:
+          - { name: "tab", label: "Tab ID", widget: "hidden", default: "ai" }
+          - { name: "tabLabel", label: "Tab Label", widget: "string" }
+          - name: "plans"
+            label: "Plans"
+            widget: "list"
+            fields:
+              - { name: "tier", label: "Tier Name", widget: "string" }
+              - { name: "price", label: "Price", widget: "string" }
+              - { name: "period", label: "Period", widget: "string" }
+              - { name: "description", label: "Description", widget: "string" }
+              - { name: "features", label: "Features", widget: "list", field: { name: "feature", label: "Feature", widget: "string" } }
+              - { name: "popular", label: "Most Popular?", widget: "boolean", default: false }
+              - { name: "ctaText", label: "Button Text", widget: "string", default: "Get Started" }
+
+      - name: "pricing-web"
+        label: "Website Design Pricing"
+        file: "content/pricing-web.json"
+        fields:
+          - { name: "tab", label: "Tab ID", widget: "hidden", default: "web" }
+          - { name: "tabLabel", label: "Tab Label", widget: "string" }
+          - name: "plans"
+            label: "Plans"
+            widget: "list"
+            fields:
+              - { name: "tier", label: "Tier Name", widget: "string" }
+              - { name: "price", label: "Price", widget: "string" }
+              - { name: "period", label: "Period", widget: "string" }
+              - { name: "description", label: "Description", widget: "string" }
+              - { name: "features", label: "Features", widget: "list", field: { name: "feature", label: "Feature", widget: "string" } }
+              - { name: "popular", label: "Most Popular?", widget: "boolean", default: false }
+              - { name: "ctaText", label: "Button Text", widget: "string", default: "Get Started" }
+
+  - name: "testimonials"
+    label: "Testimonials"
+    files:
+      - name: "testimonials"
+        label: "Client Testimonials"
+        file: "content/testimonials.json"
+        fields:
+          - name: "testimonials"
+            label: "Testimonials"
+            widget: "list"
+            fields:
+              - { name: "text", label: "Testimonial Text", widget: "text" }
+              - { name: "name", label: "Client Name", widget: "string" }
+              - { name: "role", label: "Role / Company", widget: "string" }
+              - { name: "initials", label: "Initials (2 letters)", widget: "string" }
+              - { name: "stars", label: "Stars (1-5)", widget: "number", min: 1, max: 5, default: 5 }
+
+  - name: "faq"
+    label: "FAQ"
+    files:
+      - name: "faq"
+        label: "FAQ Items"
+        file: "content/faq.json"
+        fields:
+          - name: "items"
+            label: "Questions"
+            widget: "list"
+            fields:
+              - { name: "question", label: "Question", widget: "string" }
+              - { name: "answer", label: "Answer", widget: "text" }

@@ -1,0 +1,33 @@
+{
+    "tab": "ai",
+    "tabLabel": "AI Automation",
+    "plans": [
+        {
+            "tier": "Chatbot Setup",
+            "price": "\u20b925,000",
+            "period": "one-time",
+            "description": "AI chatbot for your website or WhatsApp",
+            "features": ["WhatsApp or Website Chatbot", "Up to 50 FAQ Responses", "Lead Capture Integration", "Basic Training & Setup", "\u20b95,000/month maintenance"],
+            "popular": false,
+            "ctaText": "Get Started"
+        },
+        {
+            "tier": "Business Automation",
+            "price": "\u20b960,000",
+            "period": "one-time",
+            "description": "Full workflow automation for growing businesses",
+            "features": ["CRM Setup & Automation", "Email Sequence Automation", "Lead Scoring & Nurturing", "Zapier/Make Integrations", "AI Content Workflows", "\u20b98,000/month maintenance"],
+            "popular": true,
+            "ctaText": "Get Started"
+        },
+        {
+            "tier": "Enterprise AI",
+            "price": "Custom",
+            "period": "project-based",
+            "description": "Custom AI solutions for your unique needs",
+            "features": ["Custom AI Model Integration", "Multi-Platform Automation", "Advanced Analytics Dashboard", "API Development", "Dedicated Support Team", "SLA Guarantee"],
+            "popular": false,
+            "ctaText": "Contact Us"
+        }
+    ]
+}

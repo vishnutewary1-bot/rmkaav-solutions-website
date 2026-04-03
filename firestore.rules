@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Contact form submissions — anyone can create, nobody can read/update/delete from client
+    match /contacts/{document} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'service', 'timestamp'])
+                    && request.resource.data.name is string
+                    && request.resource.data.email is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() < 200
+                    && request.resource.data.email.size() > 0
+                    && request.resource.data.email.size() < 200;
+      allow read, update, delete: if false;
+    }
+
+    // Newsletter subscribers — anyone can create, nobody can read/update/delete from client
+    match /newsletter/{document} {
+      allow create: if request.resource.data.keys().hasAll(['email', 'timestamp'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() > 0
+                    && request.resource.data.email.size() < 200;
+      allow read, update, delete: if false;
+    }
+
+    // Block everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

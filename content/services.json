@@ -1,0 +1,40 @@
+{
+    "services": [
+        {
+            "title": "Social Media Marketing",
+            "description": "Engaging content, strategic campaigns, and community management across Instagram, Facebook, LinkedIn & more.",
+            "features": [
+                "Content Strategy & Calendar",
+                "Reels, Stories & Post Design",
+                "Paid Ad Campaigns (Meta & Google)",
+                "Community Management",
+                "Monthly Analytics Reports"
+            ],
+            "featured": false
+        },
+        {
+            "title": "AI Automation",
+            "description": "Automate repetitive tasks, supercharge your workflows, and deploy AI chatbots that work 24/7.",
+            "features": [
+                "WhatsApp & Website AI Chatbots",
+                "CRM & Lead Nurturing Automation",
+                "AI Content Generation Workflows",
+                "Email & Follow-up Sequences",
+                "Custom Integrations (Zapier, Make)"
+            ],
+            "featured": true
+        },
+        {
+            "title": "Website Design & Dev",
+            "description": "Beautiful, fast, SEO-optimized websites that convert visitors into leads.",
+            "features": [
+                "Custom UI/UX Design",
+                "Mobile-First Responsive Build",
+                "SEO Optimized Architecture",
+                "E-Commerce Solutions",
+                "Ongoing Maintenance & Support"
+            ],
+            "featured": false
+        }
+    ]
+}
