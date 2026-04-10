@@ -13,9 +13,8 @@ service cloud.firestore {
         && request.resource.data.email is string
         && request.resource.data.email.size() > 0
         && request.resource.data.email.size() < 200
-        && request.resource.data.email.matches('.+@.+\\..+')
-        && request.resource.data.service is string
-        && request.resource.data.service.size() < 100
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() < 100
         && request.resource.data.message is string
         && request.resource.data.message.size() < 5000
         && request.resource.data.phone is string
@@ -32,8 +31,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasAll(['email','timestamp'])
         && request.resource.data.email is string
         && request.resource.data.email.size() > 0
-        && request.resource.data.email.size() < 200
-        && request.resource.data.email.matches('.+@.+\\..+');
+        && request.resource.data.email.size() < 200;
       allow read, update, delete: if false;
     }
 
