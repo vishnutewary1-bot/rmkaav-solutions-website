@@ -11,7 +11,7 @@ window.RMKAAV_CONFIG = {
     RECAPTCHA_SITE_KEY: '6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd',
 
     // Google Analytics 4 — get your ID at https://analytics.google.com
-    GA_MEASUREMENT_ID: '',
+    GA_MEASUREMENT_ID: 'G-9B1258SHLT',
 
     // Firebase
     FIREBASE: {

@@ -39,6 +39,12 @@
     --text-secondary: #4a4a6a;
     --text-muted: #7a7a9a;
     --border: #e2e4ea;
+    --accent-1: #4f46e5;
+    --accent-2: #7c3aed;
+    --accent-3: #db2777;
+    --accent-4: #ea580c;
+    --gradient: linear-gradient(135deg, #4f46e5, #7c3aed, #db2777);
+    --gradient-text: linear-gradient(135deg, #4f46e5, #7c3aed, #db2777);
     --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
     --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
     --shadow-lg: 0 8px 40px rgba(0,0,0,0.1);
@@ -1477,6 +1483,8 @@ img { max-width: 100%; display: block; }
     font-size: 0.95rem;
     transition: var(--transition);
     outline: none;
+    resize: vertical;
+    min-height: 100px;
 }
 
 .contact-form input::placeholder,
@@ -1508,19 +1516,9 @@ img { max-width: 100%; display: block; }
 .contact-form select { appearance: none; cursor: pointer; }
 .contact-form select option { background: var(--bg-card); }
 
-.contact-form textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
 .btn-text { display: inline; }
 .btn-loading { display: none; align-items: center; gap: 8px; }
 .btn-icon { transition: var(--transition); }
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
 
 /* ============================================
    CTA BANNER
@@ -1798,7 +1796,7 @@ img { max-width: 100%; display: block; }
     font-size: 0.9rem;
     color: var(--text-primary);
     box-shadow: var(--shadow-lg);
-    z-index: 10000;
+    z-index: 10001;
     transform: translateX(120%);
     transition: transform 0.4s ease;
     max-width: 350px;

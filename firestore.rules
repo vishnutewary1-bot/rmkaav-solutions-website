@@ -1,24 +1,39 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     // Contact form submissions — anyone can create, nobody can read/update/delete from client
     match /contacts/{document} {
-      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'service', 'timestamp'])
-                    && request.resource.data.name is string
-                    && request.resource.data.email is string
-                    && request.resource.data.name.size() > 0
-                    && request.resource.data.name.size() < 200
-                    && request.resource.data.email.size() > 0
-                    && request.resource.data.email.size() < 200;
+      allow create: if
+        request.resource.data.keys().hasOnly(['name','email','phone','service','budget','message','timestamp','source','status','recaptchaToken'])
+        && request.resource.data.keys().hasAll(['name','email','service','timestamp'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() < 200
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.email.size() < 200
+        && request.resource.data.email.matches('.+@.+\\..+')
+        && request.resource.data.service is string
+        && request.resource.data.service.size() < 100
+        && request.resource.data.message is string
+        && request.resource.data.message.size() < 5000
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() < 50
+        && request.resource.data.budget is string
+        && request.resource.data.budget.size() < 50;
       allow read, update, delete: if false;
     }
 
     // Newsletter subscribers — anyone can create, nobody can read/update/delete from client
     match /newsletter/{document} {
-      allow create: if request.resource.data.keys().hasAll(['email', 'timestamp'])
-                    && request.resource.data.email is string
-                    && request.resource.data.email.size() > 0
-                    && request.resource.data.email.size() < 200;
+      allow create: if
+        request.resource.data.keys().hasOnly(['email','timestamp','source','status'])
+        && request.resource.data.keys().hasAll(['email','timestamp'])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.email.size() < 200
+        && request.resource.data.email.matches('.+@.+\\..+');
       allow read, update, delete: if false;
     }
 

@@ -1,7 +1,0 @@
-{
-    "stats": [
-        { "target": 50, "suffix": "+", "label": "Projects Delivered" },
-        { "target": 30, "suffix": "+", "label": "Happy Clients" },
-        { "target": 3, "suffix": "x", "label": "Avg. Growth Rate" }
-    ]
-}

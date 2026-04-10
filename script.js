@@ -23,19 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ---- Sanitization Helper ----
+    // Trims whitespace and caps length. We do NOT HTML-encode here because
+    // values flow only to Firestore and EmailJS — never reflected to the DOM.
     function sanitize(str) {
-        var div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        if (typeof str !== 'string') return '';
+        return str.trim().slice(0, 5000);
     }
 
     // ---- Preloader ----
     const preloader = document.getElementById('preloader');
     if (preloader) {
-        window.addEventListener('load', () => {
-            setTimeout(() => { preloader.classList.add('hidden'); }, 2000);
-        });
-        setTimeout(() => { preloader.classList.add('hidden'); }, 3000);
+        setTimeout(() => { preloader.classList.add('hidden'); }, 2000);
     }
 
     // ---- Scroll Progress Bar ----
@@ -645,6 +643,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            // Honeypot — bots fill hidden fields
+            const nlHoney = document.getElementById('newsletterHoneypot');
+            if (nlHoney && nlHoney.value) return;
+
+            // Rate-limit (shares cooldown bucket with contact form)
+            const now = Date.now();
+            if (now - lastFormSubmitTime < FORM_COOLDOWN_MS) {
+                showToast('Please wait before submitting again.', 'info');
+                return;
+            }
+
             const emailInput = newsletterForm.querySelector('input[type="email"]');
             if (!emailInput) return;
             const email = emailInput.value.trim();
@@ -656,11 +666,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Save to Firebase Firestore first, then send email notification
             const subscriberData = {
-                email: sanitize(email),
+                email: email,
                 timestamp: new Date().toISOString(),
                 source: 'footer-newsletter',
                 status: 'active'
             };
+
+            lastFormSubmitTime = Date.now();
 
             const nlPromise = window.db
                 ? window.db.collection('newsletter').add(subscriberData)
@@ -733,17 +745,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ---- Smooth scrolling for all anchor links ----
+    // ---- Smooth scrolling for all anchor links (with navbar offset) ----
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
             const href = anchor.getAttribute('href');
             if (href === '#') return;
-
-            e.preventDefault();
             const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
+            if (!target) return;
+            e.preventDefault();
+            const nav = document.getElementById('navbar');
+            const navH = nav ? nav.offsetHeight : 80;
+            const top = target.getBoundingClientRect().top + window.scrollY - navH - 10;
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
         });
     });
 
@@ -755,110 +768,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 q.click();
             }
         });
-    });
-
-    // ============================================
-    // Dynamic Content Loading from JSON
-    // ============================================
-
-    function loadJSON(url) {
-        return fetch(url).then(function(r) { return r.ok ? r.json() : Promise.reject(); });
-    }
-
-    function reInitFadeIn(container) {
-        container.querySelectorAll('.service-card, .price-card, .testimonial-card, .portfolio-item, .faq-item').forEach(function(el) {
-            el.classList.add('fade-in');
-            observer.observe(el);
-        });
-    }
-
-    // ---- Load Testimonials ----
-    loadJSON('content/testimonials.json').then(function(data) {
-        var track = document.getElementById('testimonialTrack');
-        if (!track || !data.testimonials) return;
-        track.innerHTML = data.testimonials.map(function(t) {
-            var stars = '';
-            for (var i = 0; i < (t.stars || 5); i++) stars += '&#9733;';
-            return '<div class="testimonial-card" role="group" aria-roledescription="slide">' +
-                '<div class="testimonial-stars">' + stars + '</div>' +
-                '<p class="testimonial-text">"' + t.text + '"</p>' +
-                '<div class="testimonial-author"><div class="author-avatar">' + t.initials + '</div>' +
-                '<div><strong>' + t.name + '</strong><span>' + t.role + '</span></div></div></div>';
-        }).join('');
-        reInitFadeIn(track);
-    }).catch(function() {});
-
-    // ---- Load FAQ ----
-    loadJSON('content/faq.json').then(function(data) {
-        var list = document.querySelector('.faq-list');
-        if (!list || !data.items) return;
-        list.innerHTML = data.items.map(function(item, i) {
-            return '<div class="faq-item">' +
-                '<button type="button" class="faq-question" id="faq-question-' + i + '" aria-expanded="false" aria-controls="faq-answer-' + i + '">' +
-                item.question +
-                '<svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>' +
-                '<div class="faq-answer" id="faq-answer-' + i + '" role="region" aria-labelledby="faq-question-' + i + '"><p>' + item.answer + '</p></div></div>';
-        }).join('');
-
-        // Re-bind FAQ accordion events
-        list.querySelectorAll('.faq-item').forEach(function(faqItem) {
-            var q = faqItem.querySelector('.faq-question');
-            if (!q) return;
-            q.addEventListener('click', function() {
-                var isActive = faqItem.classList.contains('active');
-                list.querySelectorAll('.faq-item').forEach(function(i) {
-                    i.classList.remove('active');
-                    var btn = i.querySelector('.faq-question');
-                    if (btn) btn.setAttribute('aria-expanded', 'false');
-                });
-                if (!isActive) {
-                    faqItem.classList.add('active');
-                    q.setAttribute('aria-expanded', 'true');
-                }
-            });
-            q.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); q.click(); }
-            });
-        });
-        reInitFadeIn(list);
-    }).catch(function() {});
-
-    // ---- Load Portfolio ----
-    loadJSON('content/portfolio.json').then(function(data) {
-        var grid = document.getElementById('portfolioGrid');
-        if (!grid || !data.items) return;
-        grid.innerHTML = data.items.map(function(item) {
-            var statsHtml = item.stats.map(function(s) {
-                return '<div class="portfolio-stat-item"><strong>' + s.value + '</strong><span>' + s.label + '</span></div>';
-            }).join('');
-            return '<div class="portfolio-item" data-category="' + item.category + '">' +
-                '<div class="portfolio-card"><div class="portfolio-image" style="background: ' + item.gradient + ';">' +
-                '<div class="portfolio-overlay"><span class="portfolio-category">' + item.categoryLabel + '</span>' +
-                '<h3>' + item.title + '</h3><p>' + item.description + '</p>' +
-                '<div class="portfolio-stats-row">' + statsHtml + '</div></div></div></div></div>';
-        }).join('');
-        reInitFadeIn(grid);
-    }).catch(function() {});
-
-    // ---- Load Pricing ----
-    ['smm', 'ai', 'web'].forEach(function(tab) {
-        loadJSON('content/pricing-' + tab + '.json').then(function(data) {
-            var grid = document.getElementById('tab-' + tab);
-            if (!grid || !data.plans) return;
-            grid.innerHTML = data.plans.map(function(plan) {
-                var features = plan.features.map(function(f) { return '<li>' + f + '</li>'; }).join('');
-                var popularBadge = plan.popular ? '<div class="popular-badge">Most Popular</div>' : '';
-                var btnClass = plan.popular ? 'btn btn-primary btn-block' : 'btn btn-outline btn-block';
-                return '<div class="price-card' + (plan.popular ? ' popular' : '') + '">' +
-                    popularBadge +
-                    '<div class="price-tier">' + plan.tier + '</div>' +
-                    '<div class="price-amount">' + plan.price + '<span>' + plan.period + '</span></div>' +
-                    '<p class="price-desc">' + plan.description + '</p>' +
-                    '<ul class="price-features">' + features + '</ul>' +
-                    '<a href="#contact" class="' + btnClass + '">' + plan.ctaText + '</a></div>';
-            }).join('');
-            reInitFadeIn(grid);
-        }).catch(function() {});
     });
 
 });
