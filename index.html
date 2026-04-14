@@ -12,10 +12,13 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://rmkaav.com">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <!-- Fonts: bundled locally in /vendor/fonts (offline-safe, no CDN dependency) -->
+    <link rel="stylesheet" href="vendor/fonts/google-fonts.css">
+    <link rel="stylesheet" href="style.css?v=13">
+    <!-- Google's <model-viewer> for real 3D models (local copy) -->
+    <script type="module" src="model-viewer.min.js"></script>
+    <!-- Vanilla Tilt JS — proven 3D card tilt library (local copy, no CDN) -->
+    <script defer src="vanilla-tilt.min.js?v=1"></script>
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -38,7 +41,7 @@
     <!-- Configuration (loaded early so other scripts can reference it) -->
     <script src="config.js"></script>
     <!-- EmailJS SDK -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script defer src="vendor/emailjs.min.js"></script>
     <!-- reCAPTCHA v3 — loads only if site key is configured -->
     <script>
     (function() {
@@ -120,6 +123,25 @@
         <div class="hero-glow hero-glow-1"></div>
         <div class="hero-glow hero-glow-2"></div>
         <div class="hero-particles" id="heroParticles"></div>
+        <!-- Real 3D model — RobotExpressive (animated AI mascot, fits AI Automation branding) -->
+        <model-viewer
+            class="hero-3d"
+            src="RobotExpressive.glb"
+            alt="3D animated AI robot mascot"
+            auto-rotate
+            auto-rotate-delay="1000"
+            rotation-per-second="20deg"
+            camera-controls
+            disable-zoom
+            interaction-prompt="none"
+            shadow-intensity="1.5"
+            exposure="1.1"
+            environment-image="neutral"
+            loading="lazy"
+            reveal="auto"
+            autoplay
+            animation-name="Wave">
+        </model-viewer>
         <div class="container hero-container">
             <div class="hero-badge">
                 <span class="hero-badge-dot"></span>
@@ -445,6 +467,29 @@
                 <button type="button" class="pricing-tab active" data-tab="smm">Social Media</button>
                 <button type="button" class="pricing-tab" data-tab="ai">AI Automation</button>
                 <button type="button" class="pricing-tab" data-tab="web">Website Design</button>
+                <button type="button" class="pricing-tab" data-tab="custom">🧩 Build Your Own</button>
+            </div>
+            <!-- FEATURE 6: Drag-to-Build physics pricing (tab-custom) -->
+            <div class="pricing-grid hidden builder-grid" id="tab-custom">
+                <div class="builder-wrap">
+                    <div class="builder-catalog" id="builderCatalog">
+                        <div class="builder-catalog-title">Drag these into the basket →</div>
+                        <div class="builder-pool" id="builderPool"></div>
+                        <div class="builder-mobile-note">Tap features to add / remove.</div>
+                    </div>
+                    <div class="builder-basket" id="builderBasket">
+                        <div class="builder-basket-label">Your Basket</div>
+                        <div class="builder-basket-empty" id="builderBasketEmpty">Drop items here</div>
+                        <canvas class="builder-canvas" id="builderCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="builder-summary">
+                    <div class="builder-total">
+                        <span class="builder-total-label">Total:</span>
+                        <span class="builder-total-amount" id="builderTotal">&#8377;0</span>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="builderCta" disabled>Get this package →</button>
+                </div>
             </div>
             <div class="pricing-grid" id="tab-smm">
                 <div class="price-card">
@@ -684,6 +729,42 @@
         </div>
     </section>
 
+    <!-- FEATURE 7: Signature Wall -->
+    <section class="signature-wall" id="signatureWall" aria-label="Visitor signature wall">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Visitor Wall</span>
+                <h2 class="section-title">Leave Your <span class="gradient-text">Mark</span></h2>
+                <p class="section-subtitle">Sign our wall. The 50 most recent visitors are always shown below.</p>
+            </div>
+            <div class="sigwall-gallery" id="sigwallGallery">
+                <div class="sigwall-empty">✍️ Be the first to sign — click the button below.</div>
+            </div>
+            <div class="sigwall-actions">
+                <button type="button" class="btn btn-primary" id="sigwallOpen">✍️ Sign the Wall</button>
+                <span class="sigwall-counter" id="sigwallCounter"></span>
+            </div>
+        </div>
+
+        <!-- Signing modal -->
+        <div class="sigwall-modal" id="sigwallModal" aria-hidden="true" role="dialog" aria-label="Draw your signature">
+            <div class="sigwall-modal-card">
+                <button type="button" class="sigwall-modal-close" id="sigwallClose" aria-label="Close">×</button>
+                <h3 class="sigwall-modal-title">Draw Your Signature</h3>
+                <p class="sigwall-modal-sub">Use your mouse or finger. Keep it SFW please.</p>
+                <canvas class="sigwall-pad" id="sigwallPad" width="600" height="260" aria-label="Drawing pad"></canvas>
+                <div class="sigwall-modal-row">
+                    <input type="text" class="sigwall-name" id="sigwallName" placeholder="Your name (optional)" maxlength="40" />
+                </div>
+                <div class="sigwall-modal-row sigwall-buttons">
+                    <button type="button" class="btn btn-outline" id="sigwallClear">Clear</button>
+                    <button type="button" class="btn btn-primary" id="sigwallSubmit">Submit Signature</button>
+                </div>
+                <div class="sigwall-modal-note" id="sigwallNote"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -749,9 +830,10 @@
     <div class="toast" id="toast"></div>
 
     <!-- Firebase SDK (compat mode for simplicity) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="vendor/firebase-app-compat.js"></script>
+    <script src="vendor/firebase-firestore-compat.js"></script>
 
     <script src="script.js"></script>
+    <script defer src="enhancements.js?v=12"></script>
 </body>
 </html>

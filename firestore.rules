@@ -35,6 +35,23 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    // Signature wall — anyone can create + read (public gallery), no update/delete
+    match /signatures/{document} {
+      allow read: if true;
+      allow create: if
+        request.resource.data.keys().hasOnly(['name','strokes','ts'])
+        && request.resource.data.keys().hasAll(['strokes','ts'])
+        && request.resource.data.strokes is string
+        && request.resource.data.strokes.size() > 10
+        && request.resource.data.strokes.size() < 50000
+        && request.resource.data.ts is number
+        && (!('name' in request.resource.data) || (
+              request.resource.data.name is string
+              && request.resource.data.name.size() < 50
+           ));
+      allow update, delete: if false;
+    }
+
     // Block everything else
     match /{document=**} {
       allow read, write: if false;

@@ -1958,3 +1958,874 @@ img { max-width: 100%; display: block; }
         padding: 24px;
     }
 }
+
+/* ============================================================
+   ENHANCEMENTS — Showcase features (additive, removable)
+   Each block is fully self-contained. Delete a block = delete
+   that feature. No existing styles above this line are modified.
+   ============================================================ */
+
+/* === FEATURE 1: TILT SERVICE CARDS (Vanilla Tilt JS) ====== */
+/* Vanilla Tilt sets all transforms via inline style. We just
+   need to allow 3D children (translateZ on glare layer) and
+   remove the overflow:hidden that would clip the glare effect. */
+.service-card.js-tilt {
+    overflow: visible;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.service-card.js-tilt::before {
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+}
+
+/* Force-override the .fade-in.visible translateY transform so
+   Vanilla Tilt's inline rotateX/Y is the only transform applied. */
+.service-card.js-tilt.fade-in,
+.service-card.js-tilt.fade-in.visible {
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .service-card.js-tilt {
+        transform: none !important;
+    }
+}
+/* === END FEATURE 1 ======================================== */
+
+/* === FEATURE 4 (early): HERO 3D MODEL via <model-viewer> === */
+.hero-3d {
+    position: absolute;
+    top: 50%;
+    right: 4%;
+    transform: translateY(-50%);
+    width: 520px;
+    height: 520px;
+    z-index: 0;          /* sits behind hero text but above bg/glows */
+    background: transparent;
+    --poster-color: transparent;
+    pointer-events: auto; /* allow drag rotation */
+    filter: drop-shadow(0 30px 60px rgba(99, 102, 241, 0.35))
+            drop-shadow(0 0 80px rgba(139, 92, 246, 0.25));
+    opacity: 0;
+    animation: hero3dFadeIn 1.2s ease 0.8s forwards;
+}
+
+@keyframes hero3dFadeIn {
+    from { opacity: 0; transform: translateY(-50%) translateX(40px); }
+    to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* Hide model-viewer's default progress bar / ar button — minimal look */
+.hero-3d::part(default-progress-bar) { display: none; }
+
+/* Make sure hero text stays in front of the 3D model */
+.hero-container { z-index: 2 !important; }
+
+/* Tablet — smaller model, push to the edge */
+@media (max-width: 1100px) {
+    .hero-3d {
+        width: 380px;
+        height: 380px;
+        right: 0;
+        opacity: 0.6;
+    }
+}
+
+/* Mobile — hide entirely (3D models are heavy + hero needs full text width) */
+@media (max-width: 768px) {
+    .hero-3d {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-3d {
+        animation: none;
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+}
+/* === END FEATURE 4 (early) ================================ */
+
+/* === FEATURE 2: COVERFLOW 3D TESTIMONIALS ================== */
+/* Enhancement layer: activated by JS adding `.coverflow` class
+   to .testimonial-carousel. Native carousel keeps working — we
+   just override the track/card layout to 3D coverflow. Cards
+   are positioned absolutely so they can stack in Z. */
+
+.testimonial-carousel.coverflow {
+    overflow: visible;
+    perspective: 1600px;
+    perspective-origin: 50% 50%;
+    padding: 40px 0 20px;
+    min-height: 420px;
+}
+
+.testimonial-carousel.coverflow .testimonial-track {
+    /* kill the JS-driven translateX — we position cards individually */
+    transform: none !important;
+    transition: none !important;
+    transform-style: preserve-3d;
+    position: relative;
+    display: block;
+    height: 360px;
+}
+
+.testimonial-carousel.coverflow .testimonial-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 380px;
+    max-width: 88vw;
+    min-width: 0;
+    margin: 0;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, 0) rotateY(0deg);
+    transition:
+        transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
+        opacity   0.5s ease,
+        box-shadow 0.5s ease,
+        filter    0.5s ease;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    cursor: pointer;
+}
+
+/* Center card — flat, in front, crisp */
+.testimonial-carousel.coverflow .testimonial-card.cf-center {
+    z-index: 5;
+    transform: translate(-50%, 0) translateZ(60px) rotateY(0deg) scale(1);
+    opacity: 1;
+    box-shadow: 0 30px 60px -15px rgba(99, 102, 241, 0.45),
+                0 12px 30px -8px rgba(0, 0, 0, 0.5);
+    border-color: rgba(99, 102, 241, 0.45);
+    filter: none;
+    cursor: default;
+}
+
+/* Immediate neighbours — 35deg angle, pulled back */
+.testimonial-carousel.coverflow .testimonial-card.cf-left-1 {
+    z-index: 4;
+    transform: translate(-85%, 0) translateZ(-80px) rotateY(35deg) scale(0.92);
+    opacity: 0.85;
+    filter: brightness(0.8);
+}
+.testimonial-carousel.coverflow .testimonial-card.cf-right-1 {
+    z-index: 4;
+    transform: translate(-15%, 0) translateZ(-80px) rotateY(-35deg) scale(0.92);
+    opacity: 0.85;
+    filter: brightness(0.8);
+}
+
+/* Far cards — 45deg, deeper back, dimmer */
+.testimonial-carousel.coverflow .testimonial-card.cf-left-2 {
+    z-index: 3;
+    transform: translate(-115%, 0) translateZ(-180px) rotateY(45deg) scale(0.82);
+    opacity: 0.45;
+    filter: brightness(0.6);
+}
+.testimonial-carousel.coverflow .testimonial-card.cf-right-2 {
+    z-index: 3;
+    transform: translate(15%, 0) translateZ(-180px) rotateY(-45deg) scale(0.82);
+    opacity: 0.45;
+    filter: brightness(0.6);
+}
+
+/* Anything further out — hide */
+.testimonial-carousel.coverflow .testimonial-card.cf-hidden {
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 0) translateZ(-300px) rotateY(0deg) scale(0.6);
+}
+
+/* Hover lift on side cards — subtle invitation to click */
+.testimonial-carousel.coverflow .testimonial-card.cf-left-1:hover,
+.testimonial-carousel.coverflow .testimonial-card.cf-right-1:hover {
+    filter: brightness(0.95);
+    opacity: 0.95;
+}
+
+/* Override the stock .testimonial-card:hover translateY so it
+   doesn't fight our 3D transform. */
+.testimonial-carousel.coverflow .testimonial-card:hover {
+    transform: none;
+}
+.testimonial-carousel.coverflow .testimonial-card.cf-center:hover {
+    transform: translate(-50%, -6px) translateZ(70px) rotateY(0deg) scale(1.01);
+}
+
+/* Mobile — fall back to single-card flat view (still 3D-looking but safer) */
+@media (max-width: 768px) {
+    .testimonial-carousel.coverflow {
+        perspective: 1000px;
+        min-height: 380px;
+    }
+    .testimonial-carousel.coverflow .testimonial-card {
+        width: 88vw;
+    }
+    .testimonial-carousel.coverflow .testimonial-card.cf-left-1 {
+        transform: translate(-105%, 0) translateZ(-120px) rotateY(35deg) scale(0.85);
+        opacity: 0.35;
+    }
+    .testimonial-carousel.coverflow .testimonial-card.cf-right-1 {
+        transform: translate(5%, 0) translateZ(-120px) rotateY(-35deg) scale(0.85);
+        opacity: 0.35;
+    }
+    .testimonial-carousel.coverflow .testimonial-card.cf-left-2,
+    .testimonial-carousel.coverflow .testimonial-card.cf-right-2 {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+/* === END FEATURE 2 ========================================= */
+
+/* === FEATURE 3: SCROLL-DRIVEN ROCKET ON PROCESS TIMELINE === */
+/* Activated by JS adding `.rocket-enabled` to .process-timeline.
+   Desktop (>1024): rocket flies horizontally along the top line.
+   Mobile (<=768): rocket flies vertically down a left-side line.
+   Tablet: feature disabled (layout breaks into 2 rows). */
+
+.process-timeline.rocket-enabled {
+    overflow: visible;
+}
+
+/* Hide the stock top-line on desktop when rocket is active — our
+   rocket-track replaces it (with a fill trail). */
+.process-timeline.rocket-enabled::before {
+    background: transparent;
+}
+
+.rocket-track {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.rocket-track-base {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 999px;
+    opacity: 0.7;
+}
+
+.rocket-track-fill {
+    position: absolute;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.7),
+                0 0 4px rgba(236, 72, 153, 0.6);
+    border-radius: 999px;
+    will-change: width, height;
+    transition: width 0.08s linear, height 0.08s linear;
+}
+
+.rocket-ship {
+    position: absolute;
+    font-size: 26px;
+    line-height: 1;
+    text-align: center;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.9));
+    will-change: transform;
+    transition: transform 0.08s linear;
+    z-index: 3;
+    user-select: none;
+}
+
+/* --- Desktop horizontal track --- */
+@media (min-width: 1025px) {
+    .rocket-track.horizontal {
+        top: 34px;
+        left: 40px;
+        right: 40px;
+        height: 4px;
+    }
+    .rocket-track.horizontal .rocket-track-fill {
+        top: 0; left: 0; bottom: 0;
+        width: 0%;
+    }
+    .rocket-ship.horizontal {
+        top: -24px;
+        left: 0;
+        transform: translateX(-50%) rotate(90deg);
+    }
+}
+
+/* --- Mobile vertical track --- */
+@media (max-width: 768px) {
+    .process-timeline.rocket-enabled {
+        position: relative;
+        padding-left: 32px;
+    }
+    .rocket-track.vertical {
+        top: 20px;
+        bottom: 20px;
+        left: 12px;
+        width: 4px;
+    }
+    .rocket-track.vertical .rocket-track-fill {
+        top: 0; left: 0; right: 0;
+        height: 0%;
+    }
+    .rocket-ship.vertical {
+        top: 0;
+        left: 14px;
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+}
+
+/* Glow a step once the rocket reaches it */
+.process-step.rocket-reached .step-number {
+    border-color: var(--accent-1);
+    background: rgba(99, 102, 241, 0.18);
+    box-shadow: 0 0 28px rgba(99, 102, 241, 0.55),
+                0 0 8px rgba(236, 72, 153, 0.45);
+    transform: scale(1.1);
+    color: var(--text-primary);
+}
+.process-step.rocket-reached .step-content h3 {
+    color: var(--accent-1);
+    transition: color 0.3s ease;
+}
+
+/* Tablet: disable — layout wraps and the line is hidden */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .rocket-track, .rocket-ship { display: none; }
+    .process-timeline.rocket-enabled::before { background: var(--border); }
+}
+/* === END FEATURE 3 ========================================= */
+
+/* === FEATURE 5: "SITE BUILDS ITSELF" TERMINAL INTRO ======== */
+.terminal-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 10005;
+    background: #0a0a0f;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 8% 60px;
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    color: #c9d1d9;
+    overflow: hidden;
+    transition: opacity 0.55s ease, visibility 0.55s;
+}
+.terminal-intro.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.terminal-intro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+        rgba(255, 255, 255, 0.025) 0 1px,
+        transparent 1px 3px);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+.terminal-intro::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%,
+        transparent 0%,
+        rgba(0, 0, 0, 0.4) 100%);
+    pointer-events: none;
+}
+.terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: none;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px 8px 0 0;
+    z-index: 1;
+}
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.terminal-dot.r { background: #ff5f57; }
+.terminal-dot.y { background: #ffbd2e; }
+.terminal-dot.g { background: #28c840; }
+.terminal-title {
+    margin-left: 12px;
+    font-size: 12px;
+    color: #6e7681;
+    letter-spacing: 0.5px;
+}
+.terminal-body {
+    flex: 1;
+    padding: 24px 28px;
+    font-size: 15px;
+    line-height: 1.8;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 8px 8px;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+.terminal-line {
+    white-space: pre-wrap;
+    display: block;
+    opacity: 0;
+    animation: termLineIn 0.18s ease forwards;
+}
+.terminal-line .tprompt { color: #58a6ff; font-weight: 700; }
+.terminal-line .tok     { color: #3fb950; font-weight: 700; }
+.terminal-line .taccent { color: #d2a8ff; }
+.terminal-line .tdim    { color: #6e7681; }
+.terminal-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 16px;
+    background: #c9d1d9;
+    vertical-align: -2px;
+    margin-left: 4px;
+    animation: termBlink 0.85s steps(2) infinite;
+}
+@keyframes termLineIn { to { opacity: 1; } }
+@keyframes termBlink  { 50% { opacity: 0; } }
+.terminal-skip {
+    position: absolute;
+    top: 36px;
+    right: calc(8% + 8px);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #c9d1d9;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 3;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.terminal-skip:hover {
+    border-color: #d2a8ff;
+    color: #fff;
+    background: rgba(210, 168, 255, 0.1);
+}
+.intro-replay {
+    position: fixed;
+    top: 84px;
+    left: 16px;
+    z-index: 9500;
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(10px);
+    color: #c9d1d9;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s, transform 0.4s, border-color 0.2s, color 0.2s;
+}
+.intro-replay.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.intro-replay:hover {
+    border-color: #d2a8ff;
+    color: #fff;
+}
+@media (max-width: 768px) {
+    .terminal-intro { padding: 20px 4% 40px; }
+    .terminal-body { font-size: 12px; padding: 16px; line-height: 1.7; }
+    .terminal-skip { top: 28px; right: calc(4% + 4px); }
+    .intro-replay { top: 70px; left: 12px; font-size: 11px; padding: 6px 12px; }
+}
+/* === END FEATURE 5 ========================================= */
+
+/* === FEATURE 6: DRAG-TO-BUILD PHYSICS PRICING ============== */
+.builder-grid {
+    display: block !important;
+}
+.builder-grid.hidden {
+    display: none !important;
+}
+.builder-wrap {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) 1fr;
+    gap: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.builder-catalog {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.builder-catalog-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+.builder-mobile-note {
+    display: none;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 8px;
+}
+.builder-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.builder-pill {
+    position: relative;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    cursor: grab;
+    user-select: none;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.builder-pill::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pill-color, var(--accent-1));
+    box-shadow: 0 0 8px var(--pill-color, var(--accent-1));
+}
+.builder-pill:hover {
+    border-color: var(--pill-color, var(--accent-1));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px -6px var(--pill-color, rgba(99, 102, 241, 0.6));
+}
+.builder-pill:active { cursor: grabbing; }
+.builder-pill .price { color: var(--text-muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.builder-pill.in-basket { opacity: 0.3; pointer-events: none; }
+.builder-pill.checked { background: rgba(99, 102, 241, 0.15); border-color: var(--accent-1); }
+
+.builder-basket {
+    position: relative;
+    min-height: 360px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+.builder-basket.drag-over {
+    border-color: var(--accent-1);
+    background: rgba(99, 102, 241, 0.08);
+}
+.builder-basket-label {
+    position: absolute;
+    top: 12px; left: 16px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    z-index: 2;
+    pointer-events: none;
+}
+.builder-basket-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.builder-basket.has-items .builder-basket-empty { opacity: 0; }
+
+.builder-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+}
+
+.builder-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    flex-wrap: wrap;
+}
+.builder-total-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+.builder-total-amount {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-variant-numeric: tabular-nums;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.builder-total-amount.bump { transform: scale(1.12); }
+#builderCta:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Mobile fallback: no physics, checkbox list */
+@media (max-width: 768px) {
+    .builder-wrap {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+    .builder-basket { display: none; }
+    .builder-mobile-note { display: block; }
+    .builder-pool { flex-direction: column; }
+    .builder-pill {
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-radius: var(--radius-md, 12px);
+        cursor: pointer;
+    }
+    .builder-summary { padding: 16px; }
+    .builder-total-amount { font-size: 1.6rem; }
+}
+/* === END FEATURE 6 ========================================= */
+
+/* === FEATURE 7: SIGNATURE WALL ============================ */
+.signature-wall {
+    padding: 80px 0 60px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    position: relative;
+}
+.sigwall-gallery {
+    position: relative;
+    background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.05), transparent 60%),
+                radial-gradient(circle at 80% 60%, rgba(236, 72, 153, 0.05), transparent 60%),
+                rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    min-height: 260px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+.sigwall-empty {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 40px 20px;
+}
+.sigwall-gallery.has-items .sigwall-empty { display: none; }
+
+.sigwall-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px;
+    width: 180px;
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    animation: sigIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+}
+.sigwall-item:hover {
+    transform: translateY(-4px) rotate(-1deg);
+    border-color: var(--accent-1);
+    box-shadow: 0 12px 28px -10px rgba(99, 102, 241, 0.5);
+}
+.sigwall-item svg {
+    width: 100%;
+    height: 60px;
+    stroke: var(--text-primary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.5));
+}
+.sigwall-item .sig-meta {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding: 0 4px;
+}
+.sigwall-item .sig-name {
+    font-weight: 600;
+    color: var(--text-secondary);
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@keyframes sigIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.92); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.sigwall-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.sigwall-counter {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Modal --- */
+.sigwall-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9800;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.sigwall-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+.sigwall-modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px 24px;
+    width: 100%;
+    max-width: 640px;
+    position: relative;
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.25, 1, 0.4, 1);
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+}
+.sigwall-modal.open .sigwall-modal-card {
+    transform: translateY(0) scale(1);
+}
+.sigwall-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+}
+.sigwall-modal-close:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+}
+.sigwall-modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.sigwall-modal-sub {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+}
+.sigwall-pad {
+    width: 100%;
+    height: 260px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    cursor: crosshair;
+    touch-action: none;
+    display: block;
+}
+.sigwall-modal-row {
+    margin-top: 12px;
+}
+.sigwall-name {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.sigwall-name:focus {
+    outline: none;
+    border-color: var(--accent-1);
+}
+.sigwall-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+.sigwall-modal-note {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    min-height: 18px;
+    color: var(--text-muted);
+    text-align: center;
+}
+.sigwall-modal-note.error   { color: #ef4444; }
+.sigwall-modal-note.success { color: #3fb950; }
+
+@media (max-width: 768px) {
+    .signature-wall { padding: 60px 0 40px; }
+    .sigwall-gallery { padding: 16px; gap: 10px; }
+    .sigwall-item { width: calc(50% - 10px); height: 96px; padding: 8px; }
+    .sigwall-item svg { height: 48px; }
+    .sigwall-modal-card { padding: 24px 16px 16px; }
+    .sigwall-pad { height: 200px; }
+    .sigwall-buttons { justify-content: stretch; flex-direction: column-reverse; }
+    .sigwall-buttons .btn { width: 100%; }
+}
+/* === END FEATURE 7 ========================================= */
