@@ -14,7 +14,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <!-- Fonts: bundled locally in /vendor/fonts (offline-safe, no CDN dependency) -->
     <link rel="stylesheet" href="vendor/fonts/google-fonts.css">
-    <link rel="stylesheet" href="style.css?v=13">
+    <link rel="stylesheet" href="style.css?v=14">
     <!-- Google's <model-viewer> for real 3D models (local copy) -->
     <script type="module" src="model-viewer.min.js"></script>
     <!-- Vanilla Tilt JS — proven 3D card tilt library (local copy, no CDN) -->
@@ -488,8 +488,12 @@
                         <span class="builder-total-label">Total:</span>
                         <span class="builder-total-amount" id="builderTotal">&#8377;0</span>
                     </div>
-                    <button type="button" class="btn btn-primary" id="builderCta" disabled>Get this package →</button>
+                    <div class="builder-summary-actions">
+                        <button type="button" class="btn btn-outline builder-clear" id="builderClear" disabled>Clear Basket</button>
+                        <button type="button" class="btn btn-primary" id="builderCta" disabled>Get this package →</button>
+                    </div>
                 </div>
+                <div class="builder-hint">💡 Tip: click any block in the basket to remove it, or use Clear Basket to start over.</div>
             </div>
             <div class="pricing-grid" id="tab-smm">
                 <div class="price-card">
@@ -834,6 +838,6 @@
     <script src="vendor/firebase-firestore-compat.js"></script>
 
     <script src="script.js"></script>
-    <script defer src="enhancements.js?v=12"></script>
+    <script defer src="enhancements.js?v=13"></script>
 </body>
 </html>

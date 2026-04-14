@@ -440,6 +440,7 @@ function initDragPricing() {
     const canvas = document.getElementById('builderCanvas');
     const totalEl = document.getElementById('builderTotal');
     const cta = document.getElementById('builderCta');
+    const clearBtn = document.getElementById('builderClear');
     if (!tab || !grid || !pool || !basket || !canvas || !totalEl || !cta) return;
 
     const INR = (n) => '₹' + n.toLocaleString('en-IN');
@@ -466,8 +467,29 @@ function initDragPricing() {
         totalEl.classList.add('bump');
         setTimeout(() => totalEl.classList.remove('bump'), 320);
         cta.disabled = selected.size === 0;
+        if (clearBtn) clearBtn.disabled = selected.size === 0;
         basket.classList.toggle('has-items', selected.size > 0);
     }
+
+    function removeItem(id) {
+        if (!selected.has(id)) return;
+        selected.delete(id);
+        const pill = pool.querySelector('.builder-pill[data-id="' + id + '"]');
+        if (pill) { pill.classList.remove('in-basket'); pill.classList.remove('checked'); }
+        // Remove matter body if present
+        const body = bodies.get(id);
+        if (body && engine) {
+            Matter.World.remove(engine.world, body);
+            bodies.delete(id);
+        }
+        updateTotal();
+    }
+
+    function clearBasket() {
+        [...selected].forEach(removeItem);
+    }
+
+    if (clearBtn) clearBtn.addEventListener('click', clearBasket);
 
     // CTA: scroll to contact + prefill textarea
     cta.addEventListener('click', () => {
@@ -569,6 +591,33 @@ function initDragPricing() {
             Bodies.rectangle(w + 20, h / 2, 40, h * 2, wallOpts),      // right
             Bodies.rectangle(w / 2, -20, w + 40, 40, wallOpts),        // ceiling
         ]);
+
+        // Click (without drag) on a body → remove that item
+        let mouseDownPos = null;
+        canvas.addEventListener('mousedown', (e) => {
+            const r = canvas.getBoundingClientRect();
+            mouseDownPos = { x: e.clientX - r.left, y: e.clientY - r.top, t: Date.now() };
+        });
+        canvas.addEventListener('mouseup', (e) => {
+            if (!mouseDownPos) return;
+            const r = canvas.getBoundingClientRect();
+            const upX = e.clientX - r.left, upY = e.clientY - r.top;
+            const dx = upX - mouseDownPos.x, dy = upY - mouseDownPos.y;
+            const dist = Math.hypot(dx, dy);
+            const held = Date.now() - mouseDownPos.t;
+            mouseDownPos = null;
+            if (dist < 6 && held < 350) {
+                // Treat as a click — find body at this point
+                const hits = Matter.Query.point(Composite.allBodies(engine.world), { x: upX, y: upY });
+                for (const body of hits) {
+                    if (body.isStatic) continue;
+                    if (bodies.has(body.label)) {
+                        removeItem(body.label);
+                        break;
+                    }
+                }
+            }
+        });
 
         // Mouse drag
         const mouse = Mouse.create(canvas);
