@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" class="mont">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMKAAV — Studio of Craft (mont preview)</title>
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Fonts: Fraunces (display serif) + Inter (sans) via Google Fonts CDN.
+         NOTE: if approved, bundle these locally before migrating to index.html. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="mont.css?v=12">
+</head>
+<body class="mont-body">
+
+    <!-- 3D background scene: real Earth (Three.js) + starfield + atmospheric glow -->
+    <div class="mont-scene3d" aria-hidden="true">
+        <div class="m3d-stars"></div>
+        <div class="m3d-earth-glow"></div>
+        <div class="m3d-earth-wrap">
+            <canvas id="m3dEarth" class="m3d-earth"></canvas>
+        </div>
+    </div>
+
+    <!-- Global film-grain overlay (SVG noise, pointer-events off) -->
+    <div class="mont-grain" aria-hidden="true"></div>
+
+    <!-- Scroll progress bar -->
+    <div class="mont-progress" aria-hidden="true"><span></span></div>
+
+    <!-- Custom cursor (desktop only; JS hides on touch) -->
+    <div class="mont-cursor" id="montCursor" aria-hidden="true">
+        <span class="mc-ring"></span>
+        <span class="mc-dot"></span>
+    </div>
+
+    <!-- =========================================================
+         PRELOADER
+         ========================================================= -->
+    <div class="mont-preloader" id="montPreloader" aria-hidden="true">
+        <div class="mp-count"><span id="mpCount">00</span></div>
+        <div class="mp-label">Loading experience</div>
+        <div class="mp-line"></div>
+    </div>
+
+    <!-- =========================================================
+         NAV
+         ========================================================= -->
+    <header class="mont-nav" id="montNav">
+        <a href="#hero" class="mn-logo">RMKAAV<span class="mn-dot">.</span></a>
+        <nav class="mn-links" aria-label="Primary">
+            <a href="#services">Services</a>
+            <a href="#work">Work</a>
+            <a href="#process">Process</a>
+            <a href="#cta">Contact</a>
+        </nav>
+        <a href="#cta" class="mn-cta">Let's talk <span class="mn-arrow">&rarr;</span></a>
+    </header>
+
+    <!-- =========================================================
+         HERO — pinned giant word
+         ========================================================= -->
+    <section class="mont-hero" id="hero">
+        <!-- Ornamental crosshair grid (fixed overlay) -->
+        <div class="mh-grid" aria-hidden="true">
+            <span class="mh-ch mh-ch-tl"></span>
+            <span class="mh-ch mh-ch-tr"></span>
+            <span class="mh-ch mh-ch-bl"></span>
+            <span class="mh-ch mh-ch-br"></span>
+        </div>
+
+        <!-- Outlined ghost wordmark behind the main word -->
+        <div class="mh-ghost" aria-hidden="true">RMKAAV</div>
+
+        <div class="mh-inner">
+            <div class="mh-tagline">
+                <span class="mh-dot"></span>
+                <span>Mumbai &middot; Est. 2026</span>
+                <span class="mh-sep">/</span>
+                <span>Studio №01</span>
+            </div>
+
+            <h1 class="mh-word" aria-label="RMKAAV — a studio of craft">
+                <span class="mh-word-row">RMKAAV</span>
+            </h1>
+
+            <div class="mh-meta">
+                <span class="mh-meta-item"><em>(A)</em> Brand</span>
+                <span class="mh-meta-item"><em>(B)</em> Automation</span>
+                <span class="mh-meta-item"><em>(C)</em> Web</span>
+            </div>
+
+            <p class="mh-sub">
+                A small studio building brands, automations, and websites
+                <br>that actually move business forward.
+            </p>
+
+            <div class="mh-scroll">
+                <span>Scroll</span>
+                <span class="mh-scroll-arrow">&darr;</span>
+            </div>
+        </div>
+
+        <div class="mh-drift mh-drift-a" aria-hidden="true"></div>
+        <div class="mh-drift mh-drift-b" aria-hidden="true"></div>
+    </section>
+
+    <!-- =========================================================
+         MARQUEE strip (between hero and mission)
+         ========================================================= -->
+    <div class="mont-marquee" aria-hidden="true">
+        <div class="mm-track">
+            <span class="mm-item">Brand <em>&mdash;</em></span>
+            <span class="mm-item">Automation <em>&mdash;</em></span>
+            <span class="mm-item">Web <em>&mdash;</em></span>
+            <span class="mm-item">Editorial craft <em>&mdash;</em></span>
+            <span class="mm-item">Since 2026 <em>&mdash;</em></span>
+            <span class="mm-item">Built in Mumbai <em>&mdash;</em></span>
+            <span class="mm-item">Brand <em>&mdash;</em></span>
+            <span class="mm-item">Automation <em>&mdash;</em></span>
+            <span class="mm-item">Web <em>&mdash;</em></span>
+            <span class="mm-item">Editorial craft <em>&mdash;</em></span>
+            <span class="mm-item">Since 2026 <em>&mdash;</em></span>
+            <span class="mm-item">Built in Mumbai <em>&mdash;</em></span>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         MISSION — masked word reveal
+         ========================================================= -->
+    <section class="mont-mission" id="mission">
+        <span class="ms-label">(01) &mdash; Who we are</span>
+        <h2 class="ms-line" id="missionLine">
+            <span class="word">We</span>
+            <span class="word">design,</span>
+            <span class="word">automate</span>
+            <span class="word">and</span>
+            <span class="word">market</span>
+            <span class="word">&mdash;</span>
+            <span class="word">so</span>
+            <span class="word">your</span>
+            <span class="word">business</span>
+            <span class="word">moves</span>
+            <span class="word">faster.</span>
+        </h2>
+    </section>
+
+    <!-- =========================================================
+         SERVICES — horizontal scroll strip
+         ========================================================= -->
+    <section class="mont-services" id="services">
+        <div class="mo-sticky">
+            <div class="mo-header">
+                <span class="ms-label">(02) &mdash; Services</span>
+                <h3 class="mo-title">What we do.</h3>
+            </div>
+
+            <div class="mo-track" id="servicesTrack">
+                <article class="mo-panel">
+                    <div class="mo-num">01</div>
+                    <div class="mo-copy">
+                        <span class="mo-kicker">Brand &amp; Social</span>
+                        <h4>Social Media Marketing</h4>
+                        <p>Content, campaigns, community. We make your brand worth following on Instagram, LinkedIn, and wherever your customers actually spend time.</p>
+                        <ul class="mo-list">
+                            <li>Content systems</li>
+                            <li>Paid campaigns</li>
+                            <li>Community &amp; reporting</li>
+                        </ul>
+                    </div>
+                    <div class="mo-visual" data-tint="a">
+                        <div class="mo-art mo-art-a" aria-hidden="true">
+                            <div class="mo-tile"></div>
+                            <div class="mo-tile"></div>
+                            <div class="mo-tile"></div>
+                            <div class="mo-tile"></div>
+                            <div class="mo-tile"></div>
+                            <div class="mo-tile"></div>
+                        </div>
+                        <div class="mo-chip"><span>Feed</span><span>/2026</span></div>
+                        <span class="mo-visual-label">SMM</span>
+                    </div>
+                </article>
+
+                <article class="mo-panel">
+                    <div class="mo-num">02</div>
+                    <div class="mo-copy">
+                        <span class="mo-kicker">Systems &amp; Ops</span>
+                        <h4>AI Automation</h4>
+                        <p>Workflows that handle the boring parts &mdash; lead capture, replies, reporting, content repurposing &mdash; so you can focus on the work that compounds.</p>
+                        <ul class="mo-list">
+                            <li>Lead routing</li>
+                            <li>Content repurposing</li>
+                            <li>Reporting pipelines</li>
+                        </ul>
+                    </div>
+                    <div class="mo-visual" data-tint="b">
+                        <svg class="mo-art mo-art-b" viewBox="0 0 200 260" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+                            <defs>
+                                <radialGradient id="moNode" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#ede3d3" stop-opacity="1"/>
+                                    <stop offset="100%" stop-color="#ede3d3" stop-opacity="0"/>
+                                </radialGradient>
+                            </defs>
+                            <g stroke="rgba(237,227,211,0.28)" stroke-width="0.6" fill="none">
+                                <path d="M30 40 L90 90 L160 50 M90 90 L100 170 M100 170 L40 210 M100 170 L170 200 M30 40 L40 210"/>
+                            </g>
+                            <g fill="url(#moNode)">
+                                <circle cx="30" cy="40" r="5"/>
+                                <circle cx="90" cy="90" r="7"/>
+                                <circle cx="160" cy="50" r="5"/>
+                                <circle cx="100" cy="170" r="8"/>
+                                <circle cx="40" cy="210" r="5"/>
+                                <circle cx="170" cy="200" r="6"/>
+                            </g>
+                        </svg>
+                        <div class="mo-chip"><span>Flows</span><span>/live</span></div>
+                        <span class="mo-visual-label">AI</span>
+                    </div>
+                </article>
+
+                <article class="mo-panel">
+                    <div class="mo-num">03</div>
+                    <div class="mo-copy">
+                        <span class="mo-kicker">Design &amp; Code</span>
+                        <h4>Web Design &amp; Development</h4>
+                        <p>Fast, editorial, conversion-focused websites. Built in-house, shipped in weeks, tuned until the analytics agree with the design.</p>
+                        <ul class="mo-list">
+                            <li>Editorial design</li>
+                            <li>Hand-built front-end</li>
+                            <li>CMS &amp; integrations</li>
+                        </ul>
+                    </div>
+                    <div class="mo-visual" data-tint="c">
+                        <div class="mo-art mo-art-c" aria-hidden="true">
+                            <span class="mo-line mo-line-1"></span>
+                            <span class="mo-line mo-line-2"></span>
+                            <span class="mo-line mo-line-3"></span>
+                            <span class="mo-block mo-block-1"></span>
+                            <span class="mo-block mo-block-2"></span>
+                        </div>
+                        <div class="mo-chip"><span>Build</span><span>/v1</span></div>
+                        <span class="mo-visual-label">WEB</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         WORK — full-bleed image grow
+         ========================================================= -->
+    <section class="mont-work" id="work">
+        <div class="mw-intro">
+            <span class="ms-label">(03) &mdash; Selected work</span>
+            <h3 class="mw-heading">Three brands.<br>Three launches.</h3>
+            <span class="mw-counter">01 &mdash; 03 / 2024—2026</span>
+        </div>
+
+        <article class="mw-stage" data-project="01">
+            <div class="mw-frame">
+                <div class="mw-backdrop"></div>
+                <div class="mw-shape mw-shape-01" aria-hidden="true">
+                    <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <linearGradient id="mwg1" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#c4b5fd" stop-opacity="0.9"/>
+                                <stop offset="1" stop-color="#6366f1" stop-opacity="0.3"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M100 30 C60 60 50 110 90 170 C120 210 130 240 110 260 C160 240 180 190 170 140 C160 90 140 60 100 30 Z" fill="url(#mwg1)"/>
+                        <path d="M100 30 C90 90 95 150 100 260" stroke="rgba(14,13,11,0.15)" stroke-width="1" fill="none"/>
+                    </svg>
+                </div>
+                <div class="mw-specimen" aria-hidden="true">
+                    <span>Herbal · Wellness · Direct</span>
+                </div>
+            </div>
+            <div class="mw-content">
+                <span class="mw-case">Case №01</span>
+                <h4 class="mw-stage-name"><span>THC Store</span></h4>
+                <div class="mw-meta-row">
+                    <span class="mw-meta-item"><em>Sector</em>eCommerce</span>
+                    <span class="mw-meta-item"><em>Year</em>2025</span>
+                    <span class="mw-meta-item"><em>Live at</em>thcstore.in</span>
+                    <span class="mw-meta-item"><em>Scope</em>Brand · Site · Ops</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="mw-stage" data-project="02">
+            <div class="mw-frame">
+                <div class="mw-backdrop"></div>
+                <div class="mw-shape mw-shape-02" aria-hidden="true">
+                    <span class="mw-r">R</span>
+                    <span class="mw-rline mw-rline-1"></span>
+                    <span class="mw-rline mw-rline-2"></span>
+                    <span class="mw-rline mw-rline-3"></span>
+                </div>
+                <div class="mw-specimen" aria-hidden="true">
+                    <span>Brand · Automation · Web</span>
+                </div>
+            </div>
+            <div class="mw-content">
+                <span class="mw-case">Case №02</span>
+                <h4 class="mw-stage-name"><span>RMKAAV</span></h4>
+                <div class="mw-meta-row">
+                    <span class="mw-meta-item"><em>Sector</em>Studio site</span>
+                    <span class="mw-meta-item"><em>Year</em>2026</span>
+                    <span class="mw-meta-item"><em>Live at</em>rmkaav.com</span>
+                    <span class="mw-meta-item"><em>Scope</em>Identity · Site · Motion</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="mw-stage" data-project="03">
+            <div class="mw-frame mw-frame-open">
+                <div class="mw-backdrop"></div>
+                <div class="mw-shape mw-shape-03" aria-hidden="true">
+                    <span class="mw-grid-lines"></span>
+                    <span class="mw-crosshair mw-crosshair-tl"></span>
+                    <span class="mw-crosshair mw-crosshair-tr"></span>
+                    <span class="mw-crosshair mw-crosshair-bl"></span>
+                    <span class="mw-crosshair mw-crosshair-br"></span>
+                </div>
+                <div class="mw-specimen" aria-hidden="true">
+                    <span>Draft · Unbuilt · Waiting</span>
+                </div>
+            </div>
+            <div class="mw-content">
+                <span class="mw-case">Case №03</span>
+                <h4 class="mw-stage-name"><span>Open slot</span></h4>
+                <div class="mw-meta-row">
+                    <span class="mw-meta-item"><em>Sector</em>TBD</span>
+                    <span class="mw-meta-item"><em>Year</em>2026</span>
+                    <span class="mw-meta-item"><em>Status</em>Taking briefs</span>
+                    <span class="mw-meta-item mw-meta-cta">
+                        <a href="mailto:vishnutewary1@gmail.com">Start a project &rarr;</a>
+                    </span>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- =========================================================
+         MARQUEE strip (between work and process)
+         ========================================================= -->
+    <div class="mont-marquee mont-marquee-reverse" aria-hidden="true">
+        <div class="mm-track">
+            <span class="mm-item">Discovery <em>&rarr;</em></span>
+            <span class="mm-item">Strategy <em>&rarr;</em></span>
+            <span class="mm-item">Craft <em>&rarr;</em></span>
+            <span class="mm-item">Launch <em>&rarr;</em></span>
+            <span class="mm-item">Grow <em>&rarr;</em></span>
+            <span class="mm-item">Open for collaboration <em>&rarr;</em></span>
+            <span class="mm-item">Discovery <em>&rarr;</em></span>
+            <span class="mm-item">Strategy <em>&rarr;</em></span>
+            <span class="mm-item">Craft <em>&rarr;</em></span>
+            <span class="mm-item">Launch <em>&rarr;</em></span>
+            <span class="mm-item">Grow <em>&rarr;</em></span>
+            <span class="mm-item">Open for collaboration <em>&rarr;</em></span>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         PROCESS — 5 steps
+         ========================================================= -->
+    <section class="mont-process" id="process">
+        <span class="ms-label">(04) &mdash; How we work</span>
+        <h3 class="mp-title">Five steps. No mystery.</h3>
+
+        <ol class="mp-list">
+            <li class="mp-step">
+                <div class="mp-num">01</div>
+                <div class="mp-body">
+                    <h5>Discovery</h5>
+                    <p>We learn your business, your numbers, and the people you're trying to reach.</p>
+                </div>
+                <span class="mp-line"></span>
+            </li>
+            <li class="mp-step">
+                <div class="mp-num">02</div>
+                <div class="mp-body">
+                    <h5>Strategy</h5>
+                    <p>A clear plan: what to build, what to run, what to measure, in what order.</p>
+                </div>
+                <span class="mp-line"></span>
+            </li>
+            <li class="mp-step">
+                <div class="mp-num">03</div>
+                <div class="mp-body">
+                    <h5>Craft</h5>
+                    <p>Design, copy, automations, code. Tight iterations until it feels right.</p>
+                </div>
+                <span class="mp-line"></span>
+            </li>
+            <li class="mp-step">
+                <div class="mp-num">04</div>
+                <div class="mp-body">
+                    <h5>Launch</h5>
+                    <p>Ship fast, instrument everything, watch the first week like a hawk.</p>
+                </div>
+                <span class="mp-line"></span>
+            </li>
+            <li class="mp-step">
+                <div class="mp-num">05</div>
+                <div class="mp-body">
+                    <h5>Grow</h5>
+                    <p>Monthly reviews, sharp experiments, compounding gains. Work doesn't end at launch.</p>
+                </div>
+                <span class="mp-line"></span>
+            </li>
+        </ol>
+    </section>
+
+    <!-- =========================================================
+         STATS — count-up
+         ========================================================= -->
+    <section class="mont-stats" id="stats">
+        <div class="mt-grid">
+            <div class="mt-item">
+                <span class="mt-num" data-count="6">0</span>
+                <span class="mt-label">Projects shipped</span>
+            </div>
+            <div class="mt-item">
+                <span class="mt-num" data-count="3">0</span>
+                <span class="mt-label">Core services</span>
+            </div>
+            <div class="mt-item">
+                <span class="mt-num" data-count="1">0</span>
+                <span class="mt-label">Focused team</span>
+            </div>
+            <div class="mt-item">
+                <span class="mt-num mt-num-inf">&infin;</span>
+                <span class="mt-label">Revisions until happy</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         CTA
+         ========================================================= -->
+    <section class="mont-cta" id="cta">
+        <span class="ms-label">(05) &mdash; Ready?</span>
+        <h2 class="mc-title" id="ctaLine">
+            <span class="word">Let's</span>
+            <span class="word">build</span>
+            <span class="word">something</span>
+            <span class="word">worth</span>
+            <span class="word">scrolling</span>
+            <span class="word">for.</span>
+        </h2>
+        <a href="mailto:vishnutewary1@gmail.com" class="mc-btn">
+            Start a project
+            <span class="mc-arrow">&rarr;</span>
+        </a>
+    </section>
+
+    <!-- =========================================================
+         FOOTER
+         ========================================================= -->
+    <footer class="mont-footer">
+        <div class="mf-wordmark" aria-hidden="true">RMKAAV</div>
+        <div class="mf-top">
+            <div class="mf-col">
+                <span class="ms-label">Studio</span>
+                <p>Mumbai, India</p>
+                <p>Open for select projects, 2026</p>
+            </div>
+            <div class="mf-col">
+                <span class="ms-label">Contact</span>
+                <p><a href="mailto:vishnutewary1@gmail.com">vishnutewary1@gmail.com</a></p>
+                <p><a href="tel:+917977992054">+91 7977 992 054</a></p>
+            </div>
+            <div class="mf-col">
+                <span class="ms-label">Elsewhere</span>
+                <p><a href="#" rel="noopener">Instagram</a></p>
+                <p><a href="#" rel="noopener">LinkedIn</a></p>
+            </div>
+        </div>
+        <div class="mf-bottom">
+            <span>&copy; 2026 RMKAAV Solutions</span>
+            <span>Made in Mumbai</span>
+        </div>
+    </footer>
+
+    <!-- Libraries: Lenis (local) + GSAP + ScrollTrigger (CDN for test page).
+         If approved, bundle GSAP locally before migration. -->
+    <script defer src="vendor/lenis.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script defer src="mont.js?v=12"></script>
+</body>
+</html>

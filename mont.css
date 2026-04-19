@@ -1,0 +1,2080 @@
+/* =============================================================
+   RMKAAV — mont-fort preview stylesheet (mont.css)
+   All rules scoped under .mont-body (or .mont on <html>) to
+   guarantee zero bleed into the live site's style.css.
+   ============================================================= */
+
+/* -------- Design tokens (Palette D — Tech Indigo, matching rmkaav.com) -------- */
+html.mont {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface-2: #16161f;
+    --cream: #f0f0f5;
+    --cream-muted: #9090a7;
+    --accent: #6366f1;                /* indigo */
+    --accent-2: #8b5cf6;              /* violet */
+    --accent-3: #ec4899;              /* pink */
+    --accent-soft: rgba(99, 102, 241, 0.16);
+    --border: rgba(240, 240, 245, 0.08);
+    --border-strong: rgba(240, 240, 245, 0.16);
+    --grad-brand: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+
+    --serif: "Fraunces", "Times New Roman", serif;
+    --sans: "Inter", system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
+
+    --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* -------- Reset / base (scoped) -------- */
+html.mont,
+html.mont body.mont-body {
+    background: var(--bg);
+    color: var(--cream);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body.mont-body {
+    font-family: var(--sans);
+    font-size: 18px;
+    line-height: 1.6;
+    font-weight: 400;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+body.mont-body *,
+body.mont-body *::before,
+body.mont-body *::after {
+    box-sizing: border-box;
+}
+
+body.mont-body img,
+body.mont-body video {
+    max-width: 100%;
+    display: block;
+}
+
+body.mont-body a {
+    color: inherit;
+    text-decoration: none;
+}
+
+body.mont-body h1,
+body.mont-body h2,
+body.mont-body h3,
+body.mont-body h4,
+body.mont-body h5 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+body.mont-body p {
+    margin: 0;
+}
+
+body.mont-body ol,
+body.mont-body ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+body.mont-body::selection {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+/* Shared label style */
+body.mont-body .ms-label {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+
+/* =============================================================
+   PRELOADER
+   ============================================================= */
+body.mont-body .mont-preloader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    will-change: transform;
+}
+
+body.mont-body .mont-preloader .mp-count {
+    font-family: var(--serif);
+    font-size: clamp(4rem, 14vw, 12rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.03em;
+}
+
+body.mont-body .mont-preloader .mp-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+
+body.mont-body .mont-preloader .mp-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+    transform-origin: left center;
+    transform: scaleX(0);
+}
+
+/* Hide page behind preloader until JS marks ready */
+body.mont-body:not(.mont-ready) {
+    overflow: hidden;
+}
+
+/* =============================================================
+   NAV
+   ============================================================= */
+body.mont-body .mont-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 40px;
+    z-index: 100;
+    transition: background 0.4s var(--ease-out),
+                backdrop-filter 0.4s var(--ease-out),
+                border-color 0.4s var(--ease-out),
+                padding 0.4s var(--ease-out);
+    border-bottom: 1px solid transparent;
+}
+
+body.mont-body .mont-nav.scrolled {
+    background: rgba(14, 13, 11, 0.72);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    border-bottom-color: var(--border);
+    padding: 16px 40px;
+}
+
+body.mont-body .mn-logo {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+}
+
+body.mont-body .mn-logo .mn-dot {
+    color: var(--accent);
+}
+
+body.mont-body .mn-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+}
+
+body.mont-body .mn-links a {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    opacity: 0.78;
+    transition: opacity 0.3s var(--ease-out), color 0.3s var(--ease-out);
+}
+
+body.mont-body .mn-links a:hover {
+    opacity: 1;
+    color: var(--accent);
+}
+
+body.mont-body .mn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 10px 18px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--cream);
+    transition: border-color 0.3s var(--ease-out),
+                color 0.3s var(--ease-out),
+                background 0.3s var(--ease-out);
+}
+
+body.mont-body .mn-cta:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+body.mont-body .mn-cta .mn-arrow {
+    display: inline-block;
+    transition: transform 0.3s var(--ease-out);
+}
+
+body.mont-body .mn-cta:hover .mn-arrow {
+    transform: translateX(4px);
+}
+
+/* =============================================================
+   HERO
+   ============================================================= */
+body.mont-body .mont-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    overflow: hidden;
+}
+
+body.mont-body .mh-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1600px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+body.mont-body .mh-tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+
+body.mont-body .mh-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
+    animation: mh-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes mh-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.82); }
+}
+
+body.mont-body .mh-word {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(4rem, 12vw, 14rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0;
+    color: var(--cream);
+    will-change: transform, opacity;
+}
+
+body.mont-body .mh-word-row {
+    display: inline-block;
+}
+
+body.mont-body .mh-sub {
+    font-size: clamp(15px, 1.3vw, 19px);
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    max-width: 520px;
+    will-change: opacity, transform;
+}
+
+body.mont-body .mh-scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    margin-top: 20px;
+    will-change: opacity;
+}
+
+body.mont-body .mh-scroll-arrow {
+    animation: mh-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes mh-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+}
+
+/* Drift blobs */
+body.mont-body .mh-drift {
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    max-width: 900px;
+    max-height: 900px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 1;
+    will-change: transform;
+}
+
+body.mont-body .mh-drift-a {
+    top: -20%;
+    left: -15%;
+    background: radial-gradient(circle at center, rgba(200, 169, 126, 0.35), transparent 60%);
+}
+
+body.mont-body .mh-drift-b {
+    bottom: -25%;
+    right: -18%;
+    background: radial-gradient(circle at center, rgba(237, 227, 211, 0.12), transparent 60%);
+}
+
+/* =============================================================
+   MISSION
+   ============================================================= */
+body.mont-body .mont-mission {
+    position: relative;
+    padding: 200px 40px 240px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+body.mont-body .mont-mission .ms-label {
+    display: block;
+    margin-bottom: 40px;
+}
+
+body.mont-body .ms-line {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    line-height: 1.08;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    max-width: 14ch;
+}
+
+body.mont-body .ms-line .word {
+    display: inline-block;
+    margin-right: 0.18em;
+    clip-path: inset(0 100% 0 0);
+    will-change: clip-path;
+}
+
+/* =============================================================
+   SERVICES — horizontal scroll
+   ============================================================= */
+body.mont-body .mont-services {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+body.mont-body .mo-sticky {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+body.mont-body .mo-header {
+    padding: 80px 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+body.mont-body .mo-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+}
+
+body.mont-body .mo-track {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex: 1;
+    will-change: transform;
+}
+
+body.mont-body .mo-panel {
+    flex: 0 0 100vw;
+    height: 100%;
+    padding: 40px 8vw 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6vw;
+    align-items: center;
+    border-left: 1px solid var(--border);
+    position: relative;
+}
+
+body.mont-body .mo-panel:first-child {
+    border-left: none;
+}
+
+body.mont-body .mo-num {
+    position: absolute;
+    top: 40px;
+    left: 8vw;
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    will-change: transform, opacity;
+}
+
+body.mont-body .mo-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 36ch;
+}
+
+body.mont-body .mo-copy h4 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+}
+
+body.mont-body .mo-copy p {
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.65;
+    color: var(--cream-muted);
+}
+
+body.mont-body .mo-visual {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-height: 68vh;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 32px;
+    will-change: transform;
+    transform: scale(0.92);
+}
+
+body.mont-body .mo-visual[data-tint="a"] {
+    background: linear-gradient(160deg, #3a2d1a 0%, #c8a97e 60%, #ede3d3 100%);
+}
+
+body.mont-body .mo-visual[data-tint="b"] {
+    background: linear-gradient(200deg, #1a1a2d 0%, #5d4a35 50%, #c8a97e 100%);
+}
+
+body.mont-body .mo-visual[data-tint="c"] {
+    background: linear-gradient(145deg, #2d1a1a 0%, #8a6a45 55%, #ede3d3 100%);
+}
+
+body.mont-body .mo-visual-label {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    color: var(--bg);
+    letter-spacing: -0.03em;
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+}
+
+/* =============================================================
+   WORK — sticky image grow
+   ============================================================= */
+body.mont-body .mont-work {
+    position: relative;
+    background: var(--bg);
+}
+
+/* Cinematic work rules are defined in the WORK CINEMATIC block below. */
+
+/* =============================================================
+   PROCESS
+   ============================================================= */
+body.mont-body .mont-process {
+    position: relative;
+    padding: 200px 40px 220px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+body.mont-body .mont-process .ms-label {
+    display: block;
+    margin-bottom: 32px;
+}
+
+body.mont-body .mp-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 120px;
+}
+
+body.mont-body .mp-list {
+    display: flex;
+    flex-direction: column;
+}
+
+body.mont-body .mont-process .mp-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 60px;
+    padding: 48px 0;
+    opacity: 0;
+    transform: translateY(60px);
+    will-change: transform, opacity;
+}
+
+body.mont-body .mont-process .mp-num {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+    font-weight: 400;
+    color: var(--cream-muted);
+    letter-spacing: 0.04em;
+    transition: color 0.6s var(--ease-out);
+}
+
+body.mont-body .mont-process .mp-body {
+    max-width: 64ch;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+body.mont-body .mont-process .mp-body h5 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--cream);
+    letter-spacing: -0.015em;
+}
+
+body.mont-body .mont-process .mp-body p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--cream-muted);
+}
+
+body.mont-body .mont-process .mp-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+    transform-origin: left center;
+    transform: scaleX(0);
+    will-change: transform;
+}
+
+/* =============================================================
+   STATS
+   ============================================================= */
+body.mont-body .mont-stats {
+    padding: 160px 40px 160px;
+    max-width: 1600px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+}
+
+body.mont-body .mt-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+body.mont-body .mt-item {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-right: 20px;
+    border-right: 1px solid var(--border);
+}
+
+body.mont-body .mt-item:last-child {
+    border-right: none;
+}
+
+body.mont-body .mt-num {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 6rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+body.mont-body .mt-num-inf {
+    color: var(--accent);
+}
+
+body.mont-body .mt-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+
+/* =============================================================
+   CTA
+   ============================================================= */
+body.mont-body .mont-cta {
+    position: relative;
+    padding: 200px 40px 240px;
+    max-width: 1600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+body.mont-body .mont-cta .ms-label {
+    display: block;
+    margin-bottom: 36px;
+}
+
+body.mont-body .mc-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    line-height: 1.08;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    margin-bottom: 64px;
+    max-width: 16ch;
+}
+
+body.mont-body .mc-title .word {
+    display: inline-block;
+    margin-right: 0.18em;
+    clip-path: inset(0 100% 0 0);
+    will-change: clip-path;
+}
+
+body.mont-body .mc-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 18px 28px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--cream);
+    transition: letter-spacing 0.4s var(--ease-out),
+                color 0.4s var(--ease-out),
+                border-color 0.4s var(--ease-out),
+                background 0.4s var(--ease-out);
+}
+
+body.mont-body .mc-btn::after {
+    content: "";
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 14px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.5s var(--ease-expo);
+}
+
+body.mont-body .mc-btn:hover {
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+body.mont-body .mc-btn:hover::after {
+    transform: scaleX(1);
+}
+
+body.mont-body .mc-arrow {
+    display: inline-block;
+    transition: transform 0.4s var(--ease-out);
+}
+
+body.mont-body .mc-btn:hover .mc-arrow {
+    transform: translateX(6px);
+}
+
+/* =============================================================
+   FOOTER
+   ============================================================= */
+body.mont-body .mont-footer {
+    border-top: 1px solid var(--border);
+    padding: 80px 40px 40px;
+    background: var(--bg);
+}
+
+body.mont-body .mf-top {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1600px;
+    margin: 0 auto 80px;
+}
+
+body.mont-body .mf-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+body.mont-body .mf-col p {
+    font-size: 15px;
+    color: var(--cream-muted);
+    line-height: 1.55;
+}
+
+body.mont-body .mf-col a {
+    color: var(--cream);
+    transition: color 0.3s var(--ease-out);
+}
+
+body.mont-body .mf-col a:hover {
+    color: var(--accent);
+}
+
+body.mont-body .mf-bottom {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+
+/* =============================================================
+   MOBILE  (<= 768px)
+   Disable horizontal pin; stack panels.
+   Image grow skipped — starts full-width.
+   Nav links hidden (simple, no hamburger).
+   ============================================================= */
+@media (max-width: 768px) {
+    body.mont-body {
+        font-size: 16px;
+    }
+
+    body.mont-body .mont-nav {
+        padding: 16px 20px;
+    }
+    body.mont-body .mont-nav.scrolled {
+        padding: 12px 20px;
+    }
+    body.mont-body .mn-links {
+        display: none;
+    }
+
+    body.mont-body .mont-hero {
+        padding: 100px 20px 60px;
+    }
+    body.mont-body .mh-word {
+        font-size: clamp(3rem, 18vw, 8rem);
+    }
+
+    body.mont-body .mont-mission {
+        padding: 120px 20px 140px;
+    }
+    body.mont-body .ms-line {
+        font-size: clamp(2rem, 9vw, 3.6rem);
+        max-width: 100%;
+    }
+
+    body.mont-body .mont-services {
+        overflow: visible;
+    }
+    body.mont-body .mo-sticky {
+        height: auto;
+    }
+    body.mont-body .mo-header {
+        padding: 80px 20px 20px;
+    }
+    body.mont-body .mo-track {
+        flex-direction: column;
+    }
+    body.mont-body .mo-panel {
+        flex: 0 0 auto;
+        width: 100%;
+        min-height: auto;
+        padding: 80px 20px 80px;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        border-left: none;
+        border-top: 1px solid var(--border);
+    }
+    body.mont-body .mo-panel:first-child {
+        border-top: none;
+    }
+    body.mont-body .mo-num {
+        position: static;
+    }
+    body.mont-body .mo-visual {
+        aspect-ratio: 4 / 5;
+        max-height: 60vh;
+        transform: scale(1);
+    }
+
+    body.mont-body .mont-process {
+        padding: 120px 20px 140px;
+    }
+    body.mont-body .mp-title {
+        margin-bottom: 60px;
+    }
+    body.mont-body .mont-process .mp-step {
+        grid-template-columns: 60px 1fr;
+        gap: 20px;
+        padding: 32px 0;
+    }
+
+    body.mont-body .mont-stats {
+        padding: 100px 20px;
+    }
+    body.mont-body .mt-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px 30px;
+    }
+    body.mont-body .mt-item {
+        border-right: none;
+        padding-right: 0;
+    }
+    body.mont-body .mt-num {
+        font-size: clamp(2.4rem, 12vw, 4rem);
+    }
+
+    body.mont-body .mont-cta {
+        padding: 120px 20px 140px;
+    }
+    body.mont-body .mc-title {
+        margin-bottom: 40px;
+    }
+
+    body.mont-body .mont-footer {
+        padding: 60px 20px 30px;
+    }
+    body.mont-body .mf-top {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 50px;
+    }
+    body.mont-body .mf-bottom {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
+
+/* =============================================================
+   PREMIUM PASS — grain, ornaments, chrome mockups, wordmarks.
+   Appended last so these rules win the cascade where needed.
+   ============================================================= */
+
+/* ---- Film-grain overlay (SVG noise, fixed, pointer-events off) ---- */
+body.mont-body .mont-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0.32;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93 0 0 0 0 0.89 0 0 0 0 0.82 0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 180px 180px;
+}
+
+/* ---- Hero ornamental grid (corner crosshairs) ---- */
+body.mont-body .mh-grid {
+    position: absolute;
+    inset: 32px;
+    pointer-events: none;
+    z-index: 2;
+}
+body.mont-body .mh-ch {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    opacity: 0.35;
+}
+body.mont-body .mh-ch::before,
+body.mont-body .mh-ch::after {
+    content: "";
+    position: absolute;
+    background: var(--cream-muted);
+}
+body.mont-body .mh-ch::before {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    transform: translateY(-50%);
+}
+body.mont-body .mh-ch::after {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    transform: translateX(-50%);
+}
+body.mont-body .mh-ch-tl { top: 0; left: 0; }
+body.mont-body .mh-ch-tr { top: 0; right: 0; }
+body.mont-body .mh-ch-bl { bottom: 0; left: 0; }
+body.mont-body .mh-ch-br { bottom: 0; right: 0; }
+
+/* ---- Hero ghost wordmark (outlined, huge, faded) ---- */
+body.mont-body .mh-ghost {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(10rem, 28vw, 32rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(237, 227, 211, 0.06);
+    text-stroke: 1px rgba(237, 227, 211, 0.06);
+    pointer-events: none;
+    z-index: 1;
+    user-select: none;
+}
+
+/* ---- Hero extras: separator + meta row ---- */
+body.mont-body .mh-sep {
+    display: inline-block;
+    color: var(--accent);
+    opacity: 0.7;
+    margin: 0 4px;
+}
+body.mont-body .mh-meta {
+    display: inline-flex;
+    gap: 28px;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    padding: 14px 20px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(23, 20, 15, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+body.mont-body .mh-meta-item em {
+    font-style: normal;
+    color: var(--accent);
+    margin-right: 6px;
+    font-family: var(--serif);
+    letter-spacing: 0;
+}
+
+/* ---- Services: kicker + list ---- */
+body.mont-body .mo-kicker {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 12px;
+    border: 1px solid var(--accent-soft);
+    border-radius: 999px;
+    align-self: flex-start;
+}
+body.mont-body .mo-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+body.mont-body .mo-list li {
+    position: relative;
+    padding-left: 22px;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+}
+body.mont-body .mo-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 12px;
+    height: 1px;
+    background: var(--accent);
+    transform: translateY(-50%);
+}
+
+/* ---- Services: visuals layered on gradient ---- */
+body.mont-body .mo-visual {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+body.mont-body .mo-visual .mo-visual-label {
+    position: absolute;
+    bottom: 28px;
+    left: 32px;
+    mix-blend-mode: normal;
+    color: rgba(14, 13, 11, 0.55);
+    opacity: 1;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+}
+body.mont-body .mo-chip {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    display: inline-flex;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(14, 13, 11, 0.75);
+    background: rgba(237, 227, 211, 0.35);
+    border: 1px solid rgba(14, 13, 11, 0.1);
+    padding: 6px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+}
+body.mont-body .mo-chip span:last-child { color: rgba(14, 13, 11, 0.5); }
+
+/* Art: SMM grid tiles */
+body.mont-body .mo-art-a {
+    position: absolute;
+    inset: 18% 14% 22% 14%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 12px;
+}
+body.mont-body .mo-art-a .mo-tile {
+    border: 1px solid rgba(14, 13, 11, 0.15);
+    border-radius: 6px;
+    background: linear-gradient(160deg, rgba(237,227,211,0.45), rgba(237,227,211,0.08));
+    backdrop-filter: blur(2px);
+}
+body.mont-body .mo-art-a .mo-tile:nth-child(2) { background: linear-gradient(160deg, rgba(14,13,11,0.22), rgba(14,13,11,0.05)); }
+body.mont-body .mo-art-a .mo-tile:nth-child(4) { background: linear-gradient(160deg, rgba(200,169,126,0.55), rgba(200,169,126,0.12)); }
+body.mont-body .mo-art-a .mo-tile:nth-child(6) { background: linear-gradient(160deg, rgba(14,13,11,0.35), rgba(14,13,11,0.08)); }
+
+/* Art: AI svg network */
+body.mont-body .mo-art-b {
+    position: absolute;
+    inset: 12% 12% 18% 12%;
+    width: 76%;
+    height: 70%;
+    opacity: 0.95;
+}
+
+/* Art: WEB wireframe */
+body.mont-body .mo-art-c {
+    position: absolute;
+    inset: 18% 14% 22% 14%;
+}
+body.mont-body .mo-art-c .mo-line,
+body.mont-body .mo-art-c .mo-block {
+    position: absolute;
+    background: rgba(14, 13, 11, 0.35);
+    border-radius: 2px;
+}
+body.mont-body .mo-art-c .mo-line-1 { top: 8%; left: 0; width: 45%; height: 4px; }
+body.mont-body .mo-art-c .mo-line-2 { top: 18%; left: 0; width: 70%; height: 3px; background: rgba(14, 13, 11, 0.2); }
+body.mont-body .mo-art-c .mo-line-3 { top: 26%; left: 0; width: 55%; height: 3px; background: rgba(14, 13, 11, 0.2); }
+body.mont-body .mo-art-c .mo-block-1 {
+    top: 42%;
+    left: 0;
+    width: 58%;
+    height: 50%;
+    background: linear-gradient(160deg, rgba(14,13,11,0.4), rgba(14,13,11,0.1));
+    border-radius: 6px;
+}
+body.mont-body .mo-art-c .mo-block-2 {
+    top: 42%;
+    right: 0;
+    width: 32%;
+    height: 50%;
+    background: linear-gradient(160deg, rgba(237,227,211,0.35), rgba(237,227,211,0.05));
+    border: 1px solid rgba(14, 13, 11, 0.15);
+    border-radius: 6px;
+}
+
+/* ---- Footer wordmark ---- */
+body.mont-body .mf-wordmark {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(5rem, 18vw, 22rem);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(237, 227, 211, 0.12);
+    text-stroke: 1px rgba(237, 227, 211, 0.12);
+    text-align: center;
+    margin: 0 auto 60px;
+    user-select: none;
+}
+
+/* =============================================================
+   PREMIUM PASS — mobile overrides
+   ============================================================= */
+@media (max-width: 768px) {
+    body.mont-body .mh-grid { inset: 20px; }
+    body.mont-body .mh-ghost {
+        font-size: clamp(6rem, 40vw, 10rem);
+    }
+    body.mont-body .mh-meta {
+        gap: 14px;
+        font-size: 9px;
+        padding: 10px 14px;
+    }
+    body.mont-body .mo-list { gap: 6px; }
+    body.mont-body .mo-list li { font-size: 13px; }
+    body.mont-body .mo-kicker { font-size: 9px; padding: 5px 10px; }
+    /* Work-section mobile overrides live in the CINEMATIC WORK block below. */
+    body.mont-body .mf-wordmark {
+        font-size: clamp(3rem, 22vw, 7rem);
+        margin-bottom: 40px;
+    }
+}
+
+/* =============================================================
+   UI UPGRADE — cursor, progress bar, marquee, nav polish
+   ============================================================= */
+
+/* ---- Scroll progress bar (top 2px) ---- */
+body.mont-body .mont-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(237, 227, 211, 0.05);
+    z-index: 150;
+    pointer-events: none;
+}
+body.mont-body .mont-progress span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--cream));
+    transform-origin: left center;
+    box-shadow: 0 0 12px rgba(200, 169, 126, 0.4);
+    will-change: width;
+}
+
+/* ---- Custom cursor (two-layer: ring + dot) ---- */
+body.mont-body .mont-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 180;
+    mix-blend-mode: difference;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-out);
+}
+body.mont-ready .mont-cursor {
+    opacity: 1;
+}
+body.mont-body .mont-cursor .mc-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 1px solid rgba(237, 227, 211, 0.9);
+    border-radius: 50%;
+    transition: width 0.35s var(--ease-out),
+                height 0.35s var(--ease-out),
+                margin 0.35s var(--ease-out),
+                background 0.35s var(--ease-out),
+                border-color 0.35s var(--ease-out);
+    will-change: transform;
+}
+body.mont-body .mont-cursor .mc-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    background: var(--cream);
+    border-radius: 50%;
+    will-change: transform;
+}
+/* link-hover state: ring expands + fills */
+body.mont-body.mont-cursor-link .mont-cursor .mc-ring {
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    background: rgba(237, 227, 211, 0.14);
+    border-color: var(--cream);
+}
+body.mont-body.mont-cursor-link .mont-cursor .mc-dot {
+    opacity: 0;
+}
+/* Hide native cursor on desktop when enabled */
+body.mont-cursor-on,
+body.mont-cursor-on * {
+    cursor: none !important;
+}
+/* Keep native cursor on form controls even with cursor on */
+body.mont-cursor-on input,
+body.mont-cursor-on textarea,
+body.mont-cursor-on select {
+    cursor: text !important;
+}
+@media (hover: none), (max-width: 768px) {
+    body.mont-body .mont-cursor { display: none; }
+}
+
+/* ---- Marquee strips ---- */
+body.mont-body .mont-marquee {
+    position: relative;
+    overflow: hidden;
+    padding: 28px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+}
+body.mont-body .mont-marquee::before,
+body.mont-body .mont-marquee::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    z-index: 2;
+    pointer-events: none;
+}
+body.mont-body .mont-marquee::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--bg), transparent);
+}
+body.mont-body .mont-marquee::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--bg), transparent);
+}
+body.mont-body .mm-track {
+    display: flex;
+    width: max-content;
+    animation: mm-scroll 38s linear infinite;
+    will-change: transform;
+}
+body.mont-body .mont-marquee-reverse .mm-track {
+    animation-direction: reverse;
+    animation-duration: 46s;
+}
+body.mont-body .mm-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    padding: 0 28px;
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.8rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--cream);
+    white-space: nowrap;
+}
+body.mont-body .mm-item em {
+    color: var(--accent);
+    font-style: normal;
+    font-family: var(--sans);
+    font-size: 0.6em;
+}
+@keyframes mm-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* ---- Nav polish: animated underline + active ---- */
+body.mont-body .mn-links a {
+    position: relative;
+    padding: 4px 0;
+}
+body.mont-body .mn-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s var(--ease-expo);
+}
+body.mont-body .mn-links a:hover::after,
+body.mont-body .mn-links a.is-active::after {
+    transform: scaleX(1);
+}
+body.mont-body .mn-links a.is-active {
+    color: var(--accent);
+    opacity: 1;
+}
+
+/* ---- Hero char-split support ---- */
+body.mont-body .mh-char {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    will-change: transform, opacity;
+}
+
+/* ---- Mobile adjustments for upgrade pass ---- */
+@media (max-width: 768px) {
+    body.mont-body .mont-marquee { padding: 18px 0; }
+    body.mont-body .mm-item { font-size: clamp(1.2rem, 5vw, 1.8rem); padding: 0 18px; gap: 18px; }
+    body.mont-body .mont-marquee::before,
+    body.mont-body .mont-marquee::after { width: 60px; }
+}
+
+/* =============================================================
+   WORK — CINEMATIC FULL-BLEED STRIP (replaces sticky-grow)
+   ============================================================= */
+
+body.mont-body .mw-intro {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 180px 40px 60px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+}
+body.mont-body .mw-intro .ms-label {
+    grid-column: 1 / -1;
+    margin-bottom: 28px;
+}
+body.mont-body .mw-heading {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+}
+body.mont-body .mw-counter {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    align-self: end;
+    padding-bottom: 10px;
+}
+
+/* Each stage is a 100vh cinematic frame */
+body.mont-body .mw-stage {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: block;
+    background: var(--bg);
+}
+
+/* Visual frame (inset, dominant, but not pure full-bleed) */
+body.mont-body .mw-frame {
+    position: absolute;
+    inset: 10vh 6vw 22vh 6vw;
+    overflow: hidden;
+    border-radius: 2px;
+    will-change: transform, opacity;
+    box-shadow:
+        0 40px 100px -30px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(237, 227, 211, 0.04);
+}
+body.mont-body .mw-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+body.mont-body .mw-stage[data-project="01"] .mw-backdrop {
+    background:
+        radial-gradient(60% 80% at 75% 30%, rgba(200, 169, 126, 0.55), transparent 65%),
+        linear-gradient(140deg, #2a1d10 0%, #8a6a45 55%, #ede3d3 100%);
+}
+body.mont-body .mw-stage[data-project="02"] .mw-backdrop {
+    background:
+        radial-gradient(60% 80% at 30% 65%, rgba(200, 169, 126, 0.45), transparent 60%),
+        linear-gradient(165deg, #0e0d0b 0%, #251c10 45%, #5a4225 85%, #c8a97e 100%);
+}
+body.mont-body .mw-stage[data-project="03"] .mw-backdrop {
+    background:
+        radial-gradient(70% 100% at 50% 50%, rgba(138, 127, 109, 0.35), transparent 70%),
+        linear-gradient(195deg, #17140f 0%, #2a261f 55%, #4a4235 100%);
+}
+body.mont-body .mw-frame-open {
+    outline: 1px dashed rgba(237, 227, 211, 0.18);
+    outline-offset: -14px;
+}
+
+/* Specimen caption in frame top-left */
+body.mont-body .mw-specimen {
+    position: absolute;
+    top: 24px;
+    left: 28px;
+    z-index: 3;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(14, 13, 11, 0.55);
+    padding: 8px 14px;
+    background: rgba(237, 227, 211, 0.35);
+    border: 1px solid rgba(14, 13, 11, 0.08);
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+}
+body.mont-body .mw-stage[data-project="02"] .mw-specimen,
+body.mont-body .mw-stage[data-project="03"] .mw-specimen {
+    color: rgba(237, 227, 211, 0.7);
+    background: rgba(14, 13, 11, 0.35);
+    border-color: rgba(237, 227, 211, 0.12);
+}
+
+/* Per-project abstract shapes */
+body.mont-body .mw-shape {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+body.mont-body .mw-shape-01 {
+    top: 0;
+    right: 0;
+    width: 55%;
+    height: 100%;
+    opacity: 0.85;
+}
+body.mont-body .mw-shape-01 svg {
+    width: 100%;
+    height: 100%;
+}
+
+body.mont-body .mw-shape-02 {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8%;
+}
+body.mont-body .mw-r {
+    font-family: var(--serif);
+    font-size: clamp(14rem, 40vh, 32rem);
+    font-weight: 300;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(237, 227, 211, 0.35);
+    text-stroke: 1px rgba(237, 227, 211, 0.35);
+    letter-spacing: -0.05em;
+}
+body.mont-body .mw-rline {
+    position: absolute;
+    left: 5%;
+    background: rgba(237, 227, 211, 0.18);
+    height: 1px;
+}
+body.mont-body .mw-rline-1 { top: 35%; width: 18%; }
+body.mont-body .mw-rline-2 { top: 50%; width: 28%; background: var(--accent); opacity: 0.5; }
+body.mont-body .mw-rline-3 { top: 65%; width: 12%; }
+
+body.mont-body .mw-shape-03 {
+    position: absolute;
+    inset: 14%;
+}
+body.mont-body .mw-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(to right, rgba(237, 227, 211, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(237, 227, 211, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+body.mont-body .mw-crosshair {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    opacity: 0.5;
+}
+body.mont-body .mw-crosshair::before,
+body.mont-body .mw-crosshair::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+}
+body.mont-body .mw-crosshair::before {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    transform: translateY(-50%);
+}
+body.mont-body .mw-crosshair::after {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    transform: translateX(-50%);
+}
+body.mont-body .mw-crosshair-tl { top: 0; left: 0; }
+body.mont-body .mw-crosshair-tr { top: 0; right: 0; }
+body.mont-body .mw-crosshair-bl { bottom: 0; left: 0; }
+body.mont-body .mw-crosshair-br { bottom: 0; right: 0; }
+
+/* Content layer — overlays the frame */
+body.mont-body .mw-content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    padding: 0 6vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    pointer-events: none;
+}
+body.mont-body .mw-case {
+    display: inline-block;
+    align-self: flex-start;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 8px 14px;
+    border: 1px solid var(--accent-soft);
+    border-radius: 999px;
+    margin-bottom: 2vh;
+    position: absolute;
+    top: 12vh;
+    left: 6vw;
+    background: rgba(14, 13, 11, 0.35);
+    backdrop-filter: blur(6px);
+    pointer-events: auto;
+}
+body.mont-body .mw-stage-name {
+    font-family: var(--serif);
+    font-size: clamp(4rem, 16vw, 18rem);
+    font-weight: 300;
+    line-height: 0.86;
+    letter-spacing: -0.04em;
+    color: var(--cream);
+    margin: 0 0 6vh -0.5vw;
+    overflow: hidden;
+    will-change: transform;
+    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.35);
+}
+body.mont-body .mw-stage-name span {
+    display: inline-block;
+    will-change: transform;
+}
+
+body.mont-body .mw-meta-row {
+    position: absolute;
+    left: 6vw;
+    right: 6vw;
+    bottom: 7vh;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    pointer-events: auto;
+}
+body.mont-body .mw-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+}
+body.mont-body .mw-meta-item em {
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+body.mont-body .mw-meta-cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out);
+    align-self: flex-start;
+}
+body.mont-body .mw-meta-cta a:hover {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+/* ---- Work cinematic — mobile (<=768px): stack, no pin ---- */
+@media (max-width: 768px) {
+    body.mont-body .mw-intro {
+        padding: 100px 20px 30px;
+        grid-template-columns: 1fr;
+    }
+    body.mont-body .mw-counter {
+        padding-bottom: 0;
+    }
+    body.mont-body .mw-stage {
+        height: auto;
+        min-height: 80vh;
+        padding: 40px 0 0;
+    }
+    body.mont-body .mw-frame {
+        position: relative;
+        inset: auto;
+        margin: 0 20px;
+        height: 46vh;
+    }
+    body.mont-body .mw-content {
+        padding: 24px 20px 32px;
+        justify-content: flex-start;
+    }
+    body.mont-body .mw-case {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 14px;
+    }
+    body.mont-body .mw-stage-name {
+        font-size: clamp(3rem, 18vw, 6rem);
+        margin: 0 0 20px 0;
+    }
+    body.mont-body .mw-meta-row {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    body.mont-body .mw-r {
+        font-size: clamp(8rem, 30vh, 14rem);
+    }
+}
+
+/* =============================================================
+   PALETTE D — Tech Indigo (matches rmkaav.com)
+   Dark ink base + indigo/violet/pink gradient accents.
+   ============================================================= */
+
+/* Drift blobs → indigo + pink glow */
+body.mont-body .mh-drift-a {
+    background: radial-gradient(circle at center, rgba(99, 102, 241, 0.55), transparent 60%);
+}
+body.mont-body .mh-drift-b {
+    background: radial-gradient(circle at center, rgba(236, 72, 153, 0.28), transparent 60%);
+}
+
+/* Hero accent dot glow */
+body.mont-body .mh-dot {
+    box-shadow: 0 0 14px var(--accent), 0 0 28px rgba(139, 92, 246, 0.4);
+}
+
+/* Hero word text — brand gradient fill option (keeps default solid for mobile fallback) */
+body.mont-body .mh-char {
+    background-image: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Ghost + footer wordmark strokes */
+body.mont-body .mh-ghost {
+    -webkit-text-stroke: 1px rgba(240, 240, 245, 0.06);
+    text-stroke: 1px rgba(240, 240, 245, 0.06);
+}
+body.mont-body .mf-wordmark {
+    -webkit-text-stroke: 1px rgba(240, 240, 245, 0.1);
+    text-stroke: 1px rgba(240, 240, 245, 0.1);
+}
+
+/* Scroll progress — brand gradient */
+body.mont-body .mont-progress span {
+    background: var(--grad-brand);
+    box-shadow: 0 0 16px rgba(139, 92, 246, 0.5);
+}
+
+/* Nav CTA hover + mc-btn hover stay indigo via accent */
+
+/* Service gradients → indigo/violet/pink */
+body.mont-body .mo-visual[data-tint="a"] {
+    background: linear-gradient(160deg, #1e1a3a 0%, #6366f1 60%, #a5b4fc 100%);
+}
+body.mont-body .mo-visual[data-tint="b"] {
+    background: linear-gradient(200deg, #1a1630 0%, #5b21b6 50%, #ec4899 100%);
+}
+body.mont-body .mo-visual[data-tint="c"] {
+    background: linear-gradient(145deg, #0f0f1a 0%, #8b5cf6 55%, #f0abfc 100%);
+}
+
+/* Service visual labels adjust to brand */
+body.mont-body .mo-visual .mo-visual-label {
+    color: rgba(240, 240, 245, 0.85);
+    mix-blend-mode: overlay;
+}
+
+/* Service chip — frosted dark */
+body.mont-body .mo-chip {
+    background: rgba(240, 240, 245, 0.15);
+    border-color: rgba(240, 240, 245, 0.22);
+    color: rgba(240, 240, 245, 0.9);
+}
+body.mont-body .mo-chip span:last-child { color: rgba(240, 240, 245, 0.6); }
+
+/* Service tile art colors → brand */
+body.mont-body .mo-art-a .mo-tile {
+    background: linear-gradient(160deg, rgba(240, 240, 245, 0.35), rgba(240, 240, 245, 0.05));
+    border-color: rgba(240, 240, 245, 0.1);
+}
+body.mont-body .mo-art-a .mo-tile:nth-child(2) { background: linear-gradient(160deg, rgba(236, 72, 153, 0.5), rgba(236, 72, 153, 0.1)); }
+body.mont-body .mo-art-a .mo-tile:nth-child(4) { background: linear-gradient(160deg, rgba(139, 92, 246, 0.55), rgba(139, 92, 246, 0.12)); }
+body.mont-body .mo-art-a .mo-tile:nth-child(6) { background: linear-gradient(160deg, rgba(99, 102, 241, 0.45), rgba(99, 102, 241, 0.08)); }
+
+body.mont-body .mo-art-c .mo-line,
+body.mont-body .mo-art-c .mo-block {
+    background: rgba(240, 240, 245, 0.22);
+}
+body.mont-body .mo-art-c .mo-line-2 { background: var(--accent); opacity: 0.7; }
+body.mont-body .mo-art-c .mo-line-3 { background: rgba(240, 240, 245, 0.18); }
+body.mont-body .mo-art-c .mo-block-1 {
+    background: linear-gradient(160deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.15));
+    border: 1px solid rgba(240, 240, 245, 0.08);
+}
+body.mont-body .mo-art-c .mo-block-2 {
+    background: linear-gradient(160deg, rgba(236, 72, 153, 0.35), rgba(236, 72, 153, 0.08));
+    border: 1px solid rgba(240, 240, 245, 0.1);
+}
+
+/* Work stage backdrops → brand gradient */
+body.mont-body .mw-stage[data-project="01"] .mw-backdrop {
+    background:
+        radial-gradient(55% 75% at 75% 30%, rgba(139, 92, 246, 0.5), transparent 65%),
+        linear-gradient(140deg, #0f0f1a 0%, #2a1d5a 45%, #6366f1 85%, #a5b4fc 100%);
+}
+body.mont-body .mw-stage[data-project="02"] .mw-backdrop {
+    background:
+        radial-gradient(55% 80% at 30% 70%, rgba(236, 72, 153, 0.55), transparent 60%),
+        linear-gradient(165deg, #0a0a0f 0%, #2a1a3a 40%, #7c3aed 75%, #ec4899 100%);
+}
+body.mont-body .mw-stage[data-project="03"] .mw-backdrop {
+    background:
+        radial-gradient(70% 90% at 50% 40%, rgba(99, 102, 241, 0.25), transparent 70%),
+        linear-gradient(195deg, #0a0a0f 0%, #16161f 55%, #2a2a3a 100%);
+}
+
+/* All stages are dark now — text stays light */
+body.mont-body .mw-stage .mw-stage-name {
+    color: var(--cream);
+    text-shadow: 0 4px 60px rgba(99, 102, 241, 0.35);
+}
+body.mont-body .mw-stage .mw-case {
+    background: rgba(10, 10, 15, 0.55);
+    border-color: rgba(139, 92, 246, 0.45);
+    color: #c4b5fd;
+}
+body.mont-body .mw-stage .mw-meta-item { color: var(--cream); }
+body.mont-body .mw-stage .mw-meta-item em { color: rgba(240, 240, 245, 0.55); }
+body.mont-body .mw-stage .mw-meta-row { border-top-color: rgba(240, 240, 245, 0.15); }
+body.mont-body .mw-stage .mw-specimen {
+    color: rgba(240, 240, 245, 0.8);
+    background: rgba(10, 10, 15, 0.5);
+    border-color: rgba(240, 240, 245, 0.14);
+}
+
+/* mw-r giant R — light cream stroke */
+body.mont-body .mw-r {
+    -webkit-text-stroke: 1px rgba(240, 240, 245, 0.35);
+    text-stroke: 1px rgba(240, 240, 245, 0.35);
+}
+body.mont-body .mw-rline { background: rgba(240, 240, 245, 0.22); }
+body.mont-body .mw-rline-2 { background: var(--accent-3); opacity: 0.7; }
+
+body.mont-body .mw-frame-open {
+    outline-color: rgba(139, 92, 246, 0.35);
+}
+body.mont-body .mw-stage[data-project="03"] .mw-grid-lines {
+    background-image:
+        linear-gradient(to right, rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
+}
+body.mont-body .mw-crosshair::before,
+body.mont-body .mw-crosshair::after {
+    background: var(--accent-2);
+}
+
+/* Body selection */
+body.mont-body::selection {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* =============================================================
+   3D BACKGROUND SCENE — realistic Earth (Three.js) + stars + glow
+   Fixed, full-viewport, sits behind all content.
+   Earth rotates on Y axis as you scroll.
+   ============================================================= */
+
+body.mont-body .mont-scene3d {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Star field — CSS radial-gradient dots on deep space bg */
+body.mont-body .m3d-stars {
+    position: absolute;
+    inset: 0;
+    background-color: #05050a;
+    background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(240, 240, 245, 0.85), transparent 60%),
+        radial-gradient(1px 1px at 28% 72%, rgba(240, 240, 245, 0.65), transparent 60%),
+        radial-gradient(1.5px 1.5px at 54% 32%, rgba(240, 240, 245, 0.9), transparent 60%),
+        radial-gradient(1px 1px at 76% 88%, rgba(240, 240, 245, 0.6), transparent 60%),
+        radial-gradient(2px 2px at 88% 42%, rgba(240, 240, 245, 0.95), transparent 60%),
+        radial-gradient(1px 1px at 42% 14%, rgba(240, 240, 245, 0.7), transparent 60%),
+        radial-gradient(1px 1px at 8% 56%, rgba(240, 240, 245, 0.5), transparent 60%),
+        radial-gradient(1.5px 1.5px at 64% 78%, rgba(240, 240, 245, 0.8), transparent 60%),
+        radial-gradient(1px 1px at 94% 22%, rgba(240, 240, 245, 0.6), transparent 60%),
+        radial-gradient(1px 1px at 36% 92%, rgba(167, 139, 250, 0.75), transparent 60%),
+        radial-gradient(1.5px 1.5px at 72% 8%, rgba(240, 240, 245, 0.7), transparent 60%),
+        radial-gradient(1px 1px at 20% 38%, rgba(240, 240, 245, 0.5), transparent 60%),
+        radial-gradient(1px 1px at 82% 64%, rgba(236, 72, 153, 0.6), transparent 60%),
+        radial-gradient(1px 1px at 46% 50%, rgba(240, 240, 245, 0.55), transparent 60%),
+        radial-gradient(1.5px 1.5px at 16% 82%, rgba(240, 240, 245, 0.75), transparent 60%);
+    background-size: 100% 100%;
+    opacity: 0.9;
+}
+
+/* Atmospheric glow behind the earth (bluish-violet rim) */
+body.mont-body .m3d-earth-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(95vh, 95vw);
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(99, 102, 241, 0.45) 0%,
+        rgba(139, 92, 246, 0.22) 32%,
+        rgba(236, 72, 153, 0.08) 55%,
+        transparent 72%
+    );
+    filter: blur(46px);
+    opacity: 0.9;
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* Earth container — sized modestly so JS can scale it up (zoom) without
+   the sphere bleeding off the viewport. Base 55vh × 55vh square. */
+body.mont-body .m3d-earth-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(55vh, 55vw);
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%);
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+body.mont-body .m3d-earth {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Hero small text — shadow so it stays legible over the earth */
+body.mont-body .mh-tagline,
+body.mont-body .mh-sub,
+body.mont-body .mh-scroll,
+body.mont-body .mh-meta {
+    text-shadow: 0 1px 18px rgba(10, 10, 15, 0.85), 0 0 6px rgba(10, 10, 15, 0.6);
+}
+body.mont-body .mh-meta {
+    box-shadow: 0 8px 32px rgba(10, 10, 15, 0.45);
+}
+
+/* All the major sections now show scene through — content pieces inside
+   (panels, frames) keep their own backgrounds. Marquee + footer stay
+   opaque because they're thin strips / reading-heavy. */
+body.mont-body .mont-hero,
+body.mont-body .mont-mission,
+body.mont-body .mont-process,
+body.mont-body .mont-stats,
+body.mont-body .mont-cta,
+body.mont-body .mont-services,
+body.mont-body .mont-work,
+body.mont-body .mw-stage {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+body.mont-body .mont-marquee,
+body.mont-body .mont-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* Services header + title readable over Earth */
+body.mont-body .mont-services .mo-header .ms-label,
+body.mont-body .mont-services .mo-title {
+    text-shadow: 0 2px 24px rgba(5, 5, 10, 0.85), 0 0 6px rgba(5, 5, 10, 0.6);
+}
+
+/* Work stage text over Earth: name + meta + case stay legible */
+body.mont-body .mw-intro .ms-label,
+body.mont-body .mw-heading,
+body.mont-body .mw-counter,
+body.mont-body .mw-stage .mw-stage-name,
+body.mont-body .mw-stage .mw-meta-item,
+body.mont-body .mw-stage .mw-meta-item em {
+    text-shadow: 0 2px 24px rgba(5, 5, 10, 0.88), 0 0 6px rgba(5, 5, 10, 0.6);
+}
+
+/* Case pill + meta row backdrop-blur so they sit cleanly over Earth */
+body.mont-body .mw-stage .mw-case {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+body.mont-body .mw-stage .mw-meta-row {
+    padding: 18px 20px 14px;
+    background: rgba(10, 10, 15, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 8px;
+}
+
+/* Subtle dim overlay on services + work so Earth sits as backdrop,
+   not a fight with the content */
+body.mont-body .mont-services::before,
+body.mont-body .mont-work::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 120% 90% at 50% 50%,
+        rgba(10, 10, 15, 0.55) 0%,
+        rgba(10, 10, 15, 0.35) 60%,
+        rgba(10, 10, 15, 0.25) 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+body.mont-body .mont-services .mo-sticky,
+body.mont-body .mont-work > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Services: gaps between panels so Earth peeks through the strip */
+body.mont-body .mo-track {
+    gap: 2vw;
+}
+body.mont-body .mo-panel:first-child { border-left: none; }
+body.mont-body .mo-panel { border-left: none; }
+
+/* Service panels — slight translucency on the edges so the gradient
+   breathes against Earth behind, without hurting legibility */
+body.mont-body .mo-panel {
+    border-radius: 10px;
+    box-shadow:
+        0 40px 90px -30px rgba(5, 5, 10, 0.7),
+        0 0 0 1px rgba(240, 240, 245, 0.05) inset;
+}
+
+/* Mobile: slightly smaller base so scale doesn't bleed edges */
+@media (max-width: 768px) {
+    body.mont-body .m3d-earth-wrap {
+        width: min(50vh, 66vw);
+    }
+    body.mont-body .m3d-earth-glow {
+        width: min(75vh, 92vw);
+    }
+}
+
+
+
+
