@@ -1,773 +1,814 @@
-// ============================================
-// RMKAAV Solutions — Main JavaScript
-// ============================================
+/* =============================================================
+   RMKAAV Solutions — main site script
+   Libraries expected on window: Lenis, gsap, ScrollTrigger, THREE.
+   ============================================================= */
 
-// ---- Firebase Initialization (loads synchronously before this script) ----
-(function() {
-    var config = window.RMKAAV_CONFIG || {};
-    if (typeof firebase !== 'undefined' && config.FIREBASE) {
-        firebase.initializeApp(config.FIREBASE);
-        window.db = firebase.firestore();
+(function () {
+    "use strict";
+
+    const body = document.body;
+
+    /* ---------- 1. Guards + plugin registration ---------- */
+    if (!window.gsap || !window.ScrollTrigger) {
+        console.warn("[mont] GSAP or ScrollTrigger missing — animations disabled.");
+        body.classList.add("mont-ready");
+        return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+    // Ignore mobile URL-bar resize to stop refresh thrash.
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
+    const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+
+    /* ---------- Watchdog: force-ready after 4s no matter what ---------- */
+    const readyWatchdog = setTimeout(() => {
+        if (!body.classList.contains("mont-ready")) {
+            console.warn("[mont] preloader watchdog fired — forcing ready");
+            body.classList.add("mont-ready");
+            if (lenis) lenis.start();
+            const overlay = document.getElementById("montPreloader");
+            if (overlay) overlay.style.display = "none";
+            ScrollTrigger.refresh();
+        }
+    }, 4000);
+    const markReady = () => {
+        clearTimeout(readyWatchdog);
+        body.classList.add("mont-ready");
+    };
+
+    /* ---------- Resolve palette for color tweens ---------- */
+    const rootStyles = getComputedStyle(document.documentElement);
+    const accent = (rootStyles.getPropertyValue("--accent") || "#c8a97e").trim();
+    const creamMuted = (rootStyles.getPropertyValue("--cream-muted") || "#8a7f6d").trim();
+
+    /* ---------- 2. Lenis init + ScrollTrigger wiring ----------
+       Modern Lenis (v1+) preserves native window.scrollY, so
+       ScrollTrigger sees real scroll events without scrollerProxy.
+       We only need to forward Lenis's scroll tick to ST.update
+       and drive Lenis from GSAP's single ticker. */
+    let lenis = null;
+    if (window.Lenis) {
+        lenis = new Lenis({
+            lerp: 0.08,
+            smoothWheel: true,
+            wheelMultiplier: 1,
+            touchMultiplier: 1.4
+        });
+
+        lenis.on("scroll", ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+
+        // Lock Lenis until preloader finishes.
+        lenis.stop();
+    }
+
+    /* ---------- 7. Throttled resize → refresh pins ---------- */
+    let resizeRaf = null;
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (resizeRaf) cancelAnimationFrame(resizeRaf);
+            resizeRaf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        }, 200);
+    });
+
+    /* ---------- 8. Fonts ready → refresh pins ---------- */
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => ScrollTrigger.refresh());
+    }
+
+    /* =============================================================
+       SECTION INITS
+       ============================================================= */
+
+    /* ---------- Preloader ---------- */
+    function initPreloader() {
+        const overlay = document.getElementById("montPreloader");
+        const count = document.getElementById("mpCount");
+        if (!overlay || !count) {
+            markReady();
+            if (lenis) lenis.start();
+            return;
+        }
+        const line = overlay.querySelector(".mp-line");
+
+        const obj = { v: 0 };
+        const tl = gsap.timeline({
+            onComplete: () => {
+                markReady();
+                if (lenis) {
+                    lenis.start();
+                    lenis.scrollTo(0, { immediate: true });
+                }
+                ScrollTrigger.refresh();
+            }
+        });
+
+        tl.to(line, { scaleX: 1, duration: 1.6, ease: "expo.inOut" }, 0)
+          .to(obj, {
+              v: 100,
+              duration: 1.6,
+              ease: "expo.inOut",
+              onUpdate: () => {
+                  count.textContent = String(Math.round(obj.v)).padStart(2, "0");
+              }
+          }, 0)
+          .to(overlay, {
+              yPercent: -100,
+              duration: 1,
+              ease: "expo.inOut"
+          }, "+=0.15");
+    }
+
+    /* ---------- Nav ---------- */
+    function initNav() {
+        const nav = document.getElementById("montNav");
+        if (!nav) return;
+        ScrollTrigger.create({
+            start: 80,
+            end: 99999,
+            onEnter: () => nav.classList.add("scrolled"),
+            onLeaveBack: () => nav.classList.remove("scrolled")
+        });
+    }
+
+    /* ---------- Hero pin ---------- */
+    function initHero() {
+        const hero = document.getElementById("hero");
+        if (!hero) return;
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: hero,
+                start: "top top",
+                end: "+=100%",
+                pin: true,
+                pinSpacing: true,
+                scrub: true
+            }
+        });
+
+        tl.to(".mh-tagline, .mh-sub", { opacity: 0, ease: "none", duration: 0.4 }, 0)
+          .to(".mh-scroll", { opacity: 0, ease: "none", duration: 0.2 }, 0)
+          .to(".mh-word", { scale: 1.15, y: -80, ease: "none", duration: 0.6 }, 0.4);
+
+        // Phase 4 — drift parallax
+        gsap.utils.toArray(".mh-drift").forEach((blob, i) => {
+            gsap.to(blob, {
+                y: () => window.innerHeight * 0.3 * (i === 0 ? 1 : -0.7),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: hero,
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true,
+                    invalidateOnRefresh: true
+                }
+            });
+        });
+    }
+
+    /* ---------- Mission word reveal ---------- */
+    function initMission() {
+        const section = document.getElementById("mission");
+        if (!section) return;
+        const words = section.querySelectorAll(".word");
+        if (!words.length) return;
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: section,
+                start: "top 75%",
+                end: "bottom 45%",
+                scrub: 0.6
+            }
+        });
+
+        words.forEach((w, i) => {
+            tl.to(w, {
+                clipPath: "inset(0 0% 0 0)",
+                duration: 0.22,
+                ease: "none"
+            }, i * 0.04);
+        });
+    }
+
+    /* ---------- Services horizontal scroll ---------- */
+    function initServices() {
+        const section = document.getElementById("services");
+        const track = document.getElementById("servicesTrack");
+        if (!section || !track) return;
+
+        if (isMobile()) return; // stacked via CSS, no pin
+
+        const panels = track.querySelectorAll(".mo-panel");
+        const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+
+        const horizTween = gsap.to(track, {
+            x: () => -distance(),
+            ease: "none",
+            scrollTrigger: {
+                trigger: section,
+                start: "top top",
+                end: () => "+=" + distance(),
+                pin: true,
+                pinSpacing: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+                anticipatePin: 1
+            }
+        });
+
+        panels.forEach((panel) => {
+            const num = panel.querySelector(".mo-num");
+            const visual = panel.querySelector(".mo-visual");
+            if (num) {
+                gsap.fromTo(num,
+                    { opacity: 0, y: 40 },
+                    {
+                        opacity: 1, y: 0, ease: "none",
+                        scrollTrigger: {
+                            trigger: panel,
+                            containerAnimation: horizTween,
+                            start: "left 80%",
+                            end: "left 45%",
+                            scrub: true
+                        }
+                    });
+            }
+            if (visual) {
+                gsap.fromTo(visual,
+                    { scale: 0.9 },
+                    {
+                        scale: 1, ease: "none",
+                        scrollTrigger: {
+                            trigger: panel,
+                            containerAnimation: horizTween,
+                            start: "left 90%",
+                            end: "left 30%",
+                            scrub: true
+                        }
+                    });
+            }
+        });
+    }
+
+    /* ---------- Work — cinematic full-bleed strip ---------- */
+    function initWork() {
+        const stages = document.querySelectorAll(".mw-stage");
+        if (!stages.length) return;
+        if (isMobile()) return; // stacked via CSS
+
+        // Intro fade-in
+        const intro = document.querySelector(".mw-intro");
+        if (intro) {
+            gsap.from(intro.children, {
+                opacity: 0,
+                y: 40,
+                duration: 1,
+                ease: "expo.out",
+                stagger: 0.08,
+                scrollTrigger: {
+                    trigger: intro,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                }
+            });
+        }
+
+        stages.forEach((stage) => {
+            const frame = stage.querySelector(".mw-frame");
+            const shape = stage.querySelector(".mw-shape");
+            const specimen = stage.querySelector(".mw-specimen");
+            const caseTag = stage.querySelector(".mw-case");
+            const nameInner = stage.querySelector(".mw-stage-name span");
+            const metas = stage.querySelectorAll(".mw-meta-item");
+
+            // Initial state: offset + hidden
+            gsap.set(frame, { xPercent: 28, opacity: 0 });
+            gsap.set(shape, { xPercent: 40, opacity: 0 });
+            gsap.set(specimen, { opacity: 0, y: 10 });
+            gsap.set(caseTag, { opacity: 0, y: 16 });
+            gsap.set(nameInner, { yPercent: 110 });
+            gsap.set(metas, { opacity: 0, y: 18 });
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: stage,
+                    start: "top top",
+                    end: "+=120%",
+                    pin: true,
+                    pinSpacing: true,
+                    scrub: 1,
+                    invalidateOnRefresh: true,
+                    anticipatePin: 1
+                }
+            });
+
+            // Entrance: 0 → 0.35
+            tl.to(frame, { xPercent: 0, opacity: 1, ease: "none", duration: 0.3 }, 0)
+              .to(shape, { xPercent: 0, opacity: 1, ease: "none", duration: 0.35 }, 0.05)
+              .to(specimen, { opacity: 1, y: 0, ease: "none", duration: 0.15 }, 0.12)
+              .to(caseTag, { opacity: 1, y: 0, ease: "none", duration: 0.15 }, 0.1)
+              .to(nameInner, { yPercent: 0, ease: "none", duration: 0.32 }, 0.08)
+              .to(metas, { opacity: 1, y: 0, ease: "none", duration: 0.22, stagger: 0.025 }, 0.18);
+
+            // Hold 0.35 → 0.7 (no tweens)
+
+            // Exit: 0.7 → 1 — subtle parallax + fade the frame toward the next stage
+            tl.to(frame, { xPercent: -18, opacity: 0.6, ease: "none", duration: 0.3 }, 0.7)
+              .to(shape, { xPercent: -30, opacity: 0.4, ease: "none", duration: 0.3 }, 0.7)
+              .to(nameInner, { yPercent: -110, ease: "none", duration: 0.3 }, 0.7)
+              .to([caseTag, specimen, metas], { opacity: 0, ease: "none", duration: 0.25 }, 0.72);
+        });
+    }
+
+    /* ---------- Process steps ---------- */
+    function initProcess() {
+        const steps = document.querySelectorAll(".mont-process .mp-step");
+        if (!steps.length) return;
+
+        steps.forEach((step) => {
+            const num = step.querySelector(".mp-num");
+            const line = step.querySelector(".mp-line");
+
+            gsap.to(step, {
+                opacity: 1,
+                y: 0,
+                duration: 0.9,
+                ease: "expo.out",
+                scrollTrigger: {
+                    trigger: step,
+                    start: "top 82%",
+                    toggleActions: "play none none none"
+                }
+            });
+
+            if (line) {
+                gsap.to(line, {
+                    scaleX: 1,
+                    duration: 1.2,
+                    ease: "expo.out",
+                    scrollTrigger: {
+                        trigger: step,
+                        start: "top 85%",
+                        end: "bottom 55%",
+                        scrub: 0.8
+                    }
+                });
+            }
+
+            if (num) {
+                ScrollTrigger.create({
+                    trigger: step,
+                    start: "top 70%",
+                    onEnter: () => gsap.to(num, { color: accent, duration: 0.6, ease: "expo.out" }),
+                    onLeaveBack: () => gsap.to(num, { color: creamMuted, duration: 0.5, ease: "expo.out" })
+                });
+            }
+        });
+    }
+
+    /* ---------- Stats count-up ---------- */
+    function initStats() {
+        const nums = document.querySelectorAll(".mt-num[data-count]");
+        nums.forEach((el, i) => {
+            const target = parseInt(el.dataset.count, 10);
+            if (!Number.isFinite(target)) return;
+
+            const obj = { v: 0 };
+            ScrollTrigger.create({
+                trigger: el,
+                start: "top 88%",
+                once: true,
+                onEnter: () => {
+                    gsap.to(obj, {
+                        v: target,
+                        duration: 1.6,
+                        ease: "expo.out",
+                        delay: i * 0.04,
+                        onUpdate: () => {
+                            el.textContent = Math.round(obj.v);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    /* ---------- CTA word reveal ---------- */
+    function initCta() {
+        const line = document.getElementById("ctaLine");
+        if (!line) return;
+        const words = line.querySelectorAll(".word");
+        const section = document.getElementById("cta");
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: section,
+                start: "top 75%",
+                end: "bottom 55%",
+                scrub: 0.6
+            }
+        });
+
+        words.forEach((w, i) => {
+            tl.to(w, {
+                clipPath: "inset(0 0% 0 0)",
+                duration: 0.22,
+                ease: "none"
+            }, i * 0.05);
+        });
+    }
+
+    /* =============================================================
+       UI UPGRADE
+       ============================================================= */
+
+    /* ---------- Split hero word into chars for per-char hover ---------- */
+    function initHeroChars() {
+        const row = document.querySelector(".mh-word-row");
+        if (!row) return;
+        const text = row.textContent;
+        row.textContent = "";
+        [...text].forEach((ch) => {
+            const span = document.createElement("span");
+            span.className = "mh-char";
+            span.textContent = ch;
+            row.appendChild(span);
+        });
+    }
+
+    /* ---------- Custom cursor ---------- */
+    function initCursor() {
+        const cursor = document.getElementById("montCursor");
+        if (!cursor) return;
+        const hasHover = window.matchMedia("(hover: hover)").matches;
+        if (!hasHover || isMobile()) return;
+
+        body.classList.add("mont-cursor-on");
+
+        const ring = cursor.querySelector(".mc-ring");
+        const dot = cursor.querySelector(".mc-dot");
+
+        let targetX = window.innerWidth / 2;
+        let targetY = window.innerHeight / 2;
+        let ringX = targetX, ringY = targetY;
+        let dotX = targetX, dotY = targetY;
+
+        const setXRing = gsap.quickSetter(ring, "x", "px");
+        const setYRing = gsap.quickSetter(ring, "y", "px");
+        const setXDot = gsap.quickSetter(dot, "x", "px");
+        const setYDot = gsap.quickSetter(dot, "y", "px");
+
+        window.addEventListener("mousemove", (e) => {
+            targetX = e.clientX;
+            targetY = e.clientY;
+        }, { passive: true });
+
+        gsap.ticker.add(() => {
+            ringX += (targetX - ringX) * 0.18;
+            ringY += (targetY - ringY) * 0.18;
+            dotX += (targetX - dotX) * 0.42;
+            dotY += (targetY - dotY) * 0.42;
+            setXRing(ringX);
+            setYRing(ringY);
+            setXDot(dotX);
+            setYDot(dotY);
+        });
+
+        // Link-hover state
+        const linkSelector = "a, button, .mn-cta, .mc-btn, .mw-apply";
+        document.querySelectorAll(linkSelector).forEach((el) => {
+            el.addEventListener("mouseenter", () => body.classList.add("mont-cursor-link"));
+            el.addEventListener("mouseleave", () => body.classList.remove("mont-cursor-link"));
+        });
+    }
+
+    /* ---------- Scroll progress bar ---------- */
+    function initProgressBar() {
+        const bar = document.querySelector(".mont-progress span");
+        if (!bar) return;
+        const update = () => {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            const p = max > 0 ? (window.scrollY / max) : 0;
+            bar.style.width = (p * 100).toFixed(2) + "%";
+        };
+        if (lenis) {
+            lenis.on("scroll", update);
+        } else {
+            window.addEventListener("scroll", update, { passive: true });
+        }
+        update();
+    }
+
+    /* ---------- Magnetic buttons ---------- */
+    function initMagnetic() {
+        if (!window.matchMedia("(hover: hover)").matches) return;
+        const targets = document.querySelectorAll(".mn-cta, .mc-btn, .mw-apply");
+        targets.forEach((el) => {
+            const strength = 0.3;
+            el.addEventListener("mousemove", (e) => {
+                const r = el.getBoundingClientRect();
+                const cx = r.left + r.width / 2;
+                const cy = r.top + r.height / 2;
+                const dx = (e.clientX - cx) * strength;
+                const dy = (e.clientY - cy) * strength;
+                gsap.to(el, { x: dx, y: dy, duration: 0.4, ease: "power3.out" });
+            });
+            el.addEventListener("mouseleave", () => {
+                gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
+            });
+        });
+    }
+
+    /* ---------- Realistic Earth (Three.js, scroll-reactive) ----------
+       Cinematic continent tour: Asia → Europe → Americas → Oceania,
+       with zoom-ins at each stop and a full-view reset at the end.
+       Atmospheric fresnel shell + idle spin + cursor parallax. */
+    function initScene3D() {
+        const canvas = document.getElementById("m3dEarth");
+        if (!canvas) return;
+        if (!window.THREE) {
+            console.warn("[mont] three.js missing — earth disabled.");
+            canvas.parentElement.style.display = "none";
+            return;
+        }
+
+        const wrap = canvas.parentElement;
+        const glow = document.querySelector(".m3d-earth-glow");
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true,
+            antialias: true,
+            powerPreference: "high-performance"
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(wrap.clientWidth, wrap.clientHeight, false);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+
+        const scene = new THREE.Scene();
+        // FOV + z fixed so the sphere ALWAYS renders as a complete circle
+        // inside the canvas (no edge clipping). "Zoom" is done via CSS scale
+        // on the wrap — the sphere stays perfectly round at every tour step.
+        const camera = new THREE.PerspectiveCamera(
+            44,
+            wrap.clientWidth / wrap.clientHeight,
+            0.1,
+            100
+        );
+        camera.position.z = 6.2;
+
+        // Textures — bundled locally under /assets/earth/
+        const loader = new THREE.TextureLoader();
+        const TEX_BASE = "assets/earth/";
+        const earthTex = loader.load(TEX_BASE + "earth_atmos_2048.jpg");
+        const bumpTex  = loader.load(TEX_BASE + "earth_normal_2048.jpg");
+        const specTex  = loader.load(TEX_BASE + "earth_specular_2048.jpg");
+        const cloudTex = loader.load(TEX_BASE + "earth_clouds_1024.png");
+        earthTex.colorSpace = THREE.SRGBColorSpace;
+        earthTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        bumpTex.anisotropy = earthTex.anisotropy;
+
+        // Group so axial tilt applies to both surface + clouds together
+        const earthGroup = new THREE.Group();
+        earthGroup.rotation.z = 0.41; // ~23.5° axial tilt
+        scene.add(earthGroup);
+
+        // Earth surface
+        const earth = new THREE.Mesh(
+            new THREE.SphereGeometry(2, 128, 128),
+            new THREE.MeshPhongMaterial({
+                map: earthTex,
+                normalMap: bumpTex,
+                normalScale: new THREE.Vector2(0.85, 0.85),
+                specularMap: specTex,
+                specular: new THREE.Color(0x334466),
+                shininess: 18
+            })
+        );
+        earthGroup.add(earth);
+
+        // Cloud layer
+        const clouds = new THREE.Mesh(
+            new THREE.SphereGeometry(2.025, 128, 128),
+            new THREE.MeshPhongMaterial({
+                map: cloudTex,
+                transparent: true,
+                opacity: 0.48,
+                depthWrite: false
+            })
+        );
+        earthGroup.add(clouds);
+
+        // Atmosphere fresnel shell (slightly larger, back-side, additive)
+        const atmosphere = new THREE.Mesh(
+            new THREE.SphereGeometry(2.2, 128, 128),
+            new THREE.ShaderMaterial({
+                vertexShader: `
+                    varying vec3 vNormal;
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }`,
+                fragmentShader: `
+                    varying vec3 vNormal;
+                    void main() {
+                        float intensity = pow(0.72 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);
+                        vec3 col = mix(vec3(0.39, 0.4, 0.95), vec3(0.55, 0.36, 0.93), 0.5);
+                        gl_FragColor = vec4(col, 1.0) * intensity;
+                    }`,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide,
+                transparent: true,
+                depthWrite: false
+            })
+        );
+        earthGroup.add(atmosphere);
+
+        // Lighting — strong directional sun + violet rim + soft ambient
+        scene.add(new THREE.AmbientLight(0x404066, 0.55));
+        const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+        sun.position.set(5, 1.6, 4);
+        scene.add(sun);
+        const rim = new THREE.DirectionalLight(0x8b5cf6, 0.55);
+        rim.position.set(-4, 0.5, -3);
+        scene.add(rim);
+        const fill = new THREE.PointLight(0xec4899, 0.25, 0, 0);
+        fill.position.set(-3, 3, 5);
+        scene.add(fill);
+
+        // ---- Continent tour keyframes ----
+        // Three.js sphere texture: ry=0 shows prime meridian (Europe/Africa);
+        // +π/2 rotates Asia to the front; -π/2 rotates Americas to front.
+        // Tour — sphere stays fully round at every step. `scale` enlarges
+        // the whole wrap (CSS transform) for zoom without clipping the shape.
+        // Centered deep-zoom keyframes (x=0,y=0) at each continent; drift
+        // keyframes in between with smaller scale so earth stays in view.
+        const tour = [
+            { p: 0.00, x:   0, y:   0, scale: 1.00, ry:  1.55, rx: 0.22 }, // intro: full view
+            { p: 0.08, x: -10, y:  -5, scale: 1.10, ry:  1.50, rx: 0.22 }, // drift up-left
+            { p: 0.18, x:   0, y:   0, scale: 1.75, ry:  1.30, rx: 0.24 }, // ZOOM on Asia, centered
+            { p: 0.30, x:  16, y:   8, scale: 1.20, ry:  0.85, rx: 0.28 }, // drift right-down
+            { p: 0.42, x:   0, y:   0, scale: 1.80, ry:  0.10, rx: 0.30 }, // ZOOM on Africa, centered
+            { p: 0.54, x: -18, y:  -4, scale: 1.20, ry: -0.55, rx: 0.30 }, // drift left
+            { p: 0.64, x:   0, y:   0, scale: 1.85, ry: -1.30, rx: 0.32 }, // ZOOM on Americas
+            { p: 0.76, x:  14, y:  12, scale: 1.15, ry: -2.30, rx: 0.12 }, // drift right-down
+            { p: 0.86, x:   0, y:   0, scale: 1.70, ry: -2.90, rx: 0.00 }, // ZOOM on Pacific/Oceania
+            { p: 0.95, x:  -8, y:  -6, scale: 1.10, ry: -3.60, rx: 0.15 }, // pulling back
+            { p: 1.00, x:   0, y:   0, scale: 1.00, ry: -3.95, rx: 0.22 }  // outro: full view
+        ];
+        const smoothstep = (t) => t * t * (3 - 2 * t);
+        const sampleTour = (p) => {
+            if (p <= tour[0].p) return tour[0];
+            if (p >= tour[tour.length - 1].p) return tour[tour.length - 1];
+            for (let i = 0; i < tour.length - 1; i++) {
+                const a = tour[i], b = tour[i + 1];
+                if (p >= a.p && p <= b.p) {
+                    const t = smoothstep((p - a.p) / (b.p - a.p));
+                    return {
+                        x:     a.x     + (b.x     - a.x)     * t,
+                        y:     a.y     + (b.y     - a.y)     * t,
+                        scale: a.scale + (b.scale - a.scale) * t,
+                        ry:    a.ry    + (b.ry    - a.ry)    * t,
+                        rx:    a.rx    + (b.rx    - a.rx)    * t
+                    };
+                }
+            }
+            return tour[tour.length - 1];
+        };
+
+        // Scroll tracking
+        const state = { progress: 0 };
+        ScrollTrigger.create({
+            start: 0,
+            end: "max",
+            onUpdate: (self) => { state.progress = self.progress; }
+        });
+
+        // Idle cursor parallax (desktop)
+        let mx = 0, my = 0, tx = 0, ty = 0;
+        if (window.matchMedia("(hover: hover)").matches) {
+            window.addEventListener("mousemove", (e) => {
+                mx = (e.clientX / window.innerWidth - 0.5) * 0.12;
+                my = (e.clientY / window.innerHeight - 0.5) * 0.08;
+            }, { passive: true });
+        }
+
+        // Render loop — single GSAP ticker drives Lenis + earth
+        // Idle spin: fades out as the user starts scrolling so tour keyframes
+        // take over cleanly, but gives a visible "alive" rotation at the top.
+        let idleSpin = 0;
+        gsap.ticker.add(() => {
+            tx += (mx - tx) * 0.04;
+            ty += (my - ty) * 0.04;
+            // Idle spin fades in the first 15% of scroll then disappears.
+            const idleStrength = Math.max(0, 1 - state.progress / 0.15);
+            idleSpin += 0.0018 * idleStrength;
+
+            const s = sampleTour(state.progress);
+
+            // Earth group rotates on Y (continent pan); tilt on X (hemisphere bias)
+            earthGroup.rotation.y = s.ry + idleSpin + tx;
+            earthGroup.rotation.x = s.rx + ty;
+            // Clouds drift slower than surface for parallax depth
+            clouds.rotation.y = idleSpin * 0.55;
+
+            // Camera z stays fixed — sphere is ALWAYS a full round circle
+            // in its canvas. Visual zoom is achieved via CSS scale below.
+
+            // Earth position + scale transform
+            const px = s.x * window.innerWidth / 100;
+            const py = s.y * window.innerHeight / 100;
+            wrap.style.transform =
+                `translate(-50%, -50%) translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) scale(${s.scale.toFixed(3)})`;
+            if (glow) {
+                // Glow follows earth position + softens at high zoom
+                const gx = px + Math.sin(state.progress * Math.PI) * 40;
+                const gy = py - Math.sin(state.progress * Math.PI) * 30;
+                const gscale = 1 + (s.scale - 1) * 0.4;
+                glow.style.transform =
+                    `translate(-50%, -50%) translate(${gx.toFixed(1)}px, ${gy.toFixed(1)}px) scale(${gscale.toFixed(3)})`;
+            }
+
+            renderer.render(scene, camera);
+        });
+
+        // Resize handling (debounced)
+        const resize = () => {
+            const w = wrap.clientWidth;
+            const h = wrap.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h, false);
+        };
+        window.addEventListener("resize", () => {
+            clearTimeout(initScene3D._rt);
+            initScene3D._rt = setTimeout(resize, 150);
+        });
+    }
+
+    /* ---------- Active section → nav link highlight ---------- */
+    function initActiveNav() {
+        const map = [
+            { sel: "#hero", href: "#hero" },
+            { sel: "#services", href: "#services" },
+            { sel: "#work", href: "#work" },
+            { sel: "#process", href: "#process" },
+            { sel: "#cta", href: "#cta" }
+        ];
+        const links = document.querySelectorAll(".mn-links a");
+        const setActive = (href) => {
+            links.forEach((a) => {
+                a.classList.toggle("is-active", a.getAttribute("href") === href);
+            });
+        };
+        map.forEach(({ sel, href }) => {
+            const el = document.querySelector(sel);
+            if (!el) return;
+            ScrollTrigger.create({
+                trigger: el,
+                start: "top 45%",
+                end: "bottom 45%",
+                onToggle: (self) => { if (self.isActive) setActive(href); }
+            });
+        });
+    }
+
+    /* =============================================================
+       BOOT
+       ============================================================= */
+    function boot() {
+        initHeroChars();
+        initPreloader();
+        initNav();
+        initHero();
+        initMission();
+        initServices();
+        initWork();
+        initProcess();
+        initStats();
+        initCta();
+        initCursor();
+        initProgressBar();
+        initMagnetic();
+        initActiveNav();
+        initScene3D();
+        // Final refresh after all triggers registered.
+        requestAnimationFrame(() => ScrollTrigger.refresh());
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", boot);
+    } else {
+        boot();
     }
 })();
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    // ---- Shared Constants ----
-    const config = window.RMKAAV_CONFIG || {};
-    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // ---- EmailJS Initialization (deferred script loaded by now) ----
-    if (typeof emailjs !== 'undefined' && config.EMAILJS_PUBLIC_KEY) {
-        emailjs.init(config.EMAILJS_PUBLIC_KEY);
-    }
-
-    // ---- Sanitization Helper ----
-    // Trims whitespace and caps length. We do NOT HTML-encode here because
-    // values flow only to Firestore and EmailJS — never reflected to the DOM.
-    function sanitize(str) {
-        if (typeof str !== 'string') return '';
-        return str.trim().slice(0, 5000);
-    }
-
-    // ---- Preloader ----
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        setTimeout(() => { preloader.classList.add('hidden'); }, 2000);
-    }
-
-    // ---- Scroll Progress Bar ----
-    const scrollProgress = document.getElementById('scrollProgress');
-    function updateScrollProgress() {
-        if (!scrollProgress) return;
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        scrollProgress.style.width = scrollPercent + '%';
-    }
-
-    // ---- Theme Toggle (Dark/Light) ----
-    const themeToggle = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('rmkaav-theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('rmkaav-theme', next);
-        });
-    }
-
-    // ---- Navbar scroll effect ----
-    const navbar = document.getElementById('navbar');
-    const backToTop = document.getElementById('backToTop');
-
-    function updateNavbarScroll() {
-        if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 50);
-        if (backToTop) backToTop.classList.toggle('visible', window.scrollY > 500);
-    }
-
-    // ---- Mobile menu ----
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
-
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
-    }
-
-    // ---- Active nav link on scroll ----
-    const sections = document.querySelectorAll('section[id]');
-
-    function updateActiveNav() {
-        const scrollY = window.scrollY + 100;
-        sections.forEach(section => {
-            const top = section.offsetTop;
-            const height = section.offsetHeight;
-            const id = section.getAttribute('id');
-            const link = document.querySelector(`.nav-links a[href="#${id}"]`);
-            if (link) {
-                if (scrollY >= top && scrollY < top + height) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
-                }
-            }
-        });
-    }
-
-    // ---- Typing Animation ----
-    const typingText = document.getElementById('typingText');
-    const words = ['Dominate Digital', 'Scale Revenue', 'Win Customers', 'Crush Competition', 'Go Viral'];
-    let wordIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typingSpeed = 100;
-
-    function typeEffect() {
-        if (!typingText) return;
-
-        const currentWord = words[wordIndex];
-
-        if (isDeleting) {
-            typingText.textContent = currentWord.substring(0, charIndex - 1);
-            charIndex--;
-            typingSpeed = 50;
-        } else {
-            typingText.textContent = currentWord.substring(0, charIndex + 1);
-            charIndex++;
-            typingSpeed = 100;
-        }
-
-        if (!isDeleting && charIndex === currentWord.length) {
-            typingSpeed = 2000;
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            wordIndex = (wordIndex + 1) % words.length;
-            typingSpeed = 400;
-        }
-
-        setTimeout(typeEffect, typingSpeed);
-    }
-
-    if (typingText) typeEffect();
-
-    // ---- Hero Particles ----
-    const particleContainer = document.getElementById('heroParticles');
-    if (particleContainer) {
-        const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f97316', '#10b981'];
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = (Math.random() * 8 + 6) + 's';
-            particle.style.animationDelay = (Math.random() * 5) + 's';
-            const size = (Math.random() * 4 + 2) + 'px';
-            particle.style.width = size;
-            particle.style.height = size;
-            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-            particleContainer.appendChild(particle);
-        }
-    }
-
-    // ---- Counter animation ----
-    const statNumbers = document.querySelectorAll('.stat-number');
-    let counterStarted = false;
-
-    function animateCounters() {
-        if (counterStarted) return;
-
-        const heroStats = document.querySelector('.hero-stats');
-        if (!heroStats) return;
-
-        const rect = heroStats.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-            counterStarted = true;
-            statNumbers.forEach(num => {
-                const target = parseInt(num.getAttribute('data-target'));
-                if (isNaN(target)) return;
-                const duration = 2000;
-                const start = performance.now();
-
-                function step(now) {
-                    const elapsed = now - start;
-                    const progress = Math.min(elapsed / duration, 1);
-                    num.textContent = Math.floor(progress * target);
-                    if (progress < 1) requestAnimationFrame(step);
-                }
-                requestAnimationFrame(step);
-            });
-        }
-    }
-
-    // ---- Consolidated Scroll Handler (RAF-throttled) ----
-    let scrollTicking = false;
-    window.addEventListener('scroll', () => {
-        if (!scrollTicking) {
-            requestAnimationFrame(() => {
-                updateScrollProgress();
-                updateNavbarScroll();
-                updateActiveNav();
-                animateCounters();
-                scrollTicking = false;
-            });
-            scrollTicking = true;
-        }
-    });
-    animateCounters();
-
-    // ---- Portfolio Filter ----
-    const filterBtns = document.querySelectorAll('.portfolio-filter');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const filter = btn.getAttribute('data-filter');
-
-            filterBtns.forEach(b => {
-                b.classList.remove('active');
-                b.setAttribute('aria-selected', 'false');
-            });
-            btn.classList.add('active');
-            btn.setAttribute('aria-selected', 'true');
-
-            portfolioItems.forEach(item => {
-                const category = item.getAttribute('data-category');
-                if (filter === 'all' || category === filter) {
-                    item.style.display = '';
-                    // Small delay so the browser registers display change before removing class
-                    requestAnimationFrame(() => {
-                        item.classList.remove('hidden-item');
-                    });
-                } else {
-                    item.classList.add('hidden-item');
-                    setTimeout(() => {
-                        if (item.classList.contains('hidden-item')) {
-                            item.style.display = 'none';
-                        }
-                    }, 400);
-                }
-            });
-        });
-    });
-
-    // ---- Pricing tabs ----
-    const pricingTabs = document.querySelectorAll('.pricing-tab');
-    const pricingGrids = document.querySelectorAll('.pricing-grid');
-
-    pricingTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-tab');
-
-            pricingTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            pricingGrids.forEach(grid => {
-                if (grid.id === `tab-${target}`) {
-                    grid.classList.remove('hidden');
-                    grid.querySelectorAll('.price-card').forEach((card, i) => {
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(20px)';
-                        setTimeout(() => {
-                            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        }, i * 100);
-                    });
-                } else {
-                    grid.classList.add('hidden');
-                }
-            });
-        });
-    });
-
-    // ---- Testimonial Carousel ----
-    const track = document.getElementById('testimonialTrack');
-    const dotsContainer = document.getElementById('carouselDots');
-    const prevBtn = document.getElementById('carouselPrev');
-    const nextBtn = document.getElementById('carouselNext');
-
-    if (track && dotsContainer && prevBtn && nextBtn) {
-        track.setAttribute('aria-live', 'polite');
-        const cards = track.querySelectorAll('.testimonial-card');
-        cards.forEach((card, i) => {
-            card.setAttribute('role', 'group');
-            card.setAttribute('aria-roledescription', 'slide');
-            card.setAttribute('aria-label', 'Testimonial ' + (i + 1) + ' of ' + cards.length);
-        });
-        let currentSlide = 0;
-        let slidesPerView = 3;
-        let autoSlideInterval;
-
-        function getPerView() {
-            if (window.innerWidth <= 768) return 1;
-            if (window.innerWidth <= 1024) return 2;
-            return 3;
-        }
-
-        function getTotalSlides() {
-            return Math.max(1, cards.length - slidesPerView + 1);
-        }
-
-        function buildDots() {
-            dotsContainer.innerHTML = '';
-            const total = getTotalSlides();
-            for (let i = 0; i < total; i++) {
-                const dot = document.createElement('button');
-                dot.type = 'button';
-                dot.classList.add('carousel-dot');
-                dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-                if (i === currentSlide) dot.classList.add('active');
-                dot.addEventListener('click', () => { goToSlide(i); startAutoSlide(); });
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        function goToSlide(index) {
-            slidesPerView = getPerView();
-            const total = getTotalSlides();
-            currentSlide = Math.max(0, Math.min(index, total - 1));
-
-            const cardEl = cards[0];
-            if (!cardEl) return;
-            const cardStyle = getComputedStyle(cardEl);
-            const cardWidth = cardEl.offsetWidth + parseFloat(cardStyle.marginLeft) + parseFloat(cardStyle.marginRight);
-            track.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
-
-            dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === currentSlide);
-            });
-        }
-
-        function nextSlide() {
-            const total = getTotalSlides();
-            goToSlide(currentSlide >= total - 1 ? 0 : currentSlide + 1);
-        }
-
-        function prevSlideAction() {
-            const total = getTotalSlides();
-            goToSlide(currentSlide <= 0 ? total - 1 : currentSlide - 1);
-        }
-
-        function startAutoSlide() {
-            stopAutoSlide();
-            autoSlideInterval = setInterval(nextSlide, 4000);
-        }
-
-        function stopAutoSlide() {
-            if (autoSlideInterval) clearInterval(autoSlideInterval);
-        }
-
-        prevBtn.addEventListener('click', () => { prevSlideAction(); startAutoSlide(); });
-        nextBtn.addEventListener('click', () => { nextSlide(); startAutoSlide(); });
-
-        track.addEventListener('mouseenter', stopAutoSlide);
-        track.addEventListener('mouseleave', startAutoSlide);
-
-        // Touch swipe support
-        let touchStartX = 0;
-
-        track.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            stopAutoSlide();
-        }, { passive: true });
-
-        track.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) nextSlide();
-                else prevSlideAction();
-            }
-            startAutoSlide();
-        }, { passive: true });
-
-        // Initialize
-        slidesPerView = getPerView();
-        buildDots();
-        startAutoSlide();
-
-        window.addEventListener('resize', () => {
-            slidesPerView = getPerView();
-            buildDots();
-            goToSlide(Math.min(currentSlide, getTotalSlides() - 1));
-        });
-    }
-
-    // ---- FAQ accordion ----
-    const faqItems = document.querySelectorAll('.faq-item');
-
-    faqItems.forEach((item, index) => {
-        const question = item.querySelector('.faq-question');
-        const answer = item.querySelector('.faq-answer');
-        if (!question) return;
-
-        question.setAttribute('aria-expanded', 'false');
-        question.setAttribute('aria-controls', 'faq-answer-' + index);
-        if (answer) {
-            answer.id = 'faq-answer-' + index;
-            answer.setAttribute('role', 'region');
-            answer.setAttribute('aria-labelledby', 'faq-question-' + index);
-        }
-        question.id = 'faq-question-' + index;
-
-        question.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            faqItems.forEach(i => {
-                i.classList.remove('active');
-                const q = i.querySelector('.faq-question');
-                if (q) q.setAttribute('aria-expanded', 'false');
-            });
-            if (!isActive) {
-                item.classList.add('active');
-                question.setAttribute('aria-expanded', 'true');
-            }
-        });
-    });
-
-    // ---- Toast Notification ----
-    const toastEl = document.getElementById('toast');
-
-    function showToast(message, type) {
-        if (!toastEl) return;
-        type = type || 'success';
-        toastEl.textContent = message;
-        toastEl.className = 'toast ' + type + ' show';
-        setTimeout(() => { toastEl.classList.remove('show'); }, 3500);
-    }
-
-    // ---- Contact Form with Validation ----
-    const contactForm = document.getElementById('contactForm');
-    const formName = document.getElementById('formName');
-    const formEmail = document.getElementById('formEmail');
-    const formPhone = document.getElementById('formPhone');
-    const formService = document.getElementById('formService');
-
-    function validateField(input, errorId, rules) {
-        if (!input) return true;
-        const value = input.value.trim();
-        const errorEl = document.getElementById(errorId);
-        let errorMsg = '';
-
-        if (rules.required && !value) {
-            errorMsg = 'This field is required';
-        } else if (rules.email && value && !EMAIL_REGEX.test(value)) {
-            errorMsg = 'Please enter a valid email';
-        } else if (rules.phone && value && !/^[+]?[\d\s()-]{7,15}$/.test(value)) {
-            errorMsg = 'Please enter a valid phone number';
-        } else if (rules.minLength && value.length > 0 && value.length < rules.minLength) {
-            errorMsg = 'Minimum ' + rules.minLength + ' characters required';
-        }
-
-        if (errorMsg) {
-            input.classList.add('error');
-            if (errorEl) errorEl.textContent = errorMsg;
-            return false;
-        } else {
-            input.classList.remove('error');
-            if (errorEl) errorEl.textContent = '';
-            return true;
-        }
-    }
-
-    // Real-time validation on blur
-    if (formName) {
-        formName.addEventListener('blur', () => validateField(formName, 'nameError', { required: true, minLength: 2 }));
-        formName.addEventListener('input', () => {
-            if (formName.classList.contains('error')) {
-                formName.classList.remove('error');
-                const err = document.getElementById('nameError');
-                if (err) err.textContent = '';
-            }
-        });
-    }
-
-    if (formEmail) {
-        formEmail.addEventListener('blur', () => validateField(formEmail, 'emailError', { required: true, email: true }));
-        formEmail.addEventListener('input', () => {
-            if (formEmail.classList.contains('error')) {
-                formEmail.classList.remove('error');
-                const err = document.getElementById('emailError');
-                if (err) err.textContent = '';
-            }
-        });
-    }
-
-    if (formPhone) {
-        formPhone.addEventListener('blur', () => validateField(formPhone, 'phoneError', { phone: true }));
-        formPhone.addEventListener('input', () => {
-            if (formPhone.classList.contains('error')) {
-                formPhone.classList.remove('error');
-                const err = document.getElementById('phoneError');
-                if (err) err.textContent = '';
-            }
-        });
-    }
-
-    if (formService) {
-        formService.addEventListener('change', () => validateField(formService, 'serviceError', { required: true }));
-    }
-
-    // ---- Rate Limiting ----
-    let lastFormSubmitTime = 0;
-    const FORM_COOLDOWN_MS = 30000;
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Honeypot check — bots fill hidden fields, silently reject
-            const honeypot = document.getElementById('honeypot');
-            if (honeypot && honeypot.value) return;
-
-            // Rate limiting
-            const now = Date.now();
-            if (now - lastFormSubmitTime < FORM_COOLDOWN_MS) {
-                showToast('Please wait before submitting again.', 'info');
-                return;
-            }
-
-            const isNameValid = validateField(formName, 'nameError', { required: true, minLength: 2 });
-            const isEmailValid = validateField(formEmail, 'emailError', { required: true, email: true });
-            const isPhoneValid = validateField(formPhone, 'phoneError', { phone: true });
-            const isServiceValid = validateField(formService, 'serviceError', { required: true });
-
-            if (!isNameValid || !isEmailValid || !isPhoneValid || !isServiceValid) {
-                showToast('Please fix the errors in the form', 'error');
-                return;
-            }
-
-            // Show loading state
-            const submitBtn = document.getElementById('submitBtn');
-            if (!submitBtn) return;
-            const btnText = submitBtn.querySelector('.btn-text');
-            const btnLoading = submitBtn.querySelector('.btn-loading');
-            const btnIcon = submitBtn.querySelector('.btn-icon');
-
-            if (btnText) btnText.style.display = 'none';
-            if (btnIcon) btnIcon.style.display = 'none';
-            if (btnLoading) btnLoading.style.display = 'inline-flex';
-            submitBtn.disabled = true;
-
-            // Collect and sanitize form data
-            const formData = new FormData(contactForm);
-            const data = {};
-            formData.forEach((value, key) => { data[key] = sanitize(value); });
-
-            const contactData = {
-                name: data.name || '',
-                email: data.email || '',
-                phone: data.phone || 'Not provided',
-                service: data.service || 'Not selected',
-                budget: data.budget || 'Not specified',
-                message: data.message || 'No message',
-                timestamp: new Date().toISOString(),
-                source: 'contact-form',
-                status: 'new'
-            };
-
-            lastFormSubmitTime = Date.now();
-
-            // Get reCAPTCHA token if available, then save
-            function submitToFirestore(recaptchaToken) {
-                if (recaptchaToken) contactData.recaptchaToken = recaptchaToken;
-
-                const firestorePromise = window.db
-                    ? window.db.collection('contacts').add(contactData)
-                    : Promise.reject('No database');
-
-                firestorePromise.then(function() {
-                    // Data saved — send email notification (non-blocking)
-                    if (typeof emailjs !== 'undefined' && config.EMAILJS_SERVICE_ID) {
-                        emailjs.send(config.EMAILJS_SERVICE_ID, config.EMAILJS_TEMPLATE_ID, {
-                            from_name: contactData.name,
-                            from_email: contactData.email,
-                            phone: contactData.phone,
-                            service: contactData.service,
-                            budget: contactData.budget,
-                            message: contactData.message,
-                            to_email: config.CONTACT_EMAIL || ''
-                        });
-                    }
-                    formSubmitSuccess(submitBtn, btnText, btnLoading, btnIcon);
-                }).catch(function() {
-                    formSubmitError(submitBtn, btnText, btnLoading, btnIcon);
-                });
-            }
-
-            if (typeof grecaptcha !== 'undefined' && config.RECAPTCHA_SITE_KEY) {
-                grecaptcha.ready(function() {
-                    grecaptcha.execute(config.RECAPTCHA_SITE_KEY, { action: 'contact' })
-                        .then(submitToFirestore)
-                        .catch(function() { submitToFirestore(null); });
-                });
-            } else {
-                submitToFirestore(null);
-            }
-        });
-    }
-
-    // ---- Analytics Helper ----
-    function trackEvent(eventName, params) {
-        if (typeof gtag === 'function') gtag('event', eventName, params || {});
-    }
-
-    // ---- Form Submit Success Handler ----
-    function formSubmitSuccess(submitBtn, btnText, btnLoading, btnIcon) {
-        if (btnLoading) btnLoading.style.display = 'none';
-        if (btnText) {
-            btnText.textContent = 'Message Sent!';
-            btnText.style.display = 'inline';
-        }
-        submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-        showToast('Message sent successfully! We\'ll get back to you within 24 hours.', 'success');
-        trackEvent('form_submit', { form_name: 'contact' });
-
-        setTimeout(() => {
-            if (btnText) btnText.textContent = 'Send Message';
-            if (btnIcon) btnIcon.style.display = 'inline';
-            submitBtn.style.background = '';
-            submitBtn.disabled = false;
-            contactForm.reset();
-            contactForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-            contactForm.querySelectorAll('.form-error').forEach(el => { el.textContent = ''; });
-        }, 3000);
-    }
-
-    // ---- Form Submit Error Handler ----
-    function formSubmitError(submitBtn, btnText, btnLoading, btnIcon) {
-        if (btnLoading) btnLoading.style.display = 'none';
-        if (btnText) {
-            btnText.textContent = 'Send Message';
-            btnText.style.display = 'inline';
-        }
-        if (btnIcon) btnIcon.style.display = 'inline';
-        submitBtn.disabled = false;
-        showToast('Failed to send message. Please try again or email us directly.', 'error');
-    }
-
-    // ---- Newsletter Form ----
-    const newsletterForm = document.getElementById('newsletterForm');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Honeypot — bots fill hidden fields
-            const nlHoney = document.getElementById('newsletterHoneypot');
-            if (nlHoney && nlHoney.value) return;
-
-            // Rate-limit (shares cooldown bucket with contact form)
-            const now = Date.now();
-            if (now - lastFormSubmitTime < FORM_COOLDOWN_MS) {
-                showToast('Please wait before submitting again.', 'info');
-                return;
-            }
-
-            const emailInput = newsletterForm.querySelector('input[type="email"]');
-            if (!emailInput) return;
-            const email = emailInput.value.trim();
-
-            if (!email || !EMAIL_REGEX.test(email)) {
-                showToast('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Save to Firebase Firestore first, then send email notification
-            const subscriberData = {
-                email: email,
-                timestamp: new Date().toISOString(),
-                source: 'footer-newsletter',
-                status: 'active'
-            };
-
-            lastFormSubmitTime = Date.now();
-
-            const nlPromise = window.db
-                ? window.db.collection('newsletter').add(subscriberData)
-                : Promise.reject('No database');
-
-            nlPromise.then(function() {
-                // Send email notification (non-blocking)
-                if (typeof emailjs !== 'undefined' && config.EMAILJS_SERVICE_ID) {
-                    emailjs.send(config.EMAILJS_SERVICE_ID, config.EMAILJS_NEWSLETTER_TEMPLATE_ID, {
-                        subscriber_email: subscriberData.email,
-                        to_email: config.CONTACT_EMAIL || ''
-                    });
-                }
-                showToast('Subscribed successfully! Check your inbox for growth tips.', 'success');
-                trackEvent('form_submit', { form_name: 'newsletter' });
-                emailInput.value = '';
-            }).catch(function() {
-                showToast('Subscription failed. Please try again later.', 'error');
-            });
-        });
-    }
-
-    // ---- Cookie / Storage Consent ----
-    const cookieConsent = document.getElementById('cookieConsent');
-    const cookieAccept = document.getElementById('cookieAccept');
-    const cookieDecline = document.getElementById('cookieDecline');
-
-    if (cookieConsent && cookieAccept && cookieDecline) {
-        if (!localStorage.getItem('rmkaav-cookies')) {
-            setTimeout(() => { cookieConsent.classList.add('show'); }, 2500);
-        }
-
-        cookieAccept.addEventListener('click', () => {
-            localStorage.setItem('rmkaav-cookies', 'accepted');
-            cookieConsent.classList.remove('show');
-            showToast('Preferences saved', 'info');
-        });
-
-        cookieDecline.addEventListener('click', () => {
-            localStorage.setItem('rmkaav-cookies', 'declined');
-            cookieConsent.classList.remove('show');
-        });
-    }
-
-    // ---- Scroll fade-in animations ----
-    const fadeElements = document.querySelectorAll(
-        '.service-card, .price-card, .testimonial-card, .process-step, .about-content, .about-visual, .faq-item, .contact-info, .contact-form, .portfolio-item'
-    );
-
-    fadeElements.forEach(el => el.classList.add('fade-in'));
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    fadeElements.forEach(el => observer.observe(el));
-
-    // ---- Back to top ----
-    if (backToTop) {
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-
-    // ---- Smooth scrolling for all anchor links (with navbar offset) ----
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', (e) => {
-            const href = anchor.getAttribute('href');
-            if (href === '#') return;
-            const target = document.querySelector(href);
-            if (!target) return;
-            e.preventDefault();
-            const nav = document.getElementById('navbar');
-            const navH = nav ? nav.offsetHeight : 80;
-            const top = target.getBoundingClientRect().top + window.scrollY - navH - 10;
-            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-        });
-    });
-
-    // ---- Keyboard accessibility ----
-    document.querySelectorAll('.faq-question').forEach(q => {
-        q.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                q.click();
-            }
-        });
-    });
-
-});
