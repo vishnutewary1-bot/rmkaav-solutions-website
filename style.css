@@ -2404,3 +2404,526 @@ body.mont-body .mp-step.is-active .mp-outcome {
         margin-top: 10px;
     }
 }
+
+
+/* =========================================================
+   PHASE C.1 — PRICING SECTION (3 tiers)
+   Placeholder INR rates, editable in index.html.
+   Mid tier (AI Automation) is featured with gradient border.
+   ========================================================= */
+body.mont-body .mont-pricing {
+    position: relative;
+    padding: 160px 40px 140px;
+    max-width: 1600px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+}
+
+body.mont-body .mpr-head {
+    max-width: 900px;
+    margin: 0 0 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+body.mont-body .mpr-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 4.4vw, 4.4rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.012em;
+    margin: 0;
+}
+body.mont-body .mpr-title em {
+    font-style: italic;
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+body.mont-body .mpr-sub {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    max-width: 60ch;
+    margin: 0;
+}
+
+body.mont-body .mpr-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+body.mont-body .mpr-tier {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 40px 36px 36px;
+    background: rgba(17, 17, 24, 0.65);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+    transition: background 0.45s ease, border-color 0.45s ease, transform 0.5s ease;
+}
+body.mont-body .mpr-tier::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 1px;
+    background: var(--grad-brand);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+body.mont-body .mpr-tier:hover {
+    background: rgba(22, 22, 31, 0.75);
+    transform: translateY(-3px);
+    border-color: transparent;
+}
+body.mont-body .mpr-tier:hover::before {
+    opacity: 1;
+}
+
+body.mont-body .mpr-tier-featured {
+    background: linear-gradient(160deg, rgba(99, 102, 241, 0.10), rgba(236, 72, 153, 0.06));
+}
+body.mont-body .mpr-tier-featured::before {
+    opacity: 0.8;
+}
+body.mont-body .mpr-tier-featured:hover::before {
+    opacity: 1;
+}
+body.mont-body .mpr-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 12px;
+    border: 1px solid rgba(99, 102, 241, 0.45);
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.08);
+}
+
+body.mont-body .mpr-tier-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+body.mont-body .mpr-tier-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+body.mont-body .mpr-tier-name {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--cream);
+    margin: 0;
+    letter-spacing: -0.005em;
+}
+
+body.mont-body .mpr-price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 16px 0 6px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+}
+body.mont-body .mpr-price-from {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    align-self: center;
+}
+body.mont-body .mpr-price-amount {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 3.2vw, 3rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+}
+body.mont-body .mpr-tier-featured .mpr-price-amount {
+    color: var(--accent);
+}
+body.mont-body .mpr-price-unit {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--cream-muted);
+    letter-spacing: 0.04em;
+}
+
+body.mont-body .mpr-feat {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+body.mont-body .mpr-feat li {
+    position: relative;
+    padding-left: 22px;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--cream-muted);
+}
+body.mont-body .mpr-feat li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 10px;
+    height: 1px;
+    background: var(--accent);
+}
+
+body.mont-body .mpr-cta {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+body.mont-body .mpr-foot {
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--cream-muted);
+}
+body.mont-body .mpr-quote {
+    color: var(--cream);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+body.mont-body .mpr-quote:hover {
+    color: var(--accent);
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    body.mont-body .mpr-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    body.mont-body .mpr-tier-featured {
+        order: -1;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    body.mont-body .mont-pricing {
+        padding: 100px 20px 80px;
+    }
+    body.mont-body .mpr-tier {
+        padding: 32px 24px 28px;
+    }
+}
+
+
+/* =========================================================
+   PHASE C.2 — CONTACT FORM
+   Form submits via mailto: to info@rmkaav.com (script.js).
+   Layout: form (2/3) + aside (1/3) on desktop; stack on mobile.
+   ========================================================= */
+body.mont-body .mont-contact {
+    padding: 160px 40px 180px;
+}
+body.mont-body .mct-head {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+body.mont-body .mct-head .ms-label {
+    display: block;
+    margin-bottom: 36px;
+}
+body.mont-body .mct-head .mc-title {
+    margin-bottom: 28px;
+}
+body.mont-body .mct-sub {
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    max-width: 52ch;
+    margin: 0 0 72px;
+}
+
+body.mont-body .mct-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 80px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+body.mont-body .mct-form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+body.mont-body .mct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+body.mont-body .mct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: none;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}
+body.mont-body .mct-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    display: block;
+}
+body.mont-body .mct-label em {
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 6px;
+}
+
+body.mont-body .mct-form input[type="text"],
+body.mont-body .mct-form input[type="email"],
+body.mont-body .mct-form select,
+body.mont-body .mct-form textarea {
+    width: 100%;
+    background: rgba(17, 17, 24, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--cream);
+    outline: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+}
+body.mont-body .mct-form input::placeholder,
+body.mont-body .mct-form textarea::placeholder {
+    color: var(--cream-muted);
+    opacity: 0.6;
+}
+body.mont-body .mct-form input:focus,
+body.mont-body .mct-form select:focus,
+body.mont-body .mct-form textarea:focus {
+    border-color: var(--accent);
+    background: rgba(22, 22, 31, 0.75);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+body.mont-body .mct-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--cream-muted) 50%), linear-gradient(135deg, var(--cream-muted) 50%, transparent 50%);
+    background-position: calc(100% - 22px) calc(1em + 4px), calc(100% - 16px) calc(1em + 4px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 44px;
+}
+
+body.mont-body .mct-chip-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+body.mont-body .mct-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+body.mont-body .mct-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--cream-muted);
+    background: rgba(17, 17, 24, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+body.mont-body .mct-chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+}
+body.mont-body .mct-chip:hover {
+    color: var(--cream);
+    border-color: var(--cream-muted);
+}
+body.mont-body .mct-chip:has(input:checked) {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(99, 102, 241, 0.12);
+}
+
+body.mont-body .mct-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+body.mont-body .mct-submit {
+    align-self: flex-start;
+    cursor: pointer;
+    background: transparent;
+}
+body.mont-body .mct-disclaimer {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--cream-muted);
+    margin: 0;
+    max-width: 56ch;
+    line-height: 1.55;
+}
+body.mont-body .mct-disclaimer a {
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+    transition: color 0.3s ease;
+}
+body.mont-body .mct-disclaimer a:hover {
+    color: var(--accent);
+}
+
+body.mont-body .mct-status {
+    min-height: 22px;
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: transparent;
+}
+body.mont-body .mct-status.is-error {
+    color: #f87171;
+}
+body.mont-body .mct-status.is-success {
+    color: var(--accent);
+}
+
+body.mont-body .mct-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+}
+body.mont-body .mct-aside-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+body.mont-body .mct-aside-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    margin: 0;
+}
+body.mont-body .mct-email {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.2vw, 2rem);
+    font-weight: 300;
+    color: var(--cream);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    align-self: flex-start;
+}
+body.mont-body .mct-email:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+body.mont-body .mct-meta {
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    margin: 0;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    body.mont-body .mct-body {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+    body.mont-body .mct-aside {
+        border-top: 1px solid var(--border);
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    body.mont-body .mont-contact {
+        padding: 100px 20px 120px;
+    }
+    body.mont-body .mct-row {
+        grid-template-columns: 1fr;
+    }
+    body.mont-body .mct-sub {
+        margin-bottom: 48px;
+    }
+}
+

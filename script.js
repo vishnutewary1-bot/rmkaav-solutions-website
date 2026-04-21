@@ -469,7 +469,7 @@
         const line = document.getElementById("ctaLine");
         if (!line) return;
         const words = line.querySelectorAll(".word");
-        const section = document.getElementById("cta");
+        const section = document.getElementById("contact") || document.getElementById("cta");
 
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -869,6 +869,99 @@
         });
     }
 
+    /* ---------- Contact form (submits via mailto: to info@rmkaav.com) ---------- */
+    function initContactForm() {
+        const form = document.getElementById("contactForm");
+        if (!form) return;
+
+        const status = document.getElementById("mctStatus");
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+
+        // Pre-select service radio when user clicks a pricing CTA
+        const serviceMap = {
+            smm: "Social Media Marketing",
+            ai: "AI Automation",
+            web: "Web Design"
+        };
+        document.querySelectorAll(".mpr-cta[data-service]").forEach((el) => {
+            el.addEventListener("click", () => {
+                const val = serviceMap[el.dataset.service];
+                if (!val) return;
+                const radio = form.querySelector('input[name="service"][value="' + val + '"]');
+                if (radio) radio.checked = true;
+                // Subtle confirmation flash on the chip once form comes into view
+                setTimeout(() => {
+                    const chip = radio ? radio.closest(".mct-chip") : null;
+                    if (chip && useMotion) {
+                        motion.animate(chip, { scale: [1.06, 1] }, { type: "spring", stiffness: 400, damping: 14 });
+                    }
+                }, 600);
+            });
+        });
+
+        const setStatus = (msg, kind) => {
+            if (!status) return;
+            status.textContent = msg;
+            status.classList.remove("is-error", "is-success", "is-info");
+            if (kind) status.classList.add("is-" + kind);
+        };
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            const message = form.message.value.trim();
+
+            if (!name || !email || !message) {
+                setStatus("Please fill in your name, email, and the project brief.", "error");
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                setStatus("That email looks off — double-check it.", "error");
+                return;
+            }
+
+            const company = form.company.value.trim();
+            const service = form.service.value || "Not specified";
+            const budget = form.budget.value || "Not specified";
+
+            const subject = "[" + service + "] New inquiry from " + name;
+            const lines = [
+                "Name: " + name,
+                "Email: " + email
+            ];
+            if (company) lines.push("Company: " + company);
+            lines.push("Service: " + service);
+            lines.push("Budget: " + budget);
+            lines.push("");
+            lines.push("— Message —");
+            lines.push(message);
+            lines.push("");
+            lines.push("— Sent from rmkaav.com —");
+            const body = lines.join("\n");
+
+            const mailto = "mailto:info@rmkaav.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+            setStatus("Opening your email app — hit send to deliver.", "success");
+
+            // Small delay so the status message is visible before mailto takes over
+            setTimeout(() => {
+                window.location.href = mailto;
+            }, 450);
+        });
+
+        // Subtle Motion flash on focus (accent glow)
+        if (useMotion) {
+            form.querySelectorAll("input, textarea, select").forEach((el) => {
+                el.addEventListener("focus", () => {
+                    motion.animate(el, { scale: [0.995, 1] }, { type: "spring", stiffness: 400, damping: 20 });
+                });
+            });
+        }
+    }
+
     /* ---------- Active section → nav link highlight ---------- */
     function initActiveNav() {
         const map = [
@@ -876,7 +969,8 @@
             { sel: "#services", href: "#services" },
             { sel: "#work", href: "#work" },
             { sel: "#process", href: "#process" },
-            { sel: "#cta", href: "#cta" }
+            { sel: "#pricing", href: "#pricing" },
+            { sel: "#contact", href: "#contact" }
         ];
         const links = document.querySelectorAll(".mn-links a");
         const setActive = (href) => {
@@ -910,6 +1004,7 @@
         initProcess();
         initStats();
         initCta();
+        initContactForm();
         initCursor();
         initProgressBar();
         initMagnetic();
