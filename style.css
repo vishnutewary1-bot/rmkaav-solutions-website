@@ -2076,5 +2076,854 @@ body.mont-body .mo-panel {
 }
 
 
+/* =========================================================
+   PHASE B.1 — STATS BENTO REBUILD
+   Bento grid: 3 cells row-1, 1 wide cell row-2 (highlight).
+   Hover reveals a 1-line context under each number.
+   ========================================================= */
+body.mont-body .mt-head {
+    max-width: 1600px;
+    margin: 0 auto 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+body.mont-body .mt-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+body.mont-body .mt-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 4.2vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.012em;
+    margin: 0;
+    max-width: 900px;
+}
+body.mont-body .mt-title em {
+    font-style: italic;
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
 
+body.mont-body .mt-bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+body.mont-body .mt-cell {
+    position: relative;
+    padding: 36px 32px 32px;
+    background: rgba(17, 17, 24, 0.55);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+    transition: background 0.45s ease, border-color 0.45s ease, transform 0.5s ease;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+body.mont-body .mt-cell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    padding: 1px;
+    background: var(--grad-brand);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+body.mont-body .mt-cell:hover {
+    background: rgba(22, 22, 31, 0.72);
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+body.mont-body .mt-cell:hover::before {
+    opacity: 1;
+}
+
+body.mont-body .mt-icon {
+    width: 26px;
+    height: 26px;
+    color: var(--cream-muted);
+    transition: color 0.4s ease, transform 0.5s ease;
+    flex-shrink: 0;
+}
+body.mont-body .mt-cell:hover .mt-icon {
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+body.mont-body .mt-cell .mt-num {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 5.2vw, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.022em;
+    margin-top: auto;
+    display: block;
+}
+body.mont-body .mt-cell .mt-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    display: block;
+}
+body.mont-body .mt-cell .mt-context {
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    margin: 0;
+    max-width: 52ch;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.45s ease, max-height 0.5s ease, transform 0.45s ease;
+}
+body.mont-body .mt-cell:hover .mt-context,
+body.mont-body .mt-cell:focus-within .mt-context {
+    opacity: 1;
+    max-height: 120px;
+    transform: translateY(0);
+    transition-delay: 0.05s;
+}
+
+/* Wide highlight cell (infinity) */
+body.mont-body .mt-cell-wide {
+    grid-column: span 3;
+    min-height: 180px;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 48px;
+    padding: 40px 44px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+}
+body.mont-body .mt-cell-wide::before {
+    opacity: 0.45;
+}
+body.mont-body .mt-cell-wide:hover::before {
+    opacity: 1;
+}
+body.mont-body .mt-cell-wide .mt-icon {
+    width: 34px;
+    height: 34px;
+    color: var(--accent);
+}
+body.mont-body .mt-cell-wide .mt-wide-num {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+body.mont-body .mt-cell-wide .mt-num {
+    font-size: clamp(4rem, 6.8vw, 6.6rem);
+    color: var(--accent);
+    margin-top: 0;
+}
+body.mont-body .mt-cell-wide .mt-label {
+    color: var(--cream);
+}
+body.mont-body .mt-cell-wide .mt-context {
+    opacity: 1;
+    max-height: none;
+    overflow: visible;
+    transform: none;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--cream);
+    max-width: 58ch;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    body.mont-body .mt-bento {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    body.mont-body .mt-cell-wide {
+        grid-column: span 2;
+        grid-template-columns: auto 1fr;
+        gap: 28px;
+    }
+    body.mont-body .mt-cell-wide .mt-context {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+    }
+}
+
+/* Mobile — stack, always show context, shrink hero */
+@media (max-width: 600px) {
+    body.mont-body .mt-bento {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    body.mont-body .mt-cell,
+    body.mont-body .mt-cell-wide {
+        grid-column: span 1;
+        padding: 28px 24px;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    body.mont-body .mt-cell .mt-context {
+        opacity: 1;
+        max-height: none;
+        overflow: visible;
+        transform: none;
+    }
+    body.mont-body .mt-cell-wide .mt-num {
+        font-size: 3.4rem;
+    }
+    body.mont-body .mt-head {
+        margin-bottom: 36px;
+    }
+}
+
+
+/* =========================================================
+   PHASE B.2 — PROCESS TIMELINE RAIL
+   Vertical gradient rail connects 5 steps; dots mark each
+   station; a fill overlay scrubs in as user scrolls through.
+   Hover a step to reveal the per-step "Outcome →" line.
+   Additive — layers onto existing .mp-step rules.
+   ========================================================= */
+body.mont-body .mp-rail-host {
+    position: relative;
+    padding-left: 56px;
+}
+body.mont-body .mp-rail,
+body.mont-body .mp-rail-fill {
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: 48px;
+    width: 1px;
+    pointer-events: none;
+}
+body.mont-body .mp-rail {
+    background: var(--border);
+}
+body.mont-body .mp-rail-fill {
+    background: linear-gradient(180deg, var(--accent), var(--accent-2) 60%, var(--accent-3));
+    transform-origin: top center;
+    transform: scaleY(0);
+    opacity: 0.9;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+}
+
+body.mont-body .mp-rail-host .mp-step {
+    position: relative;
+}
+body.mont-body .mp-rail-host .mp-dot {
+    position: absolute;
+    left: -41px;
+    top: 58px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--cream-muted);
+    transition: background 0.5s ease, border-color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease;
+    z-index: 2;
+}
+body.mont-body .mp-rail-host .mp-step:hover .mp-dot,
+body.mont-body .mp-rail-host .mp-step.is-active .mp-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.16), 0 0 16px rgba(99, 102, 241, 0.55);
+}
+
+body.mont-body .mp-outcome {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.45s ease, max-height 0.45s ease, transform 0.45s ease;
+}
+body.mont-body .mp-step:hover .mp-outcome,
+body.mont-body .mp-step:focus-within .mp-outcome,
+body.mont-body .mp-step.is-active .mp-outcome {
+    opacity: 1;
+    max-height: 40px;
+    transform: translateY(0);
+    transition-delay: 0.08s;
+}
+
+/* Tablet / mobile — tighter rail + always-visible outcome */
+@media (max-width: 720px) {
+    body.mont-body .mp-rail-host {
+        padding-left: 34px;
+    }
+    body.mont-body .mp-rail,
+    body.mont-body .mp-rail-fill {
+        left: 11px;
+    }
+    body.mont-body .mp-rail-host .mp-dot {
+        left: -29px;
+        top: 42px;
+        width: 9px;
+        height: 9px;
+    }
+    body.mont-body .mp-outcome {
+        opacity: 1;
+        max-height: 80px;
+        transform: none;
+        margin-top: 10px;
+    }
+}
+
+
+/* =========================================================
+   PHASE C.1 — PRICING SECTION (3 tiers)
+   Placeholder INR rates, editable in index.html.
+   Mid tier (AI Automation) is featured with gradient border.
+   ========================================================= */
+body.mont-body .mont-pricing {
+    position: relative;
+    padding: 160px 40px 140px;
+    max-width: 1600px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+}
+
+body.mont-body .mpr-head {
+    max-width: 900px;
+    margin: 0 0 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+body.mont-body .mpr-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 4.4vw, 4.4rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.012em;
+    margin: 0;
+}
+body.mont-body .mpr-title em {
+    font-style: italic;
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+body.mont-body .mpr-sub {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    max-width: 60ch;
+    margin: 0;
+}
+
+body.mont-body .mpr-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+body.mont-body .mpr-tier {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 40px 36px 36px;
+    background: rgba(17, 17, 24, 0.65);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+    transition: background 0.45s ease, border-color 0.45s ease, transform 0.5s ease;
+}
+body.mont-body .mpr-tier::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 1px;
+    background: var(--grad-brand);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+body.mont-body .mpr-tier:hover {
+    background: rgba(22, 22, 31, 0.75);
+    transform: translateY(-3px);
+    border-color: transparent;
+}
+body.mont-body .mpr-tier:hover::before {
+    opacity: 1;
+}
+
+body.mont-body .mpr-tier-featured {
+    background: linear-gradient(160deg, rgba(99, 102, 241, 0.10), rgba(236, 72, 153, 0.06));
+}
+body.mont-body .mpr-tier-featured::before {
+    opacity: 0.8;
+}
+body.mont-body .mpr-tier-featured:hover::before {
+    opacity: 1;
+}
+body.mont-body .mpr-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 12px;
+    border: 1px solid rgba(99, 102, 241, 0.45);
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.08);
+}
+
+body.mont-body .mpr-tier-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+body.mont-body .mpr-tier-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+body.mont-body .mpr-tier-name {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--cream);
+    margin: 0;
+    letter-spacing: -0.005em;
+}
+
+body.mont-body .mpr-price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 16px 0 6px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+}
+body.mont-body .mpr-price-from {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    align-self: center;
+}
+body.mont-body .mpr-price-amount {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 3.2vw, 3rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+}
+body.mont-body .mpr-tier-featured .mpr-price-amount {
+    color: var(--accent);
+}
+body.mont-body .mpr-price-unit {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--cream-muted);
+    letter-spacing: 0.04em;
+}
+
+body.mont-body .mpr-feat {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+body.mont-body .mpr-feat li {
+    position: relative;
+    padding-left: 22px;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--cream-muted);
+}
+body.mont-body .mpr-feat li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 10px;
+    height: 1px;
+    background: var(--accent);
+}
+
+body.mont-body .mpr-cta {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+body.mont-body .mpr-foot {
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--cream-muted);
+}
+body.mont-body .mpr-quote {
+    color: var(--cream);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+body.mont-body .mpr-quote:hover {
+    color: var(--accent);
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    body.mont-body .mpr-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    body.mont-body .mpr-tier-featured {
+        order: -1;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    body.mont-body .mont-pricing {
+        padding: 100px 20px 80px;
+    }
+    body.mont-body .mpr-tier {
+        padding: 32px 24px 28px;
+    }
+}
+
+
+/* =========================================================
+   PHASE C.2 — CONTACT FORM
+   Form submits via mailto: to info@rmkaav.com (script.js).
+   Layout: form (2/3) + aside (1/3) on desktop; stack on mobile.
+   ========================================================= */
+body.mont-body .mont-contact {
+    padding: 160px 40px 180px;
+}
+body.mont-body .mct-head {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+body.mont-body .mct-head .ms-label {
+    display: block;
+    margin-bottom: 36px;
+}
+body.mont-body .mct-head .mc-title {
+    margin-bottom: 28px;
+}
+body.mont-body .mct-sub {
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    max-width: 52ch;
+    margin: 0 0 72px;
+}
+
+body.mont-body .mct-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 80px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+body.mont-body .mct-form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+body.mont-body .mct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+body.mont-body .mct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: none;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}
+body.mont-body .mct-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    display: block;
+}
+body.mont-body .mct-label em {
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 6px;
+}
+
+body.mont-body .mct-form input[type="text"],
+body.mont-body .mct-form input[type="email"],
+body.mont-body .mct-form select,
+body.mont-body .mct-form textarea {
+    width: 100%;
+    background: rgba(17, 17, 24, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--cream);
+    outline: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+}
+body.mont-body .mct-form input::placeholder,
+body.mont-body .mct-form textarea::placeholder {
+    color: var(--cream-muted);
+    opacity: 0.6;
+}
+body.mont-body .mct-form input:focus,
+body.mont-body .mct-form select:focus,
+body.mont-body .mct-form textarea:focus {
+    border-color: var(--accent);
+    background: rgba(22, 22, 31, 0.75);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+body.mont-body .mct-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--cream-muted) 50%), linear-gradient(135deg, var(--cream-muted) 50%, transparent 50%);
+    background-position: calc(100% - 22px) calc(1em + 4px), calc(100% - 16px) calc(1em + 4px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 44px;
+}
+
+body.mont-body .mct-chip-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+body.mont-body .mct-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+body.mont-body .mct-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--cream-muted);
+    background: rgba(17, 17, 24, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+body.mont-body .mct-chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+}
+body.mont-body .mct-chip:hover {
+    color: var(--cream);
+    border-color: var(--cream-muted);
+}
+body.mont-body .mct-chip:has(input:checked) {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(99, 102, 241, 0.12);
+}
+
+body.mont-body .mct-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+body.mont-body .mct-submit {
+    align-self: flex-start;
+    cursor: pointer;
+    background: transparent;
+}
+body.mont-body .mct-disclaimer {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--cream-muted);
+    margin: 0;
+    max-width: 56ch;
+    line-height: 1.55;
+}
+body.mont-body .mct-disclaimer a {
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+    transition: color 0.3s ease;
+}
+body.mont-body .mct-disclaimer a:hover {
+    color: var(--accent);
+}
+
+body.mont-body .mct-status {
+    min-height: 22px;
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: transparent;
+}
+body.mont-body .mct-status.is-error {
+    color: #f87171;
+}
+body.mont-body .mct-status.is-success {
+    color: var(--accent);
+}
+
+body.mont-body .mct-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+}
+body.mont-body .mct-aside-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+body.mont-body .mct-aside-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    margin: 0;
+}
+body.mont-body .mct-email {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.2vw, 2rem);
+    font-weight: 300;
+    color: var(--cream);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    align-self: flex-start;
+}
+body.mont-body .mct-email:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+body.mont-body .mct-meta {
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    margin: 0;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    body.mont-body .mct-body {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+    body.mont-body .mct-aside {
+        border-top: 1px solid var(--border);
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    body.mont-body .mont-contact {
+        padding: 100px 20px 120px;
+    }
+    body.mont-body .mct-row {
+        grid-template-columns: 1fr;
+    }
+    body.mont-body .mct-sub {
+        margin-bottom: 48px;
+    }
+}
 

@@ -5,7 +5,7 @@ window.RMKAAV_CONFIG = {
     EMAILJS_SERVICE_ID: 'service_yqvq0b6',
     EMAILJS_TEMPLATE_ID: 'template_pxctw58',
     EMAILJS_NEWSLETTER_TEMPLATE_ID: 'template_pxctw58',
-    CONTACT_EMAIL: 'vishnutewary1@gmail.com',
+    CONTACT_EMAIL: 'info@rmkaav.com',
 
     // reCAPTCHA v3 — get your key at https://www.google.com/recaptcha/admin
     RECAPTCHA_SITE_KEY: '6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd',

@@ -328,24 +328,48 @@
         });
     }
 
-    /* ---------- Process steps ---------- */
+    /* ---------- Process steps (entrance via Motion spring, scroll-scrub line via GSAP) ---------- */
     function initProcess() {
         const steps = document.querySelectorAll(".mont-process .mp-step");
         if (!steps.length) return;
+
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+
+        // Scrub the vertical rail fill across the whole process section
+        const railFill = document.querySelector(".mont-process .mp-rail-fill");
+        const railHost = document.querySelector(".mont-process .mp-rail-host");
+        if (railFill && railHost) {
+            gsap.to(railFill, {
+                scaleY: 1,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: railHost,
+                    start: "top 65%",
+                    end: "bottom 70%",
+                    scrub: 0.6
+                }
+            });
+        }
 
         steps.forEach((step) => {
             const num = step.querySelector(".mp-num");
             const line = step.querySelector(".mp-line");
 
-            gsap.to(step, {
-                opacity: 1,
-                y: 0,
-                duration: 0.9,
-                ease: "expo.out",
-                scrollTrigger: {
-                    trigger: step,
-                    start: "top 82%",
-                    toggleActions: "play none none none"
+            ScrollTrigger.create({
+                trigger: step,
+                start: "top 82%",
+                once: true,
+                onEnter: () => {
+                    if (useMotion) {
+                        motion.animate(
+                            step,
+                            { opacity: 1, y: 0 },
+                            { type: "spring", stiffness: 140, damping: 16, mass: 1 }
+                        );
+                    } else {
+                        gsap.to(step, { opacity: 1, y: 0, duration: 0.9, ease: "expo.out" });
+                    }
                 }
             });
 
@@ -363,19 +387,33 @@
                 });
             }
 
-            if (num) {
-                ScrollTrigger.create({
-                    trigger: step,
-                    start: "top 70%",
-                    onEnter: () => gsap.to(num, { color: accent, duration: 0.6, ease: "expo.out" }),
-                    onLeaveBack: () => gsap.to(num, { color: creamMuted, duration: 0.5, ease: "expo.out" })
-                });
-            }
+            ScrollTrigger.create({
+                trigger: step,
+                start: "top 70%",
+                end: "bottom 60%",
+                onEnter: () => {
+                    step.classList.add("is-active");
+                    if (num) gsap.to(num, { color: accent, duration: 0.6, ease: "expo.out" });
+                },
+                onLeave: () => {
+                    step.classList.remove("is-active");
+                },
+                onEnterBack: () => {
+                    step.classList.add("is-active");
+                },
+                onLeaveBack: () => {
+                    step.classList.remove("is-active");
+                    if (num) gsap.to(num, { color: creamMuted, duration: 0.5, ease: "expo.out" });
+                }
+            });
         });
     }
 
-    /* ---------- Stats count-up ---------- */
+    /* ---------- Stats count-up + Motion scale-pop ---------- */
     function initStats() {
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+
         const nums = document.querySelectorAll(".mt-num[data-count]");
         nums.forEach((el, i) => {
             const target = parseInt(el.dataset.count, 10);
@@ -396,9 +434,34 @@
                             el.textContent = Math.round(obj.v);
                         }
                     });
+                    if (useMotion) {
+                        motion.animate(
+                            el,
+                            { scale: [0.8, 1] },
+                            { type: "spring", stiffness: 220, damping: 14, mass: 0.7, delay: i * 0.04 }
+                        );
+                    }
                 }
             });
         });
+
+        if (useMotion) {
+            const inf = document.querySelector(".mt-num-inf");
+            if (inf) {
+                ScrollTrigger.create({
+                    trigger: inf,
+                    start: "top 88%",
+                    once: true,
+                    onEnter: () => {
+                        motion.animate(
+                            inf,
+                            { scale: [0.8, 1] },
+                            { type: "spring", stiffness: 220, damping: 14, mass: 0.7, delay: nums.length * 0.04 }
+                        );
+                    }
+                });
+            }
+        }
     }
 
     /* ---------- CTA word reveal ---------- */
@@ -406,7 +469,7 @@
         const line = document.getElementById("ctaLine");
         if (!line) return;
         const words = line.querySelectorAll(".word");
-        const section = document.getElementById("cta");
+        const section = document.getElementById("contact") || document.getElementById("cta");
 
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -456,33 +519,53 @@
         const ring = cursor.querySelector(".mc-ring");
         const dot = cursor.querySelector(".mc-dot");
 
-        let targetX = window.innerWidth / 2;
-        let targetY = window.innerHeight / 2;
-        let ringX = targetX, ringY = targetY;
-        let dotX = targetX, dotY = targetY;
+        const motion = window.Motion;
 
-        const setXRing = gsap.quickSetter(ring, "x", "px");
-        const setYRing = gsap.quickSetter(ring, "y", "px");
-        const setXDot = gsap.quickSetter(dot, "x", "px");
-        const setYDot = gsap.quickSetter(dot, "y", "px");
+        if (motion && motion.animate) {
+            const { animate } = motion;
+            let latestX = window.innerWidth / 2;
+            let latestY = window.innerHeight / 2;
+            let pending = false;
 
-        window.addEventListener("mousemove", (e) => {
-            targetX = e.clientX;
-            targetY = e.clientY;
-        }, { passive: true });
+            window.addEventListener("mousemove", (e) => {
+                latestX = e.clientX;
+                latestY = e.clientY;
+                if (pending) return;
+                pending = true;
+                requestAnimationFrame(() => {
+                    animate(ring, { x: latestX, y: latestY }, { type: "spring", stiffness: 220, damping: 28, mass: 0.6 });
+                    animate(dot, { x: latestX, y: latestY }, { type: "spring", stiffness: 600, damping: 40, mass: 0.3 });
+                    pending = false;
+                });
+            }, { passive: true });
+        } else {
+            let targetX = window.innerWidth / 2;
+            let targetY = window.innerHeight / 2;
+            let ringX = targetX, ringY = targetY;
+            let dotX = targetX, dotY = targetY;
 
-        gsap.ticker.add(() => {
-            ringX += (targetX - ringX) * 0.18;
-            ringY += (targetY - ringY) * 0.18;
-            dotX += (targetX - dotX) * 0.42;
-            dotY += (targetY - dotY) * 0.42;
-            setXRing(ringX);
-            setYRing(ringY);
-            setXDot(dotX);
-            setYDot(dotY);
-        });
+            const setXRing = gsap.quickSetter(ring, "x", "px");
+            const setYRing = gsap.quickSetter(ring, "y", "px");
+            const setXDot = gsap.quickSetter(dot, "x", "px");
+            const setYDot = gsap.quickSetter(dot, "y", "px");
 
-        // Link-hover state
+            window.addEventListener("mousemove", (e) => {
+                targetX = e.clientX;
+                targetY = e.clientY;
+            }, { passive: true });
+
+            gsap.ticker.add(() => {
+                ringX += (targetX - ringX) * 0.18;
+                ringY += (targetY - ringY) * 0.18;
+                dotX += (targetX - dotX) * 0.42;
+                dotY += (targetY - dotY) * 0.42;
+                setXRing(ringX);
+                setYRing(ringY);
+                setXDot(dotX);
+                setYDot(dotY);
+            });
+        }
+
         const linkSelector = "a, button, .mn-cta, .mc-btn, .mw-apply";
         document.querySelectorAll(linkSelector).forEach((el) => {
             el.addEventListener("mouseenter", () => body.classList.add("mont-cursor-link"));
@@ -507,22 +590,52 @@
         update();
     }
 
-    /* ---------- Magnetic buttons ---------- */
+    /* ---------- Magnetic buttons (Motion spring physics + press feedback) ---------- */
     function initMagnetic() {
         if (!window.matchMedia("(hover: hover)").matches) return;
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
         const targets = document.querySelectorAll(".mn-cta, .mc-btn, .mw-apply");
         targets.forEach((el) => {
             const strength = 0.3;
+            let pressed = false;
+
             el.addEventListener("mousemove", (e) => {
                 const r = el.getBoundingClientRect();
                 const cx = r.left + r.width / 2;
                 const cy = r.top + r.height / 2;
                 const dx = (e.clientX - cx) * strength;
                 const dy = (e.clientY - cy) * strength;
-                gsap.to(el, { x: dx, y: dy, duration: 0.4, ease: "power3.out" });
+                if (useMotion) {
+                    motion.animate(el, { x: dx, y: dy }, { type: "spring", stiffness: 250, damping: 18, mass: 0.8 });
+                } else {
+                    gsap.to(el, { x: dx, y: dy, duration: 0.4, ease: "power3.out" });
+                }
             });
             el.addEventListener("mouseleave", () => {
-                gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
+                if (useMotion) {
+                    motion.animate(el, { x: 0, y: 0, scale: 1 }, { type: "spring", stiffness: 180, damping: 14, mass: 0.8 });
+                } else {
+                    gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
+                }
+                pressed = false;
+            });
+            el.addEventListener("mousedown", () => {
+                pressed = true;
+                if (useMotion) {
+                    motion.animate(el, { scale: 0.95 }, { type: "spring", stiffness: 500, damping: 25 });
+                } else {
+                    gsap.to(el, { scale: 0.95, duration: 0.15, ease: "power2.out" });
+                }
+            });
+            el.addEventListener("mouseup", () => {
+                if (!pressed) return;
+                pressed = false;
+                if (useMotion) {
+                    motion.animate(el, { scale: 1 }, { type: "spring", stiffness: 400, damping: 12 });
+                } else {
+                    gsap.to(el, { scale: 1, duration: 0.4, ease: "elastic.out(1, 0.5)" });
+                }
             });
         });
     }
@@ -756,6 +869,99 @@
         });
     }
 
+    /* ---------- Contact form (submits via mailto: to info@rmkaav.com) ---------- */
+    function initContactForm() {
+        const form = document.getElementById("contactForm");
+        if (!form) return;
+
+        const status = document.getElementById("mctStatus");
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+
+        // Pre-select service radio when user clicks a pricing CTA
+        const serviceMap = {
+            smm: "Social Media Marketing",
+            ai: "AI Automation",
+            web: "Web Design"
+        };
+        document.querySelectorAll(".mpr-cta[data-service]").forEach((el) => {
+            el.addEventListener("click", () => {
+                const val = serviceMap[el.dataset.service];
+                if (!val) return;
+                const radio = form.querySelector('input[name="service"][value="' + val + '"]');
+                if (radio) radio.checked = true;
+                // Subtle confirmation flash on the chip once form comes into view
+                setTimeout(() => {
+                    const chip = radio ? radio.closest(".mct-chip") : null;
+                    if (chip && useMotion) {
+                        motion.animate(chip, { scale: [1.06, 1] }, { type: "spring", stiffness: 400, damping: 14 });
+                    }
+                }, 600);
+            });
+        });
+
+        const setStatus = (msg, kind) => {
+            if (!status) return;
+            status.textContent = msg;
+            status.classList.remove("is-error", "is-success", "is-info");
+            if (kind) status.classList.add("is-" + kind);
+        };
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            const message = form.message.value.trim();
+
+            if (!name || !email || !message) {
+                setStatus("Please fill in your name, email, and the project brief.", "error");
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                setStatus("That email looks off — double-check it.", "error");
+                return;
+            }
+
+            const company = form.company.value.trim();
+            const service = form.service.value || "Not specified";
+            const budget = form.budget.value || "Not specified";
+
+            const subject = "[" + service + "] New inquiry from " + name;
+            const lines = [
+                "Name: " + name,
+                "Email: " + email
+            ];
+            if (company) lines.push("Company: " + company);
+            lines.push("Service: " + service);
+            lines.push("Budget: " + budget);
+            lines.push("");
+            lines.push("— Message —");
+            lines.push(message);
+            lines.push("");
+            lines.push("— Sent from rmkaav.com —");
+            const body = lines.join("\n");
+
+            const mailto = "mailto:info@rmkaav.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+            setStatus("Opening your email app — hit send to deliver.", "success");
+
+            // Small delay so the status message is visible before mailto takes over
+            setTimeout(() => {
+                window.location.href = mailto;
+            }, 450);
+        });
+
+        // Subtle Motion flash on focus (accent glow)
+        if (useMotion) {
+            form.querySelectorAll("input, textarea, select").forEach((el) => {
+                el.addEventListener("focus", () => {
+                    motion.animate(el, { scale: [0.995, 1] }, { type: "spring", stiffness: 400, damping: 20 });
+                });
+            });
+        }
+    }
+
     /* ---------- Active section → nav link highlight ---------- */
     function initActiveNav() {
         const map = [
@@ -763,7 +969,8 @@
             { sel: "#services", href: "#services" },
             { sel: "#work", href: "#work" },
             { sel: "#process", href: "#process" },
-            { sel: "#cta", href: "#cta" }
+            { sel: "#pricing", href: "#pricing" },
+            { sel: "#contact", href: "#contact" }
         ];
         const links = document.querySelectorAll(".mn-links a");
         const setActive = (href) => {
@@ -797,6 +1004,7 @@
         initProcess();
         initStats();
         initCta();
+        initContactForm();
         initCursor();
         initProgressBar();
         initMagnetic();
