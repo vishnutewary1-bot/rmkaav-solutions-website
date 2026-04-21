@@ -2076,5 +2076,331 @@ body.mont-body .mo-panel {
 }
 
 
+/* =========================================================
+   PHASE B.1 — STATS BENTO REBUILD
+   Bento grid: 3 cells row-1, 1 wide cell row-2 (highlight).
+   Hover reveals a 1-line context under each number.
+   ========================================================= */
+body.mont-body .mt-head {
+    max-width: 1600px;
+    margin: 0 auto 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+body.mont-body .mt-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+}
+body.mont-body .mt-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 4.2vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.012em;
+    margin: 0;
+    max-width: 900px;
+}
+body.mont-body .mt-title em {
+    font-style: italic;
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+body.mont-body .mt-bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+body.mont-body .mt-cell {
+    position: relative;
+    padding: 36px 32px 32px;
+    background: rgba(17, 17, 24, 0.55);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+    transition: background 0.45s ease, border-color 0.45s ease, transform 0.5s ease;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+body.mont-body .mt-cell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    padding: 1px;
+    background: var(--grad-brand);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+body.mont-body .mt-cell:hover {
+    background: rgba(22, 22, 31, 0.72);
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+body.mont-body .mt-cell:hover::before {
+    opacity: 1;
+}
+
+body.mont-body .mt-icon {
+    width: 26px;
+    height: 26px;
+    color: var(--cream-muted);
+    transition: color 0.4s ease, transform 0.5s ease;
+    flex-shrink: 0;
+}
+body.mont-body .mt-cell:hover .mt-icon {
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+body.mont-body .mt-cell .mt-num {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 5.2vw, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.022em;
+    margin-top: auto;
+    display: block;
+}
+body.mont-body .mt-cell .mt-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    display: block;
+}
+body.mont-body .mt-cell .mt-context {
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    margin: 0;
+    max-width: 52ch;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.45s ease, max-height 0.5s ease, transform 0.45s ease;
+}
+body.mont-body .mt-cell:hover .mt-context,
+body.mont-body .mt-cell:focus-within .mt-context {
+    opacity: 1;
+    max-height: 120px;
+    transform: translateY(0);
+    transition-delay: 0.05s;
+}
+
+/* Wide highlight cell (infinity) */
+body.mont-body .mt-cell-wide {
+    grid-column: span 3;
+    min-height: 180px;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 48px;
+    padding: 40px 44px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+}
+body.mont-body .mt-cell-wide::before {
+    opacity: 0.45;
+}
+body.mont-body .mt-cell-wide:hover::before {
+    opacity: 1;
+}
+body.mont-body .mt-cell-wide .mt-icon {
+    width: 34px;
+    height: 34px;
+    color: var(--accent);
+}
+body.mont-body .mt-cell-wide .mt-wide-num {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+body.mont-body .mt-cell-wide .mt-num {
+    font-size: clamp(4rem, 6.8vw, 6.6rem);
+    color: var(--accent);
+    margin-top: 0;
+}
+body.mont-body .mt-cell-wide .mt-label {
+    color: var(--cream);
+}
+body.mont-body .mt-cell-wide .mt-context {
+    opacity: 1;
+    max-height: none;
+    overflow: visible;
+    transform: none;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--cream);
+    max-width: 58ch;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    body.mont-body .mt-bento {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    body.mont-body .mt-cell-wide {
+        grid-column: span 2;
+        grid-template-columns: auto 1fr;
+        gap: 28px;
+    }
+    body.mont-body .mt-cell-wide .mt-context {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+    }
+}
+
+/* Mobile — stack, always show context, shrink hero */
+@media (max-width: 600px) {
+    body.mont-body .mt-bento {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    body.mont-body .mt-cell,
+    body.mont-body .mt-cell-wide {
+        grid-column: span 1;
+        padding: 28px 24px;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    body.mont-body .mt-cell .mt-context {
+        opacity: 1;
+        max-height: none;
+        overflow: visible;
+        transform: none;
+    }
+    body.mont-body .mt-cell-wide .mt-num {
+        font-size: 3.4rem;
+    }
+    body.mont-body .mt-head {
+        margin-bottom: 36px;
+    }
+}
 
 
+/* =========================================================
+   PHASE B.2 — PROCESS TIMELINE RAIL
+   Vertical gradient rail connects 5 steps; dots mark each
+   station; a fill overlay scrubs in as user scrolls through.
+   Hover a step to reveal the per-step "Outcome →" line.
+   Additive — layers onto existing .mp-step rules.
+   ========================================================= */
+body.mont-body .mp-rail-host {
+    position: relative;
+    padding-left: 56px;
+}
+body.mont-body .mp-rail,
+body.mont-body .mp-rail-fill {
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: 48px;
+    width: 1px;
+    pointer-events: none;
+}
+body.mont-body .mp-rail {
+    background: var(--border);
+}
+body.mont-body .mp-rail-fill {
+    background: linear-gradient(180deg, var(--accent), var(--accent-2) 60%, var(--accent-3));
+    transform-origin: top center;
+    transform: scaleY(0);
+    opacity: 0.9;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+}
+
+body.mont-body .mp-rail-host .mp-step {
+    position: relative;
+}
+body.mont-body .mp-rail-host .mp-dot {
+    position: absolute;
+    left: -41px;
+    top: 58px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--cream-muted);
+    transition: background 0.5s ease, border-color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease;
+    z-index: 2;
+}
+body.mont-body .mp-rail-host .mp-step:hover .mp-dot,
+body.mont-body .mp-rail-host .mp-step.is-active .mp-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.16), 0 0 16px rgba(99, 102, 241, 0.55);
+}
+
+body.mont-body .mp-outcome {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.45s ease, max-height 0.45s ease, transform 0.45s ease;
+}
+body.mont-body .mp-step:hover .mp-outcome,
+body.mont-body .mp-step:focus-within .mp-outcome,
+body.mont-body .mp-step.is-active .mp-outcome {
+    opacity: 1;
+    max-height: 40px;
+    transform: translateY(0);
+    transition-delay: 0.08s;
+}
+
+/* Tablet / mobile — tighter rail + always-visible outcome */
+@media (max-width: 720px) {
+    body.mont-body .mp-rail-host {
+        padding-left: 34px;
+    }
+    body.mont-body .mp-rail,
+    body.mont-body .mp-rail-fill {
+        left: 11px;
+    }
+    body.mont-body .mp-rail-host .mp-dot {
+        left: -29px;
+        top: 42px;
+        width: 9px;
+        height: 9px;
+    }
+    body.mont-body .mp-outcome {
+        opacity: 1;
+        max-height: 80px;
+        transform: none;
+        margin-top: 10px;
+    }
+}

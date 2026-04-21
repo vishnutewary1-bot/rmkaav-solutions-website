@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="mont-body">
 
@@ -376,44 +376,57 @@
         <span class="ms-label">(04) &mdash; How we work</span>
         <h3 class="mp-title">Five steps. No mystery.</h3>
 
-        <ol class="mp-list">
+        <ol class="mp-list mp-rail-host">
+            <span class="mp-rail" aria-hidden="true"></span>
+            <span class="mp-rail-fill" aria-hidden="true"></span>
+
             <li class="mp-step">
+                <span class="mp-dot" aria-hidden="true"></span>
                 <div class="mp-num">01</div>
                 <div class="mp-body">
                     <h5>Discovery</h5>
                     <p>We learn your business, your numbers, and the people you're trying to reach.</p>
+                    <span class="mp-outcome">Outcome &rarr; a one-page brief you can point at.</span>
                 </div>
                 <span class="mp-line"></span>
             </li>
             <li class="mp-step">
+                <span class="mp-dot" aria-hidden="true"></span>
                 <div class="mp-num">02</div>
                 <div class="mp-body">
                     <h5>Strategy</h5>
                     <p>A clear plan: what to build, what to run, what to measure, in what order.</p>
+                    <span class="mp-outcome">Outcome &rarr; a roadmap with owners, dates, and north-star metrics.</span>
                 </div>
                 <span class="mp-line"></span>
             </li>
             <li class="mp-step">
+                <span class="mp-dot" aria-hidden="true"></span>
                 <div class="mp-num">03</div>
                 <div class="mp-body">
                     <h5>Craft</h5>
                     <p>Design, copy, automations, code. Tight iterations until it feels right.</p>
+                    <span class="mp-outcome">Outcome &rarr; weekly demos. You approve before we ship.</span>
                 </div>
                 <span class="mp-line"></span>
             </li>
             <li class="mp-step">
+                <span class="mp-dot" aria-hidden="true"></span>
                 <div class="mp-num">04</div>
                 <div class="mp-body">
                     <h5>Launch</h5>
                     <p>Ship fast, instrument everything, watch the first week like a hawk.</p>
+                    <span class="mp-outcome">Outcome &rarr; live site, analytics wired, first-week report in hand.</span>
                 </div>
                 <span class="mp-line"></span>
             </li>
             <li class="mp-step">
+                <span class="mp-dot" aria-hidden="true"></span>
                 <div class="mp-num">05</div>
                 <div class="mp-body">
                     <h5>Grow</h5>
                     <p>Monthly reviews, sharp experiments, compounding gains. Work doesn't end at launch.</p>
+                    <span class="mp-outcome">Outcome &rarr; monthly review deck, next-sprint backlog, steady lift.</span>
                 </div>
                 <span class="mp-line"></span>
             </li>
@@ -424,23 +437,53 @@
          STATS — count-up
          ========================================================= -->
     <section class="mont-stats" id="stats">
-        <div class="mt-grid">
-            <div class="mt-item">
+        <header class="mt-head">
+            <span class="mt-kicker">05 — By the numbers</span>
+            <h2 class="mt-title">Small studio, <em>bigger signal</em>.</h2>
+        </header>
+        <div class="mt-bento">
+            <article class="mt-cell" data-stat="projects">
+                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="3" y="3" width="8" height="8" stroke="currentColor" stroke-width="1.5"/>
+                    <rect x="13" y="3" width="8" height="8" stroke="currentColor" stroke-width="1.5"/>
+                    <rect x="3" y="13" width="8" height="8" stroke="currentColor" stroke-width="1.5"/>
+                    <rect x="13" y="13" width="8" height="8" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
                 <span class="mt-num" data-count="6">0</span>
                 <span class="mt-label">Projects shipped</span>
-            </div>
-            <div class="mt-item">
+                <p class="mt-context">Three live. Three in build. Each a full brand, site, and motion system.</p>
+            </article>
+            <article class="mt-cell" data-stat="services">
+                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="6" cy="6" r="2.6" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="18" cy="6" r="2.6" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="12" cy="18" r="2.6" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 7.5L10.5 15.5M16 7.5L13.5 15.5" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
                 <span class="mt-num" data-count="3">0</span>
                 <span class="mt-label">Core services</span>
-            </div>
-            <div class="mt-item">
+                <p class="mt-context">SMM for reach. AI automation for leverage. Web design for proof.</p>
+            </article>
+            <article class="mt-cell" data-stat="team">
+                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
                 <span class="mt-num" data-count="1">0</span>
                 <span class="mt-label">Focused team</span>
-            </div>
-            <div class="mt-item">
-                <span class="mt-num mt-num-inf">&infin;</span>
-                <span class="mt-label">Revisions until happy</span>
-            </div>
+                <p class="mt-context">Small on purpose. Two partners, one shared keyboard, zero account managers.</p>
+            </article>
+            <article class="mt-cell mt-cell-wide" data-stat="revisions">
+                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M3 12c0-3 2-5.5 4.5-5.5S12 9 12 12s-2 5.5-4.5 5.5S3 15 3 12z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 12c0-3 2-5.5 4.5-5.5S21 9 21 12s-2 5.5-4.5 5.5S12 15 12 12z" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <div class="mt-wide-num">
+                    <span class="mt-num mt-num-inf">&infin;</span>
+                    <span class="mt-label">Revisions until happy</span>
+                </div>
+                <p class="mt-context">No ticket counters. No upsells. We stay on it until it ships the way you imagined.</p>
+            </article>
         </div>
     </section>
 
@@ -448,7 +491,7 @@
          CTA
          ========================================================= -->
     <section class="mont-cta" id="cta">
-        <span class="ms-label">(05) &mdash; Ready?</span>
+        <span class="ms-label">(06) &mdash; Ready?</span>
         <h2 class="mc-title" id="ctaLine">
             <span class="word">Let's</span>
             <span class="word">build</span>
@@ -497,6 +540,6 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
-    <script defer src="script.js?v=2"></script>
+    <script defer src="script.js?v=3"></script>
 </body>
 </html>

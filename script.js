@@ -336,6 +336,22 @@
         const motion = window.Motion;
         const useMotion = motion && motion.animate;
 
+        // Scrub the vertical rail fill across the whole process section
+        const railFill = document.querySelector(".mont-process .mp-rail-fill");
+        const railHost = document.querySelector(".mont-process .mp-rail-host");
+        if (railFill && railHost) {
+            gsap.to(railFill, {
+                scaleY: 1,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: railHost,
+                    start: "top 65%",
+                    end: "bottom 70%",
+                    scrub: 0.6
+                }
+            });
+        }
+
         steps.forEach((step) => {
             const num = step.querySelector(".mp-num");
             const line = step.querySelector(".mp-line");
@@ -371,14 +387,25 @@
                 });
             }
 
-            if (num) {
-                ScrollTrigger.create({
-                    trigger: step,
-                    start: "top 70%",
-                    onEnter: () => gsap.to(num, { color: accent, duration: 0.6, ease: "expo.out" }),
-                    onLeaveBack: () => gsap.to(num, { color: creamMuted, duration: 0.5, ease: "expo.out" })
-                });
-            }
+            ScrollTrigger.create({
+                trigger: step,
+                start: "top 70%",
+                end: "bottom 60%",
+                onEnter: () => {
+                    step.classList.add("is-active");
+                    if (num) gsap.to(num, { color: accent, duration: 0.6, ease: "expo.out" });
+                },
+                onLeave: () => {
+                    step.classList.remove("is-active");
+                },
+                onEnterBack: () => {
+                    step.classList.add("is-active");
+                },
+                onLeaveBack: () => {
+                    step.classList.remove("is-active");
+                    if (num) gsap.to(num, { color: creamMuted, duration: 0.5, ease: "expo.out" });
+                }
+            });
         });
     }
 
