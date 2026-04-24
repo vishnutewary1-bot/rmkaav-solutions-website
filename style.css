@@ -3038,3 +3038,16 @@ body.mont-body.reduce-motion .mont-scene3d {
     transition: none !important;
 }
 
+/* =============================================================
+   PHASE D.8 — footer without dead socials (2-col layout)
+   ============================================================= */
+body.mont-body .mf-top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1200px;
+}
+@media (max-width: 900px) {
+    body.mont-body .mf-top {
+        grid-template-columns: 1fr;
+    }
+}
+
