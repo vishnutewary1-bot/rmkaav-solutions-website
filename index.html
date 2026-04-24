@@ -34,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body class="mont-body">
 
@@ -717,12 +717,16 @@
         </div>
         <div class="mf-bottom">
             <span>&copy; 2026 RMKAAV Solutions</span>
+            <button type="button" class="reduce-motion-toggle" id="reduceMotionToggle" aria-pressed="false">
+                <span class="rmt-dot" aria-hidden="true"></span>
+                <span class="rmt-label">Pause animations</span>
+            </button>
             <span>Made in Mumbai</span>
         </div>
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=7"></script>
+    <script defer src="config.js?v=8"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -734,6 +738,6 @@
     <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=7"></script>
+    <script defer src="script.js?v=8"></script>
 </body>
 </html>

@@ -1073,6 +1073,58 @@
         }
     }
 
+    /* =============================================================
+       PHASE D.7 — "Pause animations" toggle
+       ============================================================= */
+    const MOTION_STORAGE_KEY = "rmkaav_motion_paused";
+
+    function applyMotionPaused(paused) {
+        const btn = document.getElementById("reduceMotionToggle");
+        if (paused) {
+            body.classList.add("reduce-motion");
+            if (btn) {
+                btn.setAttribute("aria-pressed", "true");
+                const label = btn.querySelector(".rmt-label");
+                if (label) label.textContent = "Resume animations";
+            }
+            try { gsap.globalTimeline.pause(); } catch (e) {}
+            try {
+                ScrollTrigger.getAll().forEach((st) => st.disable(false));
+            } catch (e) {}
+            // Three.js / Earth ticker runs via rAF inside initScene3D —
+            // the `body.reduce-motion` class is read there to short-circuit.
+        } else {
+            body.classList.remove("reduce-motion");
+            if (btn) {
+                btn.setAttribute("aria-pressed", "false");
+                const label = btn.querySelector(".rmt-label");
+                if (label) label.textContent = "Pause animations";
+            }
+            try { gsap.globalTimeline.resume(); } catch (e) {}
+            try {
+                ScrollTrigger.getAll().forEach((st) => st.enable());
+                ScrollTrigger.refresh();
+            } catch (e) {}
+        }
+    }
+
+    function initMotionToggle() {
+        const btn = document.getElementById("reduceMotionToggle");
+        if (!btn) return;
+
+        let stored = null;
+        try { stored = localStorage.getItem(MOTION_STORAGE_KEY); } catch (e) {}
+        if (stored === "1") applyMotionPaused(true);
+
+        btn.addEventListener("click", () => {
+            const wasPaused = body.classList.contains("reduce-motion");
+            const nextPaused = !wasPaused;
+            applyMotionPaused(nextPaused);
+            try { localStorage.setItem(MOTION_STORAGE_KEY, nextPaused ? "1" : "0"); } catch (e) {}
+            trackEvent("motion_toggle", { state: nextPaused ? "paused" : "resumed" });
+        });
+    }
+
     /* ---------- Active section → nav link highlight ---------- */
     function initActiveNav() {
         const map = [
@@ -1122,6 +1174,7 @@
         initActiveNav();
         initScene3D();
         initAnalytics();
+        initMotionToggle();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }
