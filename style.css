@@ -5984,3 +5984,148 @@ html.mont[data-theme="light"] body.mont-body .m3d-earth-glow {
     opacity: 0 !important;
     pointer-events: none !important;
 }
+
+/* =============================================================
+   PHASE M — ROLLBACK & PORTFOLIO PHOTOS
+   User feedback: kill the Earth + cosmos planets background,
+   remove the CrowdRaise phone mockup, remove the extruded
+   wordmark. Add real project screenshots to Work frames
+   rendered in a 3D perspective look.
+   ============================================================= */
+
+/* 1 — Kill the Earth + all cosmos objects (both themes).
+      Keep only stars + nebulae for subtle space ambience. */
+body.mont-body .m3d-earth-wrap,
+body.mont-body .m3d-earth-glow,
+body.mont-body .m3d-galaxy,
+body.mont-body .m3d-sun,
+body.mont-body .m3d-saturn,
+body.mont-body .m3d-mars,
+body.mont-body .m3d-jupiter {
+    display: none !important;
+}
+
+/* 2 — Tame nebulae a touch now that Earth isn't anchoring the scene */
+body.mont-body .m3d-nebula-a { opacity: 0.7; }
+body.mont-body .m3d-nebula-b { opacity: 0.6; }
+
+/* 3 — Revert CrowdRaise phone chrome (project 01) */
+body.mont-body .mw-stage[data-project="01"] .mw-frame {
+    max-width: none;
+    margin: 0;
+    aspect-ratio: auto;
+    border-radius: inherit;
+    padding: 0;
+    box-shadow: none;
+}
+body.mont-body .mw-stage[data-project="01"] .mw-frame::before,
+body.mont-body .mw-stage[data-project="01"] .mw-frame::after {
+    display: none !important;
+}
+
+/* 4 — Laptop chrome on 02-05 stays, but tone down to subtle
+       now that a real screenshot sits inside the frame */
+body.mont-body .mw-stage[data-project="02"] .mw-frame::before,
+body.mont-body .mw-stage[data-project="03"] .mw-frame::before,
+body.mont-body .mw-stage[data-project="04"] .mw-frame::before,
+body.mont-body .mw-stage[data-project="05"] .mw-frame::before,
+body.mont-body .mw-stage[data-project="02"] .mw-frame::after,
+body.mont-body .mw-stage[data-project="03"] .mw-frame::after,
+body.mont-body .mw-stage[data-project="04"] .mw-frame::after,
+body.mont-body .mw-stage[data-project="05"] .mw-frame::after {
+    display: none !important;
+}
+
+/* 5 — Portfolio project photos (3D tilt / perspective look) */
+body.mont-body .mw-frame {
+    perspective: 1400px;
+    overflow: hidden;
+}
+body.mont-body .mw-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    z-index: 2;
+    transform: rotateY(-8deg) rotateX(6deg) scale(1.05);
+    transform-origin: center;
+    transition: transform 0.9s var(--ease-out), filter 0.6s ease;
+    will-change: transform;
+    filter: brightness(0.95) contrast(1.04) saturate(1.02);
+    box-shadow:
+        -18px 28px 60px -20px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.08) inset;
+}
+body.mont-body .mw-stage:hover .mw-photo {
+    transform: rotateY(-4deg) rotateX(3deg) scale(1.08);
+    filter: brightness(1) contrast(1.06) saturate(1.05);
+}
+/* Gradient sheen over photo — tint matches project */
+body.mont-body .mw-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(99,102,241,0.18), transparent 45%),
+                linear-gradient(315deg, rgba(236,72,153,0.12), transparent 50%);
+    mix-blend-mode: screen;
+    transform: none;
+}
+body.mont-body .mw-frame::after { display: none; }
+
+/* Per-project tint */
+body.mont-body .mw-stage[data-project="01"] .mw-frame::before {
+    background: linear-gradient(135deg, rgba(139,92,246,0.22), transparent 45%),
+                linear-gradient(315deg, rgba(99,102,241,0.14), transparent 50%);
+}
+body.mont-body .mw-stage[data-project="02"] .mw-frame::before {
+    background: linear-gradient(135deg, rgba(236,72,153,0.20), transparent 45%),
+                linear-gradient(315deg, rgba(251,191,36,0.14), transparent 50%);
+}
+body.mont-body .mw-stage[data-project="03"] .mw-frame::before {
+    background: linear-gradient(135deg, rgba(99,102,241,0.22), transparent 45%),
+                linear-gradient(315deg, rgba(167,139,250,0.14), transparent 50%);
+}
+body.mont-body .mw-stage[data-project="04"] .mw-frame::before {
+    background: linear-gradient(135deg, rgba(251,191,36,0.22), transparent 45%),
+                linear-gradient(315deg, rgba(236,72,153,0.12), transparent 50%);
+}
+body.mont-body .mw-stage[data-project="05"] .mw-frame::before {
+    background: linear-gradient(135deg, rgba(240,240,245,0.08), transparent 45%),
+                linear-gradient(315deg, rgba(99,102,241,0.08), transparent 50%);
+}
+
+/* Dim existing decorative SVG shapes so they don't fight the photo */
+body.mont-body .mw-frame .mw-shape {
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    z-index: 4;
+}
+body.mont-body .mw-frame .mw-specimen {
+    z-index: 5;
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Light-mode readability for photo tint + specimen pill */
+html.mont[data-theme="light"] body.mont-body .mw-frame::before {
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+}
+html.mont[data-theme="light"] body.mont-body .mw-frame .mw-specimen {
+    background: rgba(255, 250, 240, 0.9) !important;
+}
+
+/* Mobile: flatten the 3D tilt for legibility */
+@media (max-width: 600px) {
+    body.mont-body .mw-photo {
+        transform: rotateY(-4deg) rotateX(3deg) scale(1.04);
+    }
+    body.mont-body .mw-stage:hover .mw-photo {
+        transform: rotateY(-2deg) rotateX(1.5deg) scale(1.05);
+    }
+}
