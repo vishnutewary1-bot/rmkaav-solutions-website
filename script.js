@@ -1109,6 +1109,61 @@
     }
 
     /* =============================================================
+       PHASE F.8 — Sticky "Let's talk" CTA
+       Appears once the user scrolls past the hero, hides when the
+       contact section is in view (they're already there).
+       ============================================================= */
+    function initStickyCta() {
+        const cta = document.getElementById("stickyCta");
+        if (!cta) return;
+
+        const heroEl = document.getElementById("hero");
+        const contactEl = document.getElementById("contact");
+        if (!heroEl || !contactEl) return;
+
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+        let pastHero = false;
+        let inContact = false;
+
+        const update = () => {
+            const shouldShow = pastHero && !inContact;
+            if (shouldShow && !cta.classList.contains("is-visible")) {
+                cta.classList.add("is-visible");
+                if (useMotion) {
+                    motion.animate(
+                        cta,
+                        { transform: ["translateY(18px) scale(0.88)", "translateY(0) scale(1)"] },
+                        { type: "spring", stiffness: 180, damping: 18 }
+                    );
+                }
+            } else if (!shouldShow && cta.classList.contains("is-visible")) {
+                cta.classList.remove("is-visible");
+            }
+        };
+
+        ScrollTrigger.create({
+            trigger: heroEl,
+            start: "bottom 70%",
+            onEnter: () => { pastHero = true; update(); },
+            onLeaveBack: () => { pastHero = false; update(); }
+        });
+        ScrollTrigger.create({
+            trigger: contactEl,
+            start: "top 80%",
+            end: "bottom 20%",
+            onEnter: () => { inContact = true; update(); },
+            onLeave: () => { inContact = false; update(); },
+            onEnterBack: () => { inContact = true; update(); },
+            onLeaveBack: () => { inContact = false; update(); }
+        });
+
+        cta.addEventListener("click", () => {
+            trackEvent("sticky_cta_click", { destination: "contact" });
+        });
+    }
+
+    /* =============================================================
        PHASE E.7 — Mobile hamburger nav
        ============================================================= */
     function initMobileNav() {
@@ -1262,6 +1317,7 @@
         initAnalytics();
         initMotionToggle();
         initMobileNav();
+        initStickyCta();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }
