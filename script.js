@@ -324,11 +324,15 @@
         });
     }
 
-    /* ---------- Work — cinematic full-bleed strip ---------- */
+    /* ---------- Work — 5 rich case studies (rewritten in E.1) ----------
+       Replaced the old pin/scrub 3-stage cinematic reveal with a simpler
+       once-per-stage entrance animation. Reason: rich case studies with
+       tags/story/stack/builder-note/quote/live-link need to be readable
+       the moment you arrive via anchor link (#work-crowdraise etc.), which
+       the pin/scrub made impossible. */
     function initWork() {
         const stages = document.querySelectorAll(".mw-stage");
         if (!stages.length) return;
-        if (isMobile()) return; // stacked via CSS
 
         // Intro fade-in
         const intro = document.querySelector(".mw-intro");
@@ -347,6 +351,8 @@
             });
         }
 
+        if (isMobile()) return; // mobile stack uses CSS-only layout
+
         stages.forEach((stage) => {
             const frame = stage.querySelector(".mw-frame");
             const shape = stage.querySelector(".mw-shape");
@@ -354,43 +360,39 @@
             const caseTag = stage.querySelector(".mw-case");
             const nameInner = stage.querySelector(".mw-stage-name span");
             const metas = stage.querySelectorAll(".mw-meta-item");
+            // New rich content — revealed with the rest of the entrance
+            const tags = stage.querySelector(".mw-tags");
+            const story = stage.querySelector(".mw-story");
+            const stack = stage.querySelector(".mw-stack");
+            const bNote = stage.querySelector(".mw-builder-note");
+            const qNote = stage.querySelector(".mw-quote-pending");
+            const actions = stage.querySelector(".mw-actions");
 
-            // Initial state: offset + hidden
-            gsap.set(frame, { xPercent: 28, opacity: 0 });
-            gsap.set(shape, { xPercent: 40, opacity: 0 });
+            gsap.set(frame, { xPercent: 18, opacity: 0 });
+            gsap.set(shape, { xPercent: 26, opacity: 0 });
             gsap.set(specimen, { opacity: 0, y: 10 });
             gsap.set(caseTag, { opacity: 0, y: 16 });
             gsap.set(nameInner, { yPercent: 110 });
             gsap.set(metas, { opacity: 0, y: 18 });
+            const newBits = [tags, story, stack, bNote, qNote, actions].filter(Boolean);
+            gsap.set(newBits, { opacity: 0, y: 20 });
 
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: stage,
-                    start: "top top",
-                    end: "+=120%",
-                    pin: true,
-                    pinSpacing: true,
-                    scrub: 1,
-                    invalidateOnRefresh: true,
-                    anticipatePin: 1
+                    start: "top 78%",
+                    end: "top 20%",
+                    toggleActions: "play none none reverse"
                 }
             });
 
-            // Entrance: 0 → 0.35
-            tl.to(frame, { xPercent: 0, opacity: 1, ease: "none", duration: 0.3 }, 0)
-              .to(shape, { xPercent: 0, opacity: 1, ease: "none", duration: 0.35 }, 0.05)
-              .to(specimen, { opacity: 1, y: 0, ease: "none", duration: 0.15 }, 0.12)
-              .to(caseTag, { opacity: 1, y: 0, ease: "none", duration: 0.15 }, 0.1)
-              .to(nameInner, { yPercent: 0, ease: "none", duration: 0.32 }, 0.08)
-              .to(metas, { opacity: 1, y: 0, ease: "none", duration: 0.22, stagger: 0.025 }, 0.18);
-
-            // Hold 0.35 → 0.7 (no tweens)
-
-            // Exit: 0.7 → 1 — subtle parallax + fade the frame toward the next stage
-            tl.to(frame, { xPercent: -18, opacity: 0.6, ease: "none", duration: 0.3 }, 0.7)
-              .to(shape, { xPercent: -30, opacity: 0.4, ease: "none", duration: 0.3 }, 0.7)
-              .to(nameInner, { yPercent: -110, ease: "none", duration: 0.3 }, 0.7)
-              .to([caseTag, specimen, metas], { opacity: 0, ease: "none", duration: 0.25 }, 0.72);
+            tl.to(frame,      { xPercent: 0, opacity: 1, duration: 0.9, ease: "expo.out" }, 0)
+              .to(shape,      { xPercent: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.05)
+              .to(specimen,   { opacity: 1, y: 0,        duration: 0.5, ease: "power2.out" }, 0.35)
+              .to(caseTag,    { opacity: 1, y: 0,        duration: 0.45, ease: "power2.out" }, 0.1)
+              .to(nameInner,  { yPercent: 0,             duration: 0.8, ease: "expo.out" }, 0.12)
+              .to(metas,      { opacity: 1, y: 0,        duration: 0.5, ease: "power2.out", stagger: 0.04 }, 0.22)
+              .to(newBits,    { opacity: 1, y: 0,        duration: 0.55, ease: "power2.out", stagger: 0.05 }, 0.3);
         });
     }
 

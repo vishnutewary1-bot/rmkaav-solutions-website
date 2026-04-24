@@ -3051,3 +3051,240 @@ body.mont-body .mf-top {
     }
 }
 
+/* =============================================================
+   PHASE E.1 — rich case studies (layout override)
+   ============================================================= */
+
+/* Case studies now flow naturally — no pin, readable at anchor-link arrival.
+   Frame becomes a side-panel; content is a column. */
+body.mont-body .mw-stage {
+    height: auto;
+    min-height: 90vh;
+    overflow: visible;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 6vw;
+    align-items: center;
+    padding: 12vh 6vw;
+}
+body.mont-body .mw-frame {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 5;
+    min-height: 56vh;
+    border-radius: 12px;
+}
+body.mont-body .mw-content {
+    position: relative;
+    height: auto;
+    padding: 0;
+    pointer-events: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+}
+body.mont-body .mw-case {
+    position: relative;
+    top: auto; left: auto;
+    margin: 0 0 18px;
+    align-self: flex-start;
+}
+body.mont-body .mw-stage-name {
+    font-size: clamp(3rem, 8vw, 7rem);
+    margin: 0 0 4px -0.15vw;
+}
+body.mont-body .mw-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 28px;
+    padding: 14px 0 4px;
+    border-top: 1px solid var(--border);
+    margin-top: 14px;
+}
+body.mont-body .mw-meta-row .mw-meta-item {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+}
+body.mont-body .mw-meta-row .mw-meta-item em {
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    margin-bottom: 4px;
+}
+/* Alternate framing: odd cases → frame left, content right (default).
+   Even cases flip so the eye travels in a zigzag. */
+body.mont-body .mw-stage[data-project="02"],
+body.mont-body .mw-stage[data-project="04"] {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+body.mont-body .mw-stage[data-project="02"] .mw-frame,
+body.mont-body .mw-stage[data-project="04"] .mw-frame {
+    order: 2;
+}
+
+@media (max-width: 900px) {
+    body.mont-body .mw-stage {
+        grid-template-columns: 1fr !important;
+        gap: 32px;
+        padding: 60px 20px 80px;
+        min-height: auto;
+    }
+    body.mont-body .mw-stage[data-project="02"] .mw-frame,
+    body.mont-body .mw-stage[data-project="04"] .mw-frame {
+        order: 0;
+    }
+    body.mont-body .mw-frame {
+        min-height: 48vh;
+        aspect-ratio: 5 / 4;
+    }
+    body.mont-body .mw-stage-name {
+        font-size: clamp(2.6rem, 14vw, 5rem);
+    }
+}
+
+body.mont-body .mw-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 18px;
+}
+body.mont-body .mw-tag {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong, rgba(240,240,245,0.18));
+    color: var(--cream);
+    background: rgba(99, 102, 241, 0.08);
+}
+body.mont-body .mw-tag-status {
+    background: linear-gradient(135deg, rgba(251,191,36,0.18), rgba(236,72,153,0.14));
+    border-color: rgba(251,191,36,0.4);
+    color: #fde68a;
+}
+body.mont-body .mw-story {
+    margin-top: 22px;
+    max-width: 620px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--cream-muted);
+}
+body.mont-body .mw-story p {
+    margin: 0 0 12px;
+}
+body.mont-body .mw-story em {
+    font-style: normal;
+    color: var(--cream);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+body.mont-body .mw-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+    max-width: 620px;
+}
+body.mont-body .mw-chip {
+    font-family: var(--mono, "Inter", monospace);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--cream-muted);
+    background: rgba(255,255,255,0.02);
+}
+body.mont-body .mw-builder-note {
+    margin: 24px 0 0;
+    padding: 18px 20px;
+    max-width: 640px;
+    border-left: 2px solid var(--accent);
+    background: linear-gradient(90deg, rgba(99,102,241,0.06), transparent);
+    font-family: var(--serif, "Fraunces", serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--cream);
+}
+body.mont-body .mw-note-kicker,
+body.mont-body .mw-pending-kicker {
+    display: block;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    margin-bottom: 8px;
+}
+body.mont-body .mw-quote-pending {
+    margin: 14px 0 0;
+    padding: 16px 20px;
+    max-width: 640px;
+    border-radius: 10px;
+    border: 1px dashed var(--border-strong, rgba(240,240,245,0.22));
+    background: repeating-linear-gradient(
+        135deg,
+        rgba(240,240,245,0.02) 0 8px,
+        transparent 8px 16px
+    );
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--cream-muted);
+    opacity: 0.75;
+}
+body.mont-body .mw-actions {
+    margin-top: 28px;
+}
+body.mont-body .mw-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    color: var(--cream);
+    background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(236,72,153,0.08));
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
+}
+body.mont-body .mw-live:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px rgba(99,102,241,0.6);
+}
+body.mont-body .mw-live-soft {
+    border-color: var(--border-strong, rgba(240,240,245,0.22));
+    background: transparent;
+    color: var(--cream-muted);
+}
+body.mont-body .mw-stage-inbuild .mw-frame {
+    opacity: 0.72;
+}
+
+/* Shape 04 gets the indigo/amber treatment via the SVG inline */
+body.mont-body .mw-stage[data-project="04"] .mw-backdrop {
+    background: radial-gradient(ellipse at 40% 35%, rgba(251,191,36,0.16), rgba(10,10,15,0) 55%),
+                radial-gradient(ellipse at 70% 70%, rgba(236,72,153,0.14), rgba(10,10,15,0) 60%);
+}
+body.mont-body .mw-stage[data-project="05"] .mw-backdrop {
+    background: radial-gradient(ellipse at 50% 50%, rgba(240,240,245,0.05), rgba(10,10,15,0) 60%);
+}
+
+/* Tighter case-study on smaller viewports */
+@media (max-width: 900px) {
+    body.mont-body .mw-tag { font-size: 10px; padding: 4px 8px; }
+    body.mont-body .mw-story { font-size: 14px; }
+    body.mont-body .mw-builder-note { font-size: 15px; padding: 14px 16px; }
+}
