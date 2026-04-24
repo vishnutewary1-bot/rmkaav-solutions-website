@@ -3052,6 +3052,247 @@ body.mont-body .mf-top {
 }
 
 /* =============================================================
+   PHASE E.3 — About / Team section
+   ============================================================= */
+body.mont-body .mont-about {
+    padding: 120px 6vw 140px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+body.mont-body .mab-head {
+    margin-bottom: 72px;
+}
+body.mont-body .mab-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 6vw, 5.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin: 12px 0 0;
+}
+body.mont-body .mab-title em {
+    font-style: italic;
+    background: var(--grad-brand, linear-gradient(135deg, var(--accent), var(--accent-2, var(--accent)), var(--accent-3, var(--accent))));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+body.mont-body .mab-founder {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 56px;
+    align-items: start;
+    padding-bottom: 72px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+}
+body.mont-body .mab-portrait {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+}
+body.mont-body .mab-portrait-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 120deg,
+        var(--accent) 0%,
+        var(--accent-2, #8b5cf6) 32%,
+        var(--accent-3, #ec4899) 65%,
+        var(--accent) 100%);
+    padding: 2px;
+    animation: mab-ring-rot 16s linear infinite;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+@keyframes mab-ring-rot {
+    to { transform: rotate(360deg); }
+}
+body.mont-body .mab-portrait-inner {
+    position: relative;
+    width: 88%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, var(--surface-2, #16161f), var(--surface, #111118));
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+body.mont-body .mab-initials {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    background: var(--grad-brand, linear-gradient(135deg, var(--accent), var(--accent-2, var(--accent)), var(--accent-3, var(--accent))));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.04em;
+}
+body.mont-body .mab-role-kicker {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+}
+body.mont-body .mab-name {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin: 0 0 20px;
+}
+body.mont-body .mab-bio {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--cream-muted);
+    max-width: 640px;
+    margin: 0 0 24px;
+}
+body.mont-body .mab-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+body.mont-body .mab-links a {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    border-bottom: 1px solid var(--border-strong, rgba(240,240,245,0.22));
+    padding-bottom: 2px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+body.mont-body .mab-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+body.mont-body .mab-links .mc-arrow {
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.3s var(--ease-out);
+}
+body.mont-body .mab-links a:hover .mc-arrow {
+    transform: translateX(4px);
+}
+
+body.mont-body .mab-collabs {
+    margin-top: 16px;
+}
+body.mont-body .mab-collab-kicker {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    margin-bottom: 20px;
+}
+body.mont-body .mab-collab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+body.mont-body .mab-collab {
+    padding: 26px 24px 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, rgba(255,255,255,0.02), transparent);
+    transition: transform 0.3s var(--ease-out), border-color 0.3s ease;
+    position: relative;
+}
+body.mont-body .mab-collab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent), transparent 45%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+body.mont-body .mab-collab:hover {
+    transform: translateY(-3px);
+}
+body.mont-body .mab-collab:hover::before {
+    opacity: 1;
+}
+body.mont-body .mab-collab-num {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    margin-bottom: 16px;
+}
+body.mont-body .mab-collab-role {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--cream);
+    margin: 0 0 10px;
+}
+body.mont-body .mab-collab-desc {
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--cream-muted);
+    margin: 0;
+}
+body.mont-body .mab-honesty {
+    margin: 64px auto 0;
+    max-width: 780px;
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.55;
+    color: var(--cream);
+    padding: 0 16px;
+}
+
+@media (max-width: 900px) {
+    body.mont-body .mont-about { padding: 80px 20px 100px; }
+    body.mont-body .mab-founder {
+        grid-template-columns: 160px 1fr;
+        gap: 28px;
+    }
+    body.mont-body .mab-collab-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 600px) {
+    body.mont-body .mab-founder {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    body.mont-body .mab-portrait {
+        width: 140px;
+    }
+}
+
+/* =============================================================
    PHASE E.2 — mission body paragraphs
    ============================================================= */
 body.mont-body .ms-body {
