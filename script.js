@@ -1109,6 +1109,35 @@
     }
 
     /* =============================================================
+       PHASE H — Theme toggle (light/dark)
+       Pre-paint script in index.html <head> already set data-theme.
+       This just wires the toggle button + persistence.
+       ============================================================= */
+    function initTheme() {
+        const btn = document.getElementById("themeToggle");
+        if (!btn) return;
+
+        const apply = (theme) => {
+            document.documentElement.setAttribute("data-theme", theme);
+            btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+            btn.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
+            try { localStorage.setItem("rmkaav_theme", theme); } catch (e) {}
+            window.dispatchEvent(new CustomEvent("theme-change", { detail: theme }));
+        };
+
+        // Reflect initial aria from what the pre-paint script set
+        const initial = document.documentElement.getAttribute("data-theme") || "dark";
+        btn.setAttribute("aria-pressed", initial === "light" ? "true" : "false");
+
+        btn.addEventListener("click", () => {
+            const cur = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+            const next = cur === "light" ? "dark" : "light";
+            apply(next);
+            trackEvent("theme_toggle", { theme: next });
+        });
+    }
+
+    /* =============================================================
        PHASE F.8 — Sticky "Let's talk" CTA
        Appears once the user scrolls past the hero, hides when the
        contact section is in view (they're already there).
@@ -1318,6 +1347,7 @@
         initMotionToggle();
         initMobileNav();
         initStickyCta();
+        initTheme();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }
