@@ -351,8 +351,8 @@
             });
         }
 
-        if (isMobile()) return; // mobile stack uses CSS-only layout
-
+        // Entrance animations run on mobile too (E.8 — user feedback:
+        // mobile looked static vs desktop). They're cheap: opacity + y.
         stages.forEach((stage) => {
             const frame = stage.querySelector(".mw-frame");
             const shape = stage.querySelector(".mw-shape");
@@ -1289,6 +1289,46 @@
     }
 
     /* =============================================================
+       PHASE J — Universal scroll-reveal for content sections
+       (user feedback: mobile looked static). Uses IntersectionObserver
+       so it works on every viewport, is cheap, and respects reduce-motion.
+       ============================================================= */
+    function initRevealOnScroll() {
+        const selectors = [
+            ".ms-body .ms-para",
+            ".mab-head",
+            ".mab-founder",
+            ".mab-collab",
+            ".mab-honesty",
+            ".mtm-head",
+            ".mtm-card",
+            ".mfq-head",
+            ".mfq-item",
+            ".mpr-head > *",
+            ".mpr-tier",
+            ".mpr-foot",
+            ".mpb-head > *",
+            ".mpb-chip",
+            ".mpb-foot"
+        ];
+        const els = document.querySelectorAll(selectors.join(","));
+        if (!els.length) return;
+
+        els.forEach((el) => el.classList.add("reveal-init"));
+
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("reveal-in");
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0.08 });
+
+        els.forEach((el) => obs.observe(el));
+    }
+
+    /* =============================================================
        PHASE G.4 — Build-your-own pricing builder
        Toggle chips → update total → "Get this package" pre-fills contact form
        ============================================================= */
@@ -1651,6 +1691,7 @@
         initTheme();
         initWorkParallax();
         initPricingBuilder();
+        initRevealOnScroll();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }

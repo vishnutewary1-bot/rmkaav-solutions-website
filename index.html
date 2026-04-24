@@ -108,9 +108,15 @@
 </head>
 <body class="mont-body">
 
-    <!-- 3D background scene: real Earth (Three.js) + starfield + atmospheric glow -->
+    <!-- 3D background scene: deep space + Earth (Three.js) + glow -->
     <div class="mont-scene3d" aria-hidden="true">
-        <div class="m3d-stars"></div>
+        <div class="m3d-deep"></div>
+        <div class="m3d-nebula m3d-nebula-a"></div>
+        <div class="m3d-nebula m3d-nebula-b"></div>
+        <div class="m3d-stars m3d-stars-far"></div>
+        <div class="m3d-stars m3d-stars-mid"></div>
+        <div class="m3d-stars m3d-stars-near"></div>
+        <div class="m3d-stars m3d-stars-twinkle"></div>
         <div class="m3d-earth-glow"></div>
         <div class="m3d-earth-wrap">
             <canvas id="m3dEarth" class="m3d-earth"></canvas>
@@ -1251,7 +1257,7 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=23"></script>
+    <script defer src="config.js?v=24"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -1263,6 +1269,6 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=23"></script>
+    <script defer src="script.js?v=24"></script>
 </body>
 </html>
