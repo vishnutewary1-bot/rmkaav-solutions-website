@@ -104,7 +104,7 @@
     <link rel="preload" as="style" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
     <link rel="stylesheet" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=23">
+    <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body class="mont-body">
 
@@ -152,9 +152,22 @@
          PRELOADER
          ========================================================= -->
     <div class="mont-preloader" id="montPreloader" aria-hidden="true">
+        <!-- Phase L.4 — theatrical build-intro layers -->
+        <div class="mp-grid-lines" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="mp-wordmark" aria-hidden="true">
+            <span class="mp-letter" style="--i:0">R</span>
+            <span class="mp-letter" style="--i:1">M</span>
+            <span class="mp-letter" style="--i:2">K</span>
+            <span class="mp-letter" style="--i:3">A</span>
+            <span class="mp-letter" style="--i:4">A</span>
+            <span class="mp-letter" style="--i:5">V</span>
+        </div>
         <div class="mp-count"><span id="mpCount">00</span></div>
         <div class="mp-label">Loading experience</div>
         <div class="mp-line"></div>
+        <div class="mp-manifesto" aria-hidden="true">Built in Mumbai · Since 2026</div>
     </div>
 
     <!-- =========================================================
@@ -310,6 +323,29 @@
             <div class="mab-portrait" aria-hidden="true">
                 <div class="mab-portrait-ring"></div>
                 <div class="mab-portrait-inner">
+                    <!-- Phase L.7 — illustrated placeholder (stays until real photo) -->
+                    <svg class="mab-portrait-illus" viewBox="0 0 120 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="mabIllusBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#6366f1" stop-opacity="0.9"/>
+                                <stop offset="0.5" stop-color="#8b5cf6" stop-opacity="0.65"/>
+                                <stop offset="1" stop-color="#ec4899" stop-opacity="0.45"/>
+                            </linearGradient>
+                            <linearGradient id="mabIllusHair" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="#1a1208" stop-opacity="0.96"/>
+                                <stop offset="1" stop-color="#3b2f1a" stop-opacity="0.9"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="0" y="0" width="120" height="140" fill="url(#mabIllusBg)"/>
+                        <circle cx="60" cy="120" r="60" fill="rgba(26,18,8,0.35)"/>
+                        <ellipse cx="60" cy="140" rx="52" ry="34" fill="#f5ecd9" opacity="0.95"/>
+                        <circle cx="60" cy="66" r="26" fill="#f3d9b8"/>
+                        <path d="M34 62 Q34 40 60 38 Q86 40 86 62 Q86 52 72 46 Q60 42 48 46 Q34 52 34 62 Z" fill="url(#mabIllusHair)"/>
+                        <path d="M34 70 Q40 75 46 72 M74 72 Q80 75 86 70" stroke="rgba(26,18,8,0.45)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                        <circle cx="52" cy="67" r="1.6" fill="#1a1208"/>
+                        <circle cx="68" cy="67" r="1.6" fill="#1a1208"/>
+                        <path d="M54 78 Q60 82 66 78" stroke="#1a1208" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                    </svg>
                     <span class="mab-initials">VT</span>
                 </div>
             </div>
@@ -391,6 +427,14 @@
                             <div class="mo-tile"></div>
                             <div class="mo-tile"></div>
                         </div>
+                        <!-- Phase L.2 — service glyph (SMM = broadcast signal + heart) -->
+                        <svg class="mo-glyph" viewBox="0 0 64 64" aria-hidden="true">
+                            <circle cx="32" cy="38" r="6" fill="currentColor" opacity="0.9"/>
+                            <path d="M22 30c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path d="M16 26c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+                            <path d="M10 22c0-12.1 9.9-22 22-22s22 9.9 22 22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.32"/>
+                            <path d="M32 44c-2-2-5-2-5-5 0-2 2-3 3-3s2 1 2 2c0-1 1-2 2-2s3 1 3 3c0 3-3 3-5 5z" fill="currentColor" opacity="0.7"/>
+                        </svg>
                         <div class="mo-chip"><span>Feed</span><span>/2026</span></div>
                         <span class="mo-visual-label">SMM</span>
                     </div>
@@ -428,6 +472,17 @@
                                 <circle cx="170" cy="200" r="6"/>
                             </g>
                         </svg>
+                        <!-- Phase L.2 — service glyph (AI = brain / node) -->
+                        <svg class="mo-glyph" viewBox="0 0 64 64" aria-hidden="true">
+                            <circle cx="32" cy="32" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <circle cx="32" cy="32" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.6"/>
+                            <circle cx="32" cy="32" r="3" fill="currentColor"/>
+                            <circle cx="20" cy="20" r="2.4" fill="currentColor" opacity="0.8"/>
+                            <circle cx="44" cy="20" r="2.4" fill="currentColor" opacity="0.8"/>
+                            <circle cx="20" cy="44" r="2.4" fill="currentColor" opacity="0.8"/>
+                            <circle cx="44" cy="44" r="2.4" fill="currentColor" opacity="0.8"/>
+                            <path d="M20 20 L32 32 L44 20 M20 44 L32 32 L44 44" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.55"/>
+                        </svg>
                         <div class="mo-chip"><span>Flows</span><span>/live</span></div>
                         <span class="mo-visual-label">AI</span>
                     </div>
@@ -453,6 +508,16 @@
                             <span class="mo-block mo-block-1"></span>
                             <span class="mo-block mo-block-2"></span>
                         </div>
+                        <!-- Phase L.2 — service glyph (WEB = browser window + cursor) -->
+                        <svg class="mo-glyph" viewBox="0 0 64 64" aria-hidden="true">
+                            <rect x="8" y="12" width="48" height="36" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <line x1="8" y1="20" x2="56" y2="20" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="13" cy="16" r="1.2" fill="currentColor"/>
+                            <circle cx="17" cy="16" r="1.2" fill="currentColor"/>
+                            <circle cx="21" cy="16" r="1.2" fill="currentColor"/>
+                            <path d="M26 32 L34 38 L30 40 L33 46 L31 47 L28 41 L24 44 Z" fill="currentColor" opacity="0.85"/>
+                            <path d="M14 28 L22 28 M14 34 L20 34" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                        </svg>
                         <div class="mo-chip"><span>Build</span><span>/v1</span></div>
                         <span class="mo-visual-label">WEB</span>
                     </div>
@@ -795,6 +860,31 @@
     </section>
 
     <!-- =========================================================
+         PHASE L.6 — BUILT WITH (signature wall of real tech)
+         Honest inventory of what powers this site. Replaces a
+         faked-collaborator wall with real, verifiable craft.
+         ========================================================= -->
+    <section class="mont-builtwith" aria-hidden="true">
+        <header class="mbw-head">
+            <span class="ms-label">&mdash; Built with</span>
+            <h3 class="mbw-title">The <em>room</em> that made this.</h3>
+            <p class="mbw-sub">Every line of this site is real, hand-built, and attributable. No no-code. No CMS template. This is the room.</p>
+        </header>
+        <ul class="mbw-wall">
+            <li class="mbw-item"><span class="mbw-role">Motion</span><span class="mbw-name">GSAP · ScrollTrigger</span></li>
+            <li class="mbw-item"><span class="mbw-role">Scroll</span><span class="mbw-name">Lenis</span></li>
+            <li class="mbw-item"><span class="mbw-role">3D</span><span class="mbw-name">Three.js</span></li>
+            <li class="mbw-item"><span class="mbw-role">Type</span><span class="mbw-name">Fraunces · Inter</span></li>
+            <li class="mbw-item"><span class="mbw-role">Host</span><span class="mbw-name">Vercel edge</span></li>
+            <li class="mbw-item"><span class="mbw-role">Forms</span><span class="mbw-name">Firebase Firestore</span></li>
+            <li class="mbw-item"><span class="mbw-role">Analytics</span><span class="mbw-name">GA4 · Clarity</span></li>
+            <li class="mbw-item"><span class="mbw-role">Tilt</span><span class="mbw-name">VanillaTilt</span></li>
+            <li class="mbw-item"><span class="mbw-role">Code</span><span class="mbw-name">Vanilla JS · Hand-written</span></li>
+            <li class="mbw-item"><span class="mbw-role">Built by</span><span class="mbw-name mbw-name-sig">&mdash; Vishnu &middot; Mumbai</span></li>
+        </ul>
+    </section>
+
+    <!-- =========================================================
          MARQUEE strip (between work and process)
          ========================================================= -->
     <div class="mont-marquee mont-marquee-reverse" aria-hidden="true">
@@ -876,6 +966,24 @@
                 <span class="mp-line"></span>
             </li>
         </ol>
+    </section>
+
+    <!-- =========================================================
+         PHASE L.3 — EXTRUDED BRAND WORDMARK
+         Huge multi-layer 3D "RMKAAV" as a brand moment between
+         process and stats. Pure CSS extrusion via stacked shadows.
+         ========================================================= -->
+    <section class="mont-brandmark" aria-hidden="true">
+        <div class="mbm-label">Studio signature &middot; est. 2026</div>
+        <h2 class="mbm-word" data-text="RMKAAV">RMKAAV</h2>
+        <div class="mbm-foot">
+            <span class="mbm-foot-item">R — Reliable</span>
+            <span class="mbm-foot-item">M — Mumbai</span>
+            <span class="mbm-foot-item">K — Kinetic</span>
+            <span class="mbm-foot-item">A — Ambitious</span>
+            <span class="mbm-foot-item">A — Accountable</span>
+            <span class="mbm-foot-item">V — Velocity</span>
+        </div>
     </section>
 
     <!-- =========================================================
@@ -1270,7 +1378,7 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=27"></script>
+    <script defer src="config.js?v=28"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -1282,6 +1390,6 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=27"></script>
+    <script defer src="script.js?v=28"></script>
 </body>
 </html>
