@@ -708,6 +708,207 @@
         });
     }
 
+    /* =============================================================
+       PHASE G.6 — Procedural Shader Orb (replaces Earth)
+       Pure WebGL, no external textures. Vertex-noise displacement +
+       gradient fragment shader driven by scroll progress and theme.
+       Falls back gracefully if WebGL is unavailable.
+       ============================================================= */
+    function initShaderOrb() {
+        const canvas = document.getElementById("m3dEarth");
+        if (!canvas) return;
+        const gl = canvas.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: false }) ||
+                   canvas.getContext("experimental-webgl");
+        if (!gl) return false;
+
+        // Mark this path so initScene3D bails out (avoids double-render)
+        canvas.dataset.orbBound = "1";
+
+        const wrap = canvas.parentElement;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const resize = () => {
+            const w = wrap.clientWidth;
+            const h = wrap.clientHeight;
+            canvas.width = Math.floor(w * dpr);
+            canvas.height = Math.floor(h * dpr);
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        };
+        resize();
+        window.addEventListener("resize", () => setTimeout(resize, 150));
+
+        // Vertex: pass-through, generate fullscreen quad in clip space
+        const vsSrc = `
+            attribute vec2 a_pos;
+            varying vec2 v_uv;
+            void main() {
+                v_uv = a_pos * 0.5 + 0.5;
+                gl_Position = vec4(a_pos, 0.0, 1.0);
+            }
+        `;
+
+        // Fragment: raymarch-lite sphere SDF with procedural noise + gradient
+        const fsSrc = `
+            precision highp float;
+            varying vec2 v_uv;
+            uniform vec2 u_res;
+            uniform float u_time;
+            uniform float u_scroll;
+            uniform vec3 u_c1; // inner
+            uniform vec3 u_c2; // mid
+            uniform vec3 u_c3; // outer
+            uniform vec2 u_mouse;
+
+            float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+            float noise(vec2 p){
+                vec2 i=floor(p); vec2 f=fract(p);
+                vec2 u=f*f*(3.0-2.0*f);
+                return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),
+                           mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);
+            }
+            float fbm(vec2 p){
+                float v=0.0; float a=0.5;
+                for(int i=0;i<5;i++){v+=a*noise(p); p*=2.02; a*=0.5;}
+                return v;
+            }
+            void main(){
+                vec2 uv = (v_uv - 0.5) * vec2(u_res.x/u_res.y, 1.0) * 2.4;
+                uv += u_mouse * 0.3;
+                float r = length(uv);
+
+                // Orb mask with soft edge
+                float orb = smoothstep(1.15, 0.75, r);
+
+                // Flowing noise pattern inside the orb
+                float t = u_time * 0.08 + u_scroll * 1.8;
+                float n = fbm(uv * 1.6 + vec2(t, -t * 0.6));
+                float n2 = fbm(uv * 3.0 - vec2(t * 1.2, t));
+                float mix1 = smoothstep(0.35, 0.8, n);
+                float mix2 = smoothstep(0.3, 0.7, n2);
+
+                vec3 col = mix(u_c1, u_c2, mix1);
+                col = mix(col, u_c3, mix2 * 0.72);
+
+                // Fresnel rim
+                float rim = pow(1.0 - clamp(1.0 - r, 0.0, 1.0), 2.2);
+                col += rim * 0.35 * u_c3;
+
+                // Vignette glow outside orb (faint halo)
+                float halo = exp(-(r - 0.9) * 5.5);
+                col += halo * 0.05 * u_c1 * (1.0 - orb);
+
+                gl_FragColor = vec4(col, orb + halo * 0.12);
+            }
+        `;
+
+        const compile = (src, type) => {
+            const s = gl.createShader(type);
+            gl.shaderSource(s, src);
+            gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+                console.warn("[orb] shader compile failed:", gl.getShaderInfoLog(s));
+                return null;
+            }
+            return s;
+        };
+        const vs = compile(vsSrc, gl.VERTEX_SHADER);
+        const fs = compile(fsSrc, gl.FRAGMENT_SHADER);
+        if (!vs || !fs) return false;
+        const prog = gl.createProgram();
+        gl.attachShader(prog, vs);
+        gl.attachShader(prog, fs);
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+            console.warn("[orb] program link failed:", gl.getProgramInfoLog(prog));
+            return false;
+        }
+        gl.useProgram(prog);
+
+        // Fullscreen quad
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,  1, -1, -1, 1,  -1, 1,  1, -1,  1, 1
+        ]), gl.STATIC_DRAW);
+        const locPos = gl.getAttribLocation(prog, "a_pos");
+        gl.enableVertexAttribArray(locPos);
+        gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, 0, 0);
+
+        const uRes = gl.getUniformLocation(prog, "u_res");
+        const uTime = gl.getUniformLocation(prog, "u_time");
+        const uScroll = gl.getUniformLocation(prog, "u_scroll");
+        const uC1 = gl.getUniformLocation(prog, "u_c1");
+        const uC2 = gl.getUniformLocation(prog, "u_c2");
+        const uC3 = gl.getUniformLocation(prog, "u_c3");
+        const uMouse = gl.getUniformLocation(prog, "u_mouse");
+
+        const hexToVec = (hex) => {
+            const h = hex.replace("#", "");
+            return [
+                parseInt(h.substr(0, 2), 16) / 255,
+                parseInt(h.substr(2, 2), 16) / 255,
+                parseInt(h.substr(4, 2), 16) / 255
+            ];
+        };
+        const palette = { c1: [0.39, 0.40, 0.95], c2: [0.55, 0.36, 0.96], c3: [0.93, 0.28, 0.60] };
+        const refreshPalette = () => {
+            const style = getComputedStyle(document.documentElement);
+            const a = style.getPropertyValue("--accent").trim();
+            const b = style.getPropertyValue("--accent-2").trim();
+            const c = style.getPropertyValue("--accent-3").trim();
+            if (a && a[0] === "#") palette.c1 = hexToVec(a);
+            if (b && b[0] === "#") palette.c2 = hexToVec(b);
+            if (c && c[0] === "#") palette.c3 = hexToVec(c);
+        };
+        refreshPalette();
+        window.addEventListener("theme-change", refreshPalette);
+
+        let mx = 0, my = 0, tx = 0, ty = 0;
+        window.addEventListener("mousemove", (e) => {
+            mx = (e.clientX / window.innerWidth - 0.5) * 0.4;
+            my = -(e.clientY / window.innerHeight - 0.5) * 0.4;
+        }, { passive: true });
+
+        let scrollProgress = 0;
+        if (window.ScrollTrigger) {
+            ScrollTrigger.create({
+                trigger: document.body,
+                start: "top top",
+                end: "bottom bottom",
+                onUpdate: (self) => { scrollProgress = self.progress; }
+            });
+        }
+
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        const start = performance.now();
+        const tick = () => {
+            if (body.classList.contains("reduce-motion")) {
+                // paused: keep requesting frame so it resumes cleanly
+                requestAnimationFrame(tick);
+                return;
+            }
+            tx += (mx - tx) * 0.06;
+            ty += (my - ty) * 0.06;
+            const t = (performance.now() - start) / 1000;
+            gl.uniform2f(uRes, canvas.width, canvas.height);
+            gl.uniform1f(uTime, t);
+            gl.uniform1f(uScroll, scrollProgress);
+            gl.uniform3f(uC1, palette.c1[0], palette.c1[1], palette.c1[2]);
+            gl.uniform3f(uC2, palette.c2[0], palette.c2[1], palette.c2[2]);
+            gl.uniform3f(uC3, palette.c3[0], palette.c3[1], palette.c3[2]);
+            gl.uniform2f(uMouse, tx, ty);
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        return true;
+    }
+
     /* ---------- Three.js lazy-loader (F.1) ----------
        Defers the 660KB vendor/three.min.js load until the browser is idle,
        so hero TTI doesn't pay for it. Returns a Promise<window.THREE>. */
@@ -735,6 +936,11 @@
         const canvas = document.getElementById("m3dEarth");
         if (!canvas) return;
 
+        // Try shader orb first — no Three.js required, lighter, theme-aware
+        const orbOk = initShaderOrb();
+        if (orbOk) return;
+
+        // Fallback: lazy-load Three and run the Earth scene
         const kick = () => {
             loadThreeJS()
                 .then(() => runScene3D(canvas))
@@ -1109,6 +1315,46 @@
     }
 
     /* =============================================================
+       PHASE G.5 — Work card parallax tilt
+       Desktop only. Follows cursor within the case-study viewport;
+       cards tilt ±6deg on X and Y with spring damping via Motion.
+       ============================================================= */
+    function initWorkParallax() {
+        if (isMobile()) return;
+        const motion = window.Motion;
+        if (!motion || !motion.animate) return;
+
+        const stages = document.querySelectorAll(".mw-stage");
+        stages.forEach((stage) => {
+            const frame = stage.querySelector(".mw-frame");
+            if (!frame) return;
+
+            frame.style.transformStyle = "preserve-3d";
+            frame.style.transition = "transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)";
+
+            let rafId = null;
+            const onMove = (e) => {
+                if (body.classList.contains("reduce-motion")) return;
+                const r = frame.getBoundingClientRect();
+                const px = (e.clientX - r.left) / r.width - 0.5;
+                const py = (e.clientY - r.top) / r.height - 0.5;
+                const rotY = px * 12;    // ±6 per side
+                const rotX = -py * 10;
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => {
+                    frame.style.transform = `perspective(1200px) rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg) translateZ(0)`;
+                });
+            };
+            const reset = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                frame.style.transform = "perspective(1200px) rotateY(0deg) rotateX(0deg) translateZ(0)";
+            };
+            stage.addEventListener("mousemove", onMove);
+            stage.addEventListener("mouseleave", reset);
+        });
+    }
+
+    /* =============================================================
        PHASE H — Theme toggle (light/dark)
        Pre-paint script in index.html <head> already set data-theme.
        This just wires the toggle button + persistence.
@@ -1348,6 +1594,7 @@
         initMobileNav();
         initStickyCta();
         initTheme();
+        initWorkParallax();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }
