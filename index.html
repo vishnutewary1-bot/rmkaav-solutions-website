@@ -104,7 +104,7 @@
     <link rel="preload" as="style" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
     <link rel="stylesheet" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=22">
+    <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body class="mont-body">
 
@@ -117,6 +117,19 @@
         <div class="m3d-stars m3d-stars-mid"></div>
         <div class="m3d-stars m3d-stars-near"></div>
         <div class="m3d-stars m3d-stars-twinkle"></div>
+        <!-- Phase K.3 — living cosmos: galaxy, sun, planets (fixed, parallax) -->
+        <div class="m3d-galaxy" data-parallax="0.08"></div>
+        <div class="m3d-saturn" data-parallax="0.14">
+            <div class="m3d-saturn-body"></div>
+            <div class="m3d-saturn-ring"></div>
+        </div>
+        <div class="m3d-mars" data-parallax="0.22"></div>
+        <div class="m3d-sun" data-parallax="0.05">
+            <div class="m3d-sun-core"></div>
+        </div>
+        <div class="m3d-jupiter" data-parallax="0.30"></div>
+        <!-- Light-mode dawn sky (hidden in dark mode) -->
+        <div class="m3d-daysky" aria-hidden="true"></div>
         <div class="m3d-earth-glow"></div>
         <div class="m3d-earth-wrap">
             <canvas id="m3dEarth" class="m3d-earth"></canvas>
@@ -1257,7 +1270,7 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=26"></script>
+    <script defer src="config.js?v=27"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -1269,6 +1282,6 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=26"></script>
+    <script defer src="script.js?v=27"></script>
 </body>
 </html>

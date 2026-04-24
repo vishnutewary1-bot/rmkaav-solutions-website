@@ -1676,8 +1676,57 @@
         initWorkParallax();
         initPricingBuilder();
         initRevealOnScroll();
+        initCosmosParallax();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
+    }
+
+    /* ---------- PHASE K.3 — Cosmos parallax ----------
+       Fixed celestial objects (sun, planets, galaxy) parallax-drift
+       opposite to scroll at different rates, selling the illusion
+       that Earth is traveling past them. Each element's rate comes
+       from its `data-parallax` attribute. Animation frame-rate
+       limited via rAF and runs only while scroll-y changes. */
+    function initCosmosParallax() {
+        const nodes = document.querySelectorAll(
+            ".m3d-galaxy, .m3d-sun, .m3d-saturn, .m3d-mars, .m3d-jupiter"
+        );
+        if (!nodes.length) return;
+        // Respect reduce-motion
+        if (document.body.classList.contains("reduce-motion") ||
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return;
+        }
+        const items = Array.from(nodes).map(el => ({
+            el,
+            rate: parseFloat(el.dataset.parallax) || 0.1,
+            baseTransform: el.style.transform || ""
+        }));
+        let lastY = -1;
+        let rafPending = false;
+        function update() {
+            rafPending = false;
+            const y = window.scrollY || window.pageYOffset || 0;
+            if (y === lastY) return;
+            lastY = y;
+            for (const it of items) {
+                // Negative translate → objects rise as page scrolls down,
+                // so they feel to fall behind a forward-traveling Earth.
+                const ty = -y * it.rate;
+                // Horizontal drift tied to scroll too (very subtle, opposite dir per-element)
+                const tx = -y * it.rate * 0.18 * (it.el.classList.contains("m3d-jupiter") || it.el.classList.contains("m3d-saturn") ? -1 : 1);
+                it.el.style.transform = `${it.baseTransform} translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0)`;
+            }
+        }
+        function onScroll() {
+            if (!rafPending) {
+                rafPending = true;
+                requestAnimationFrame(update);
+            }
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        // Prime once so initial position reflects any page-load scroll restore
+        update();
     }
 
     if (document.readyState === "loading") {
