@@ -1076,6 +1076,57 @@
     }
 
     /* =============================================================
+       PHASE E.7 — Mobile hamburger nav
+       ============================================================= */
+    function initMobileNav() {
+        const burger = document.getElementById("mnBurger");
+        const overlay = document.getElementById("mnMobileOverlay");
+        if (!burger || !overlay) return;
+
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+
+        const close = () => {
+            body.classList.remove("is-mobile-open");
+            burger.setAttribute("aria-expanded", "false");
+            burger.setAttribute("aria-label", "Open menu");
+            overlay.setAttribute("aria-hidden", "true");
+            if (lenis) lenis.start();
+        };
+        const open = () => {
+            body.classList.add("is-mobile-open");
+            burger.setAttribute("aria-expanded", "true");
+            burger.setAttribute("aria-label", "Close menu");
+            overlay.setAttribute("aria-hidden", "false");
+            if (lenis) lenis.stop();
+            if (useMotion) {
+                motion.animate(
+                    burger,
+                    { scale: [0.94, 1] },
+                    { type: "spring", stiffness: 180, damping: 22 }
+                );
+            }
+        };
+
+        burger.addEventListener("click", () => {
+            if (body.classList.contains("is-mobile-open")) close();
+            else open();
+        });
+
+        // Close on link click — delay so the browser can jump to anchor first
+        overlay.querySelectorAll("a[href^='#']").forEach((a) => {
+            a.addEventListener("click", () => {
+                setTimeout(close, 140);
+            });
+        });
+
+        // Close on Escape
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && body.classList.contains("is-mobile-open")) close();
+        });
+    }
+
+    /* =============================================================
        PHASE D.7 — "Pause animations" toggle
        ============================================================= */
     const MOTION_STORAGE_KEY = "rmkaav_motion_paused";
@@ -1177,6 +1228,7 @@
         initScene3D();
         initAnalytics();
         initMotionToggle();
+        initMobileNav();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }

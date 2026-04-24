@@ -34,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body class="mont-body">
 
@@ -81,7 +81,29 @@
             <a href="#contact">Contact</a>
         </nav>
         <a href="#contact" class="mn-cta">Let's talk <span class="mn-arrow">&rarr;</span></a>
+        <button type="button" class="mn-burger" id="mnBurger" aria-label="Open menu" aria-expanded="false" aria-controls="mnMobileOverlay">
+            <span class="mn-burger-bar"></span>
+            <span class="mn-burger-bar"></span>
+            <span class="mn-burger-bar"></span>
+        </button>
     </header>
+
+    <!-- Mobile nav overlay -->
+    <div class="mn-mobile-overlay" id="mnMobileOverlay" role="dialog" aria-modal="true" aria-label="Mobile menu" aria-hidden="true">
+        <nav class="mn-mobile-links" aria-label="Mobile primary">
+            <a href="#about"><span class="mn-mo-num">01</span><span>About</span></a>
+            <a href="#services"><span class="mn-mo-num">02</span><span>Services</span></a>
+            <a href="#work"><span class="mn-mo-num">03</span><span>Work</span></a>
+            <a href="#process"><span class="mn-mo-num">04</span><span>Process</span></a>
+            <a href="#pricing"><span class="mn-mo-num">05</span><span>Pricing</span></a>
+            <a href="#faq"><span class="mn-mo-num">06</span><span>FAQ</span></a>
+            <a href="#contact"><span class="mn-mo-num">07</span><span>Contact</span></a>
+        </nav>
+        <div class="mn-mobile-foot">
+            <a href="mailto:info@rmkaav.com" class="mn-mobile-email">info@rmkaav.com</a>
+            <span class="mn-mobile-meta">Mumbai &middot; Est. 2026</span>
+        </div>
+    </div>
 
     <!-- =========================================================
          HERO — pinned giant word
@@ -1082,7 +1104,7 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=15"></script>
+    <script defer src="config.js?v=16"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -1094,6 +1116,6 @@
     <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=15"></script>
+    <script defer src="script.js?v=16"></script>
 </body>
 </html>
