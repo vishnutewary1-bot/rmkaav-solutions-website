@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" class="mont">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page not found · RMKAAV</title>
+    <meta name="description" content="This page went looking for itself. Likely a mistyped URL or a link we moved during the redesign.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=18">
+
+    <style>
+        body.mont-body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 60px;
+        }
+        .m404-kicker {
+            font-family: "Inter", sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--cream-muted);
+            margin-bottom: 28px;
+        }
+        .m404-number {
+            font-family: "Fraunces", serif;
+            font-weight: 300;
+            font-size: clamp(7rem, 24vw, 18rem);
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #ec4899 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            margin-bottom: 6px;
+        }
+        .m404-caption {
+            font-family: "Fraunces", serif;
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(22px, 3vw, 32px);
+            color: var(--cream);
+            margin: 0 0 28px;
+        }
+        .m404-caption .m404-under {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .m404-body {
+            font-family: "Inter", sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--cream-muted);
+            max-width: 520px;
+            margin: 0 auto 40px;
+        }
+        .m404-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+        }
+        .m404-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 22px;
+            border-radius: 999px;
+            border: 1px solid var(--border-strong, rgba(240,240,245,0.22));
+            color: var(--cream);
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, color 0.3s ease;
+        }
+        .m404-link:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .m404-link-primary {
+            background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(236,72,153,0.08));
+            border-color: var(--accent);
+        }
+        .m404-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(to right, rgba(240,240,245,0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(240,240,245,0.04) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 0;
+            mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+        }
+        .m404-inner { position: relative; z-index: 2; }
+        .m404-foot {
+            position: absolute;
+            bottom: 24px;
+            left: 0; right: 0;
+            font-family: "Inter", sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--cream-muted);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="mont-body mont-ready">
+    <div class="m404-grid" aria-hidden="true"></div>
+    <div class="m404-inner">
+        <div class="m404-kicker">Error 404 &middot; Nothing here</div>
+        <div class="m404-number">404</div>
+        <p class="m404-caption"><span class="m404-under">not found.</span></p>
+        <p class="m404-body">This page went looking for itself. Likely a mistyped URL or a link we moved during the redesign. Nothing is broken &mdash; just lost.</p>
+        <div class="m404-links">
+            <a href="/" class="m404-link m404-link-primary">Home &rarr;</a>
+            <a href="/#work" class="m404-link">See our work</a>
+            <a href="/#contact" class="m404-link">Say hi</a>
+        </div>
+    </div>
+    <div class="m404-foot">RMKAAV Solutions &middot; Mumbai &middot; Est. 2026</div>
+</body>
+</html>

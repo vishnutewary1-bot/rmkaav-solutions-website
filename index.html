@@ -3,6 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Theme init: runs BEFORE CSS parse, kills flash-of-wrong-theme -->
+    <script>
+        (function () {
+            try {
+                var stored = localStorage.getItem('rmkaav_theme');
+                var systemLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                var theme = stored || (systemLight ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <meta name="theme-color" content="#f7f7fa" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
     <title>RMKAAV Solutions — Brand, Automation, Web</title>
     <meta name="description" content="RMKAAV is a small Mumbai studio building brands, AI automations, and editorial websites for businesses that want to move faster.">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -19,6 +34,58 @@
     <meta name="twitter:description" content="We design, automate and market — for brands that want to move faster.">
     <meta name="twitter:image" content="https://rmkaav.com/assets/og/og-image.png">
 
+    <!-- JSON-LD: Organization + Service schemas (F.4) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://rmkaav.com/#org",
+          "name": "RMKAAV Solutions",
+          "url": "https://rmkaav.com",
+          "logo": "https://rmkaav.com/favicon.svg",
+          "image": "https://rmkaav.com/assets/og/og-image.png",
+          "description": "A solo-founder studio in Mumbai designing brands, building AI automations, and shipping editorial websites.",
+          "founder": { "@type": "Person", "name": "Vishnu Tewary" },
+          "foundingDate": "2026",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Mumbai",
+            "addressRegion": "Maharashtra",
+            "addressCountry": "IN"
+          },
+          "email": "info@rmkaav.com",
+          "telephone": "+91-7977-992054",
+          "sameAs": [
+            "https://github.com/vishnutewary1-bot"
+          ]
+        },
+        {
+          "@type": "Service",
+          "serviceType": "Social Media Marketing",
+          "provider": { "@id": "https://rmkaav.com/#org" },
+          "description": "Retainer — content calendar, 16 posts/month, 4 reels, paid-ads handover.",
+          "offers": { "@type": "Offer", "price": "35000", "priceCurrency": "INR", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "35000", "priceCurrency": "INR", "billingIncrement": 1, "unitText": "MON" } }
+        },
+        {
+          "@type": "Service",
+          "serviceType": "AI Automation",
+          "provider": { "@id": "https://rmkaav.com/#org" },
+          "description": "Project — discovery workshop, custom GPT/chatbot, Make/Zapier flows, internal dashboard, 30-day post-launch tuning.",
+          "offers": { "@type": "Offer", "price": "85000", "priceCurrency": "INR" }
+        },
+        {
+          "@type": "Service",
+          "serviceType": "Web Design & Development",
+          "provider": { "@id": "https://rmkaav.com/#org" },
+          "description": "Project — brand direction, up to 8 pages with motion and 3D, CMS wiring, SEO + analytics, Vercel deploy.",
+          "offers": { "@type": "Offer", "price": "125000", "priceCurrency": "INR" }
+        }
+      ]
+    }
+    </script>
+
     <!-- Google Analytics 4 — fires page_view on load; custom events wired in script.js -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9B1258SHLT"></script>
     <script>
@@ -29,12 +96,15 @@
         window.gtag = gtag;
     </script>
 
-    <!-- Fonts: Fraunces (display serif) + Inter (sans) via Google Fonts CDN -->
+    <!-- Fonts: Fraunces (display serif) + Inter (sans) via Google Fonts CDN.
+         Preconnect + high-priority preload of the CSS index so the browser
+         discovers woff2 URLs as fast as possible; display=swap kills FOIT. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
+    <link rel="stylesheet" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body class="mont-body">
 
@@ -80,8 +150,39 @@
             <a href="#pricing">Pricing</a>
             <a href="#contact">Contact</a>
         </nav>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" aria-pressed="false">
+            <svg class="tt-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg class="tt-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+        </button>
         <a href="#contact" class="mn-cta">Let's talk <span class="mn-arrow">&rarr;</span></a>
+        <button type="button" class="mn-burger" id="mnBurger" aria-label="Open menu" aria-expanded="false" aria-controls="mnMobileOverlay">
+            <span class="mn-burger-bar"></span>
+            <span class="mn-burger-bar"></span>
+            <span class="mn-burger-bar"></span>
+        </button>
     </header>
+
+    <!-- Mobile nav overlay -->
+    <div class="mn-mobile-overlay" id="mnMobileOverlay" role="dialog" aria-modal="true" aria-label="Mobile menu" aria-hidden="true">
+        <nav class="mn-mobile-links" aria-label="Mobile primary">
+            <a href="#about"><span class="mn-mo-num">01</span><span>About</span></a>
+            <a href="#services"><span class="mn-mo-num">02</span><span>Services</span></a>
+            <a href="#work"><span class="mn-mo-num">03</span><span>Work</span></a>
+            <a href="#process"><span class="mn-mo-num">04</span><span>Process</span></a>
+            <a href="#pricing"><span class="mn-mo-num">05</span><span>Pricing</span></a>
+            <a href="#faq"><span class="mn-mo-num">06</span><span>FAQ</span></a>
+            <a href="#contact"><span class="mn-mo-num">07</span><span>Contact</span></a>
+        </nav>
+        <div class="mn-mobile-foot">
+            <a href="mailto:info@rmkaav.com" class="mn-mobile-email">info@rmkaav.com</a>
+            <span class="mn-mobile-meta">Mumbai &middot; Est. 2026</span>
+        </div>
+    </div>
 
     <!-- =========================================================
          HERO — pinned giant word
@@ -158,17 +259,85 @@
         <span class="ms-label">(01) &mdash; Who we are</span>
         <h2 class="ms-line" id="missionLine">
             <span class="word">We</span>
-            <span class="word">design,</span>
-            <span class="word">automate</span>
-            <span class="word">and</span>
-            <span class="word">market</span>
-            <span class="word">&mdash;</span>
-            <span class="word">so</span>
-            <span class="word">your</span>
-            <span class="word">business</span>
-            <span class="word">moves</span>
-            <span class="word">faster.</span>
+            <span class="word">ship</span>
+            <span class="word">in</span>
+            <span class="word">weeks,</span>
+            <span class="word">not</span>
+            <span class="word">quarters.</span>
         </h2>
+        <div class="ms-body">
+            <p class="ms-para">
+                <em>What we are.</em> RMKAAV is a one-person studio backed by three deep collaborators. We take on projects the big agencies can&rsquo;t move fast enough on, and projects the freelancers can&rsquo;t hold the full shape of.
+            </p>
+            <p class="ms-para">
+                <em>What we do.</em> Brand systems that survive their first A/B test. AI automations that replace six Zapier tabs with one dashboard. Editorial sites that don&rsquo;t look like templates &mdash; because they aren&rsquo;t.
+            </p>
+            <p class="ms-para ms-para-sharp">
+                <em>Who we&rsquo;re wrong for.</em> If you need 40 meetings and a Confluence wiki to approve a hex code, we&rsquo;re not your studio. If you want to see working code by week two and live traffic by week six, we probably are.
+            </p>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         ABOUT / TEAM — founder + 3 collaborators
+         ========================================================= -->
+    <section class="mont-about" id="about">
+        <header class="mab-head">
+            <span class="ms-label">(02) &mdash; Who&rsquo;s behind this</span>
+            <h3 class="mab-title">One founder.<br><em>Three trusted hands.</em></h3>
+        </header>
+
+        <article class="mab-founder">
+            <div class="mab-portrait" aria-hidden="true">
+                <div class="mab-portrait-ring"></div>
+                <div class="mab-portrait-inner">
+                    <span class="mab-initials">VT</span>
+                </div>
+            </div>
+            <div class="mab-founder-copy">
+                <span class="mab-role-kicker">Founder &middot; Design &middot; Engineering</span>
+                <h4 class="mab-name">Vishnu Tewary</h4>
+                <p class="mab-bio">
+                    Solo builder out of Mumbai. Ships in vertical slices &mdash; ugly first, then refined &mdash;
+                    across Web3 (CrowdRaise on Base L2), fintech AI (SnapLedgerX coaching journal),
+                    regulated ecommerce (THC Store with 40+ partner fan-out), civic tech
+                    (Har Ghar Vijaya credit ledger) and, next, a D2C brand in build (HighVastra).
+                    Writes Solidity, Next.js, and Make workflows with roughly the same seriousness.
+                    Core belief: ship small, ship often, instrument everything, let the analytics
+                    disagree with the design.
+                </p>
+                <ul class="mab-links">
+                    <li><a href="https://github.com/vishnutewary1-bot" target="_blank" rel="noopener">GitHub <span class="mc-arrow">&rarr;</span></a></li>
+                    <li><a href="mailto:info@rmkaav.com">Email <span class="mc-arrow">&rarr;</span></a></li>
+                </ul>
+            </div>
+        </article>
+
+        <div class="mab-collabs" aria-label="Collaborators">
+            <span class="mab-collab-kicker">The three hands</span>
+            <div class="mab-collab-grid">
+                <article class="mab-collab">
+                    <span class="mab-collab-num">01</span>
+                    <h5 class="mab-collab-role">Motion &amp; 3D</h5>
+                    <p class="mab-collab-desc">Owns the motion language &mdash; GSAP timelines, Three.js scenes, shader orbs, and the "feels alive" layer across every build.</p>
+                </article>
+                <article class="mab-collab">
+                    <span class="mab-collab-num">02</span>
+                    <h5 class="mab-collab-role">Copy &amp; Strategy</h5>
+                    <p class="mab-collab-desc">Owns the tone. Writes everything that isn&rsquo;t code. Turns founder brain-dumps into launch-ready narrative &amp; positioning.</p>
+                </article>
+                <article class="mab-collab">
+                    <span class="mab-collab-num">03</span>
+                    <h5 class="mab-collab-role">DevOps &amp; Automation</h5>
+                    <p class="mab-collab-desc">Owns the plumbing. CI pipelines, Make/Zapier flows, Firestore rules, and "the thing that quietly runs at 3am so nobody pages Vishnu".</p>
+                </article>
+            </div>
+        </div>
+
+        <p class="mab-honesty">
+            Small on purpose. Every project has one accountable builder &mdash;
+            not a sales engineer, account manager, and &ldquo;resource&rdquo; behind a curtain.
+        </p>
     </section>
 
     <!-- =========================================================
@@ -177,7 +346,7 @@
     <section class="mont-services" id="services">
         <div class="mo-sticky">
             <div class="mo-header">
-                <span class="ms-label">(02) &mdash; Services</span>
+                <span class="ms-label">(03) &mdash; Services</span>
                 <h3 class="mo-title">What we do.</h3>
             </div>
 
@@ -274,16 +443,17 @@
     </section>
 
     <!-- =========================================================
-         WORK — full-bleed image grow
+         WORK — five real case studies
          ========================================================= -->
     <section class="mont-work" id="work">
         <div class="mw-intro">
-            <span class="ms-label">(03) &mdash; Selected work</span>
-            <h3 class="mw-heading">Three brands.<br>Three launches.</h3>
-            <span class="mw-counter">01 &mdash; 03 / 2024—2026</span>
+            <span class="ms-label">(04) &mdash; Selected work</span>
+            <h3 class="mw-heading">Five projects.<br>Four live, one in build.</h3>
+            <span class="mw-counter">01 &mdash; 05 / 2024—2026</span>
         </div>
 
-        <article class="mw-stage" data-project="01">
+        <!-- CASE 01 — CROWDRAISE -->
+        <article class="mw-stage" id="work-crowdraise" data-project="01">
             <div class="mw-frame">
                 <div class="mw-backdrop"></div>
                 <div class="mw-shape mw-shape-01" aria-hidden="true">
@@ -298,49 +468,100 @@
                         <path d="M100 30 C90 90 95 150 100 260" stroke="rgba(14,13,11,0.15)" stroke-width="1" fill="none"/>
                     </svg>
                 </div>
-                <div class="mw-specimen" aria-hidden="true">
-                    <span>Herbal · Wellness · Direct</span>
-                </div>
+                <div class="mw-specimen" aria-hidden="true"><span>Fintech · Web3 · Base L2</span></div>
             </div>
             <div class="mw-content">
                 <span class="mw-case">Case №01</span>
-                <h4 class="mw-stage-name"><span>THC Store</span></h4>
+                <div class="mw-tags">
+                    <span class="mw-tag">Fintech</span>
+                    <span class="mw-tag">Web3</span>
+                    <span class="mw-tag">Full-build</span>
+                </div>
+                <h4 class="mw-stage-name"><span>CrowdRaise</span></h4>
                 <div class="mw-meta-row">
-                    <span class="mw-meta-item"><em>Sector</em>eCommerce</span>
+                    <span class="mw-meta-item"><em>Role</em>Product · Contracts · UI · Motion</span>
                     <span class="mw-meta-item"><em>Year</em>2025</span>
-                    <span class="mw-meta-item"><em>Live at</em>thcstore.in</span>
-                    <span class="mw-meta-item"><em>Scope</em>Brand · Site · Ops</span>
+                    <span class="mw-meta-item"><em>Live at</em>crowdraise.io</span>
+                </div>
+                <div class="mw-story">
+                    <p class="mw-challenge"><em>Challenge.</em> Crowdfunding platforms lock funds until the headline goal hits — creators still need to ship on milestones, and backers need a reason to trust that money will actually move.</p>
+                    <p class="mw-approach"><em>Approach.</em> A milestone-release crowdfunding dApp on Base (L2 Ethereum) where backers approve each milestone before funds unlock. USDC for stable payments, CROWD governance token for platform decisions.</p>
+                </div>
+                <div class="mw-stack" aria-label="Stack">
+                    <span class="mw-chip">Solidity</span>
+                    <span class="mw-chip">Base L2</span>
+                    <span class="mw-chip">React</span>
+                    <span class="mw-chip">wagmi/viem</span>
+                    <span class="mw-chip">USDC</span>
+                    <span class="mw-chip">IPFS</span>
+                </div>
+                <blockquote class="mw-builder-note">
+                    <span class="mw-note-kicker">Builder note</span>
+                    Two dashboards (creator + backer) sharing contract state. The governance vote UI was the hardest part — had to make on-chain voting feel like a Notion poll, not MetaMask popups.
+                </blockquote>
+                <blockquote class="mw-quote-pending" data-status="pending">
+                    <span class="mw-pending-kicker">Client quote dropping soon</span>
+                    — CrowdRaise founding team
+                </blockquote>
+                <div class="mw-actions">
+                    <a href="https://crowdraise.io" class="mw-live" target="_blank" rel="noopener">Live site <span class="mc-arrow">&rarr;</span></a>
                 </div>
             </div>
         </article>
 
-        <article class="mw-stage" data-project="02">
+        <!-- CASE 02 — THC STORE -->
+        <article class="mw-stage" id="work-thc-store" data-project="02">
             <div class="mw-frame">
                 <div class="mw-backdrop"></div>
                 <div class="mw-shape mw-shape-02" aria-hidden="true">
-                    <span class="mw-r">R</span>
+                    <span class="mw-r">T</span>
                     <span class="mw-rline mw-rline-1"></span>
                     <span class="mw-rline mw-rline-2"></span>
                     <span class="mw-rline mw-rline-3"></span>
                 </div>
-                <div class="mw-specimen" aria-hidden="true">
-                    <span>Brand · Automation · Web</span>
-                </div>
+                <div class="mw-specimen" aria-hidden="true"><span>eCommerce · 40+ partners</span></div>
             </div>
             <div class="mw-content">
                 <span class="mw-case">Case №02</span>
-                <h4 class="mw-stage-name"><span>RMKAAV</span></h4>
+                <div class="mw-tags">
+                    <span class="mw-tag">Ecommerce</span>
+                    <span class="mw-tag">Automation</span>
+                    <span class="mw-tag">Multi-brand</span>
+                </div>
+                <h4 class="mw-stage-name"><span>THC Store</span></h4>
                 <div class="mw-meta-row">
-                    <span class="mw-meta-item"><em>Sector</em>Studio site</span>
-                    <span class="mw-meta-item"><em>Year</em>2026</span>
-                    <span class="mw-meta-item"><em>Live at</em>rmkaav.com</span>
-                    <span class="mw-meta-item"><em>Scope</em>Identity · Site · Motion</span>
+                    <span class="mw-meta-item"><em>Role</em>Platform · Order automation · Prescription flow</span>
+                    <span class="mw-meta-item"><em>Year</em>2025</span>
+                    <span class="mw-meta-item"><em>Live at</em>thcstore.in</span>
+                </div>
+                <div class="mw-story">
+                    <p class="mw-challenge"><em>Challenge.</em> An ecom store selling regulated wellness products across 40+ partner brands. Manual order processing couldn't scale; prescriptions needed verification; partner inventories lived in 40 different Google Sheets.</p>
+                    <p class="mw-approach"><em>Approach.</em> Built the full stack — catalog, prescription upload + verification, auto-splitting one customer order into N partner shipments with N invoices, unified inventory aggregator, webhook fan-out to each partner.</p>
+                </div>
+                <div class="mw-stack" aria-label="Stack">
+                    <span class="mw-chip">Shopify</span>
+                    <span class="mw-chip">Make</span>
+                    <span class="mw-chip">Google Sheets API</span>
+                    <span class="mw-chip">Webhooks</span>
+                    <span class="mw-chip">GPT prescription parse</span>
+                </div>
+                <blockquote class="mw-builder-note">
+                    <span class="mw-note-kicker">Builder note</span>
+                    One customer order auto-fans into N partner emails with N invoices and N shipping labels — one dashboard for manual overrides. Moved from 20 min/order to 20 sec.
+                </blockquote>
+                <blockquote class="mw-quote-pending" data-status="pending">
+                    <span class="mw-pending-kicker">Client quote dropping soon</span>
+                    — THC Store operations lead
+                </blockquote>
+                <div class="mw-actions">
+                    <a href="https://thcstore.in" class="mw-live" target="_blank" rel="noopener">Live site <span class="mc-arrow">&rarr;</span></a>
                 </div>
             </div>
         </article>
 
-        <article class="mw-stage" data-project="03">
-            <div class="mw-frame mw-frame-open">
+        <!-- CASE 03 — SNAPLEDGERX -->
+        <article class="mw-stage" id="work-snapledgerx" data-project="03">
+            <div class="mw-frame">
                 <div class="mw-backdrop"></div>
                 <div class="mw-shape mw-shape-03" aria-hidden="true">
                     <span class="mw-grid-lines"></span>
@@ -349,23 +570,209 @@
                     <span class="mw-crosshair mw-crosshair-bl"></span>
                     <span class="mw-crosshair mw-crosshair-br"></span>
                 </div>
-                <div class="mw-specimen" aria-hidden="true">
-                    <span>Draft · Unbuilt · Waiting</span>
-                </div>
+                <div class="mw-specimen" aria-hidden="true"><span>Fintech · AI · SaaS</span></div>
             </div>
             <div class="mw-content">
                 <span class="mw-case">Case №03</span>
-                <h4 class="mw-stage-name"><span>Open slot</span></h4>
+                <div class="mw-tags">
+                    <span class="mw-tag">Fintech</span>
+                    <span class="mw-tag">AI</span>
+                    <span class="mw-tag">SaaS</span>
+                </div>
+                <h4 class="mw-stage-name"><span>SnapLedgerX</span></h4>
                 <div class="mw-meta-row">
-                    <span class="mw-meta-item"><em>Sector</em>TBD</span>
-                    <span class="mw-meta-item"><em>Year</em>2026</span>
-                    <span class="mw-meta-item"><em>Status</em>Taking briefs</span>
-                    <span class="mw-meta-item mw-meta-cta">
-                        <a href="mailto:info@rmkaav.com">Start a project &rarr;</a>
-                    </span>
+                    <span class="mw-meta-item"><em>Role</em>Product · AI pipeline · Web app</span>
+                    <span class="mw-meta-item"><em>Year</em>2025</span>
+                    <span class="mw-meta-item"><em>Live at</em>snapledgerx.com</span>
+                </div>
+                <div class="mw-story">
+                    <p class="mw-challenge"><em>Challenge.</em> Traders keep trade journals in spreadsheets and forget to log trades. Without pattern analysis they repeat the same losing moves.</p>
+                    <p class="mw-approach"><em>Approach.</em> An AI-powered trading journal that auto-logs via broker APIs, analyses performance with a GPT-4 pipeline, surfaces behavioural patterns (revenge trading, overexposure, holding losers), and serves a daily coaching note.</p>
+                </div>
+                <div class="mw-stack" aria-label="Stack">
+                    <span class="mw-chip">Next.js</span>
+                    <span class="mw-chip">Postgres</span>
+                    <span class="mw-chip">GPT-4</span>
+                    <span class="mw-chip">Broker APIs</span>
+                    <span class="mw-chip">TradingView</span>
+                </div>
+                <blockquote class="mw-builder-note">
+                    <span class="mw-note-kicker">Builder note</span>
+                    The analytics layer isn't a dashboard — it's a coach. Every morning the journal writes one paragraph: "Yesterday you held SOL for 4 hours past your normal window. This is the 3rd time this month." That's the product.
+                </blockquote>
+                <blockquote class="mw-quote-pending" data-status="pending">
+                    <span class="mw-pending-kicker">Client quote dropping soon</span>
+                    — SnapLedgerX founder
+                </blockquote>
+                <div class="mw-actions">
+                    <a href="https://snapledgerx.com" class="mw-live" target="_blank" rel="noopener">Live site <span class="mc-arrow">&rarr;</span></a>
                 </div>
             </div>
         </article>
+
+        <!-- CASE 04 — HAR GHAR VIJAYA -->
+        <article class="mw-stage" id="work-har-ghar-vijaya" data-project="04">
+            <div class="mw-frame">
+                <div class="mw-backdrop"></div>
+                <div class="mw-shape mw-shape-04" aria-hidden="true">
+                    <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <linearGradient id="mwg4" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#fbbf24" stop-opacity="0.85"/>
+                                <stop offset="1" stop-color="#ec4899" stop-opacity="0.32"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="100" cy="140" r="72" fill="url(#mwg4)"/>
+                        <circle cx="100" cy="140" r="40" fill="none" stroke="rgba(240,240,245,0.35)" stroke-width="1"/>
+                        <circle cx="100" cy="140" r="22" fill="none" stroke="rgba(240,240,245,0.6)" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="mw-specimen" aria-hidden="true"><span>NGO · Credit ledger · Rewards</span></div>
+            </div>
+            <div class="mw-content">
+                <span class="mw-case">Case №04</span>
+                <div class="mw-tags">
+                    <span class="mw-tag">NGO</span>
+                    <span class="mw-tag">Loyalty engine</span>
+                    <span class="mw-tag">Awareness</span>
+                </div>
+                <h4 class="mw-stage-name"><span>Har Ghar Vijaya</span></h4>
+                <div class="mw-meta-row">
+                    <span class="mw-meta-item"><em>Role</em>Platform · Reward engine · Cross-integration</span>
+                    <span class="mw-meta-item"><em>Year</em>2025</span>
+                    <span class="mw-meta-item"><em>Live at</em>hargharvijaya.org</span>
+                </div>
+                <div class="mw-story">
+                    <p class="mw-challenge"><em>Challenge.</em> An awareness-action NGO wanted real-world contributions (task completion, advocacy, outreach) to translate into tangible benefits — with a natural tie-in to THC Store's wellness products as redeemable rewards.</p>
+                    <p class="mw-approach"><em>Approach.</em> A credit-based participation engine: users complete verified actions, earn credits, redeem them as discounts on partner products. Unified auth + credit ledger across the NGO site and THC Store.</p>
+                </div>
+                <div class="mw-stack" aria-label="Stack">
+                    <span class="mw-chip">Firebase Auth</span>
+                    <span class="mw-chip">Firestore ledger</span>
+                    <span class="mw-chip">Shopify discount API</span>
+                    <span class="mw-chip">Cloud Functions</span>
+                </div>
+                <blockquote class="mw-builder-note">
+                    <span class="mw-note-kicker">Builder note</span>
+                    Credits are a dangerous primitive — easy to game, hard to reconcile. Built an append-only ledger with signed server-side transactions so no client can fake earnings. Redemption is atomic: credit burn + discount-code creation in the same Cloud Function.
+                </blockquote>
+                <blockquote class="mw-quote-pending" data-status="pending">
+                    <span class="mw-pending-kicker">Client quote dropping soon</span>
+                    — Har Ghar Vijaya team
+                </blockquote>
+                <div class="mw-actions">
+                    <a href="https://hargharvijaya.org" class="mw-live" target="_blank" rel="noopener">Live site <span class="mc-arrow">&rarr;</span></a>
+                </div>
+            </div>
+        </article>
+
+        <!-- CASE 05 — HIGHVASTRA (IN BUILD) -->
+        <article class="mw-stage mw-stage-inbuild" id="work-highvastra" data-project="05">
+            <div class="mw-frame mw-frame-open">
+                <div class="mw-backdrop"></div>
+                <div class="mw-shape mw-shape-05" aria-hidden="true">
+                    <span class="mw-grid-lines"></span>
+                    <span class="mw-crosshair mw-crosshair-tl"></span>
+                    <span class="mw-crosshair mw-crosshair-tr"></span>
+                    <span class="mw-crosshair mw-crosshair-bl"></span>
+                    <span class="mw-crosshair mw-crosshair-br"></span>
+                </div>
+                <div class="mw-specimen" aria-hidden="true"><span>In build · Q2 2026</span></div>
+            </div>
+            <div class="mw-content">
+                <span class="mw-case">Case №05</span>
+                <div class="mw-tags">
+                    <span class="mw-tag">Ecommerce</span>
+                    <span class="mw-tag">Brand</span>
+                    <span class="mw-tag mw-tag-status">In build · Q2 2026</span>
+                </div>
+                <h4 class="mw-stage-name"><span>HighVastra</span></h4>
+                <div class="mw-meta-row">
+                    <span class="mw-meta-item"><em>Role</em>Brand · Site · Motion system</span>
+                    <span class="mw-meta-item"><em>Year</em>2026</span>
+                    <span class="mw-meta-item"><em>Status</em>Shipping Q2 2026</span>
+                </div>
+                <div class="mw-story">
+                    <p class="mw-approach"><em>Teaser.</em> A D2C brand currently in build — identity done, site in wireframe, motion language being drafted. Full case study drops at launch.</p>
+                </div>
+                <div class="mw-actions">
+                    <a href="http://highvastra.com" class="mw-live mw-live-soft" target="_blank" rel="noopener">Placeholder site <span class="mc-arrow">&rarr;</span></a>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- =========================================================
+         TESTIMONIALS — placeholder cards, swap quotes as clients reply
+         ========================================================= -->
+    <section class="mont-testimonials" id="testimonials">
+        <header class="mtm-head">
+            <span class="ms-label">&mdash; Testimonials</span>
+            <h3 class="mtm-title">Words, <em>as they land.</em></h3>
+            <p class="mtm-sub">Quotes are being collected. Placeholders stay up until the founders reply &mdash; we never ship a fake testimonial.</p>
+        </header>
+
+        <div class="mtm-grid">
+            <article class="mtm-card" data-status="pending">
+                <div class="mtm-logo" aria-hidden="true"><span>CR</span></div>
+                <blockquote class="mtm-quote">
+                    <span class="mtm-pending-kicker">Client quote dropping soon</span>
+                    Live build notes: milestone-release crowdfunding on Base, governance UI that felt like Notion, two dashboards sharing on-chain state.
+                </blockquote>
+                <footer class="mtm-attrib">
+                    <span class="mtm-name">CrowdRaise founding team</span>
+                    <span class="mtm-role">Fintech &middot; Web3 &middot; <a href="https://crowdraise.io" target="_blank" rel="noopener">crowdraise.io</a></span>
+                </footer>
+            </article>
+
+            <article class="mtm-card" data-status="pending">
+                <div class="mtm-logo" aria-hidden="true"><span>TH</span></div>
+                <blockquote class="mtm-quote">
+                    <span class="mtm-pending-kicker">Client quote dropping soon</span>
+                    Live build notes: 40+ partner brand fan-out, auto-split invoicing, prescription verification flow &mdash; 20 min/order down to 20 sec.
+                </blockquote>
+                <footer class="mtm-attrib">
+                    <span class="mtm-name">THC Store operations lead</span>
+                    <span class="mtm-role">Ecommerce &middot; <a href="https://thcstore.in" target="_blank" rel="noopener">thcstore.in</a></span>
+                </footer>
+            </article>
+
+            <article class="mtm-card" data-status="pending">
+                <div class="mtm-logo" aria-hidden="true"><span>SL</span></div>
+                <blockquote class="mtm-quote">
+                    <span class="mtm-pending-kicker">Client quote dropping soon</span>
+                    Live build notes: an AI trading coach, not a dashboard &mdash; GPT-4 analyses patterns, writes a daily paragraph, flags the 3rd time you held SOL past your window this month.
+                </blockquote>
+                <footer class="mtm-attrib">
+                    <span class="mtm-name">SnapLedgerX founder</span>
+                    <span class="mtm-role">Fintech &middot; AI &middot; <a href="https://snapledgerx.com" target="_blank" rel="noopener">snapledgerx.com</a></span>
+                </footer>
+            </article>
+
+            <article class="mtm-card" data-status="pending">
+                <div class="mtm-logo" aria-hidden="true"><span>HV</span></div>
+                <blockquote class="mtm-quote">
+                    <span class="mtm-pending-kicker">Client quote dropping soon</span>
+                    Live build notes: credit ledger for real-world participation, atomic redemption across NGO site and THC Store, append-only ledger to keep earnings signed &amp; honest.
+                </blockquote>
+                <footer class="mtm-attrib">
+                    <span class="mtm-name">Har Ghar Vijaya team</span>
+                    <span class="mtm-role">NGO &middot; Loyalty engine &middot; <a href="https://hargharvijaya.org" target="_blank" rel="noopener">hargharvijaya.org</a></span>
+                </footer>
+            </article>
+
+            <article class="mtm-card mtm-card-inbuild" data-status="in-build">
+                <div class="mtm-logo" aria-hidden="true"><span>HV2</span></div>
+                <blockquote class="mtm-quote">
+                    <span class="mtm-pending-kicker">In build &middot; Q2 2026</span>
+                    Quote lands at launch. Build notes: D2C brand, identity &amp; site in wireframe, motion language being drafted &mdash; first post-launch retrospective goes here.
+                </blockquote>
+                <footer class="mtm-attrib">
+                    <span class="mtm-name">HighVastra founding team</span>
+                    <span class="mtm-role">D2C &middot; Brand &middot; <a href="http://highvastra.com" target="_blank" rel="noopener">highvastra.com</a></span>
+                </footer>
+            </article>
+        </div>
     </section>
 
     <!-- =========================================================
@@ -392,7 +799,7 @@
          PROCESS — 5 steps
          ========================================================= -->
     <section class="mont-process" id="process">
-        <span class="ms-label">(04) &mdash; How we work</span>
+        <span class="ms-label">(05) &mdash; How we work</span>
         <h3 class="mp-title">Five steps. No mystery.</h3>
 
         <ol class="mp-list mp-rail-host">
@@ -457,7 +864,7 @@
          ========================================================= -->
     <section class="mont-stats" id="stats">
         <header class="mt-head">
-            <span class="mt-kicker">05 — By the numbers</span>
+            <span class="mt-kicker">06 — By the numbers</span>
             <h2 class="mt-title">Small studio, <em>bigger signal</em>.</h2>
         </header>
         <div class="mt-bento">
@@ -468,9 +875,9 @@
                     <rect x="3" y="13" width="8" height="8" stroke="currentColor" stroke-width="1.5"/>
                     <rect x="13" y="13" width="8" height="8" stroke="currentColor" stroke-width="1.5"/>
                 </svg>
-                <span class="mt-num" data-count="6">0</span>
+                <span class="mt-num" data-count="5">0</span>
                 <span class="mt-label">Projects shipped</span>
-                <p class="mt-context">Three live. Three in build. Each a full brand, site, and motion system.</p>
+                <p class="mt-context">Four live, one in build. Fintech, ecom, NGO, AI, D2C &mdash; full brand, site, and motion system each.</p>
             </article>
             <article class="mt-cell" data-stat="services">
                 <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -488,9 +895,12 @@
                     <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
                     <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.5"/>
                 </svg>
-                <span class="mt-num" data-count="1">0</span>
-                <span class="mt-label">Focused team</span>
-                <p class="mt-context">Small on purpose. Two partners, one shared keyboard, zero account managers.</p>
+                <span class="mt-num-compound">
+                    <span class="mt-num" data-count="1">0</span>
+                    <span class="mt-num-plus">+3</span>
+                </span>
+                <span class="mt-label">Solo + network</span>
+                <p class="mt-context">One accountable founder. Three deep collaborators for motion, copy, and devops &mdash; zero account managers.</p>
             </article>
             <article class="mt-cell mt-cell-wide" data-stat="revisions">
                 <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -511,7 +921,7 @@
          ========================================================= -->
     <section class="mont-pricing" id="pricing">
         <header class="mpr-head">
-            <span class="ms-label">(06) &mdash; What it costs</span>
+            <span class="ms-label">(07) &mdash; What it costs</span>
             <h3 class="mpr-title">Three services. <em>Clear pricing.</em></h3>
             <p class="mpr-sub">Indicative rates for early 2026. Every project ends in a custom quote — these are a starting point, not a ceiling.</p>
         </header>
@@ -589,6 +999,119 @@
             <span>Bigger scope? Bundles &amp; long-term retainers available.</span>
             <a href="#contact" class="mpr-quote">Get a custom quote <span class="mc-arrow">&rarr;</span></a>
         </footer>
+
+        <!-- BUILD YOUR OWN — toggle-chip pricing builder (G.4) -->
+        <div class="mpr-builder" id="pricingBuilder">
+            <header class="mpb-head">
+                <span class="mpb-kicker">Build your own</span>
+                <h4 class="mpb-title">Pick features. <em>Watch the total move.</em></h4>
+                <p class="mpb-sub">Click any chip to toggle it in or out. The total is indicative; the final quote arrives after a 20-min call.</p>
+            </header>
+
+            <div class="mpb-chips" role="group" aria-label="Features">
+                <button type="button" class="mpb-chip" data-price="15000" data-label="16 posts / month">
+                    <span class="mpb-chip-label">16 posts / mo</span>
+                    <span class="mpb-chip-price">&#8377;15,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="12000" data-label="4 reels / month">
+                    <span class="mpb-chip-label">4 reels / mo</span>
+                    <span class="mpb-chip-price">&#8377;12,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="45000" data-label="Custom GPT chatbot">
+                    <span class="mpb-chip-label">Custom GPT chatbot</span>
+                    <span class="mpb-chip-price">&#8377;45,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="35000" data-label="Zapier / Make workflow">
+                    <span class="mpb-chip-label">Zapier / Make flows</span>
+                    <span class="mpb-chip-price">&#8377;35,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="85000" data-label="8-page editorial site">
+                    <span class="mpb-chip-label">8-page editorial site</span>
+                    <span class="mpb-chip-price">&#8377;85,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="28000" data-label="3D / motion system">
+                    <span class="mpb-chip-label">3D &amp; motion system</span>
+                    <span class="mpb-chip-price">&#8377;28,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="22000" data-label="CMS wiring">
+                    <span class="mpb-chip-label">CMS wiring</span>
+                    <span class="mpb-chip-price">&#8377;22,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="18000" data-label="SEO + analytics wiring">
+                    <span class="mpb-chip-label">SEO + analytics</span>
+                    <span class="mpb-chip-price">&#8377;18,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="40000" data-label="Monthly ops retainer">
+                    <span class="mpb-chip-label">Monthly ops retainer</span>
+                    <span class="mpb-chip-price">&#8377;40,000 / mo</span>
+                </button>
+            </div>
+
+            <footer class="mpb-foot">
+                <div class="mpb-total">
+                    <span class="mpb-total-label">Your mix &middot; <span id="mpbCount">0</span> features</span>
+                    <span class="mpb-total-num">
+                        <span class="mpb-currency">&#8377;</span><span id="mpbTotal">0</span>
+                    </span>
+                </div>
+                <a href="#contact" class="mc-btn mpb-cta" id="mpbCta">
+                    Get this package
+                    <span class="mc-arrow">&rarr;</span>
+                </a>
+            </footer>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         FAQ (08-ish) — 10 accordion questions
+         ========================================================= -->
+    <section class="mont-faq" id="faq">
+        <header class="mfq-head">
+            <span class="ms-label">&mdash; FAQ</span>
+            <h3 class="mfq-title">Common questions,<br><em>direct answers.</em></h3>
+        </header>
+        <div class="mfq-list">
+            <details class="mfq-item">
+                <summary><span>Do you do retainers or only projects?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Both. SMM is a monthly retainer. AI automation and web design are project-based with optional ongoing support blocks once you&rsquo;re live.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>What happens if we disagree mid-project?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Weekly demos mean disagreements surface in week one, not week six. Bundle revisions are included; a major pivot triggers a fresh SOW so nobody is surprised by the invoice.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>How many revisions are included?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Unlimited during the build phase, 30 days of revisions post-launch, then either a monthly support block or hourly rate after that.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>Do you work with startups pre-revenue?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Yes, on reduced scope. Either an equity conversation, or ~40% off the rate card for friends-of-friends intros. We don&rsquo;t discount blind.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>What&rsquo;s your tech stack?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Vanilla / React / Next.js &middot; Three.js &middot; GSAP &middot; Firebase / Supabase &middot; Shopify &middot; GPT-4 &middot; Make / Zapier &middot; Solidity + wagmi when Web3 fits. No forced stack &mdash; we pick what fits the problem.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>Do you handle hosting &amp; ongoing maintenance?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Hosting yes (Vercel / Netlify for sites, Firebase / Supabase for apps). Maintenance via a monthly retainer or a per-hour block.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>Can we see work-in-progress?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Always. Every project gets a staging URL from day 3. Weekly Loom walkthroughs during build. You see the ugly first drafts, not a polished reveal at the end.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>Who owns the code?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>You do. Full transfer of repo access, deploy secrets, and third-party accounts on final payment.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>How long do projects take?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>SMM is ongoing. AI automation is typically 4&ndash;6 weeks. Web design is 5&ndash;8 weeks depending on scope. Anything bigger (multi-product, marketplaces, dApps) quoted individually.</p></div>
+            </details>
+            <details class="mfq-item">
+                <summary><span>Where are you based?</span><span class="mfq-icon" aria-hidden="true"></span></summary>
+                <div class="mfq-body"><p>Mumbai. Most work is remote; happy to meet in person for kickoffs or workshops if you&rsquo;re local.</p></div>
+            </details>
+        </div>
     </section>
 
     <!-- =========================================================
@@ -596,7 +1119,7 @@
          ========================================================= -->
     <section class="mont-cta mont-contact" id="contact">
         <header class="mct-head">
-            <span class="ms-label">(07) &mdash; Ready?</span>
+            <span class="ms-label">(08) &mdash; Ready?</span>
             <h2 class="mc-title" id="ctaLine">
                 <span class="word">Let's</span>
                 <span class="word">build</span>
@@ -693,6 +1216,13 @@
         </div>
     </section>
 
+    <!-- Sticky talk-to-us CTA — appears after hero (F.8) -->
+    <a href="#contact" class="mont-sticky-cta" id="stickyCta" aria-label="Get in touch">
+        <span class="msc-dot" aria-hidden="true"></span>
+        <span class="msc-label">Let&rsquo;s talk</span>
+        <span class="msc-arrow">&rarr;</span>
+    </a>
+
     <!-- =========================================================
          FOOTER
          ========================================================= -->
@@ -721,18 +1251,18 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=9"></script>
+    <script defer src="config.js?v=22"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
 
-    <!-- Libraries: all bundled locally (offline-safe, no CDN runtime dep) -->
+    <!-- Libraries: all bundled locally (offline-safe, no CDN runtime dep).
+         three.min.js is lazy-loaded by initScene3D after preloader (~660KB). -->
     <script defer src="vendor/lenis.min.js"></script>
     <script defer src="vendor/gsap.min.js"></script>
     <script defer src="vendor/ScrollTrigger.min.js"></script>
-    <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=9"></script>
+    <script defer src="script.js?v=22"></script>
 </body>
 </html>
