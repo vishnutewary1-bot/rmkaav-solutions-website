@@ -587,52 +587,29 @@
         const ring = cursor.querySelector(".mc-ring");
         const dot = cursor.querySelector(".mc-dot");
 
-        const motion = window.Motion;
+        // Direct transform + rAF lerp — fast and trail-free. Dot snaps
+        // almost exactly to cursor; ring has a short smooth tail.
+        let targetX = window.innerWidth / 2;
+        let targetY = window.innerHeight / 2;
+        let ringX = targetX, ringY = targetY;
+        let dotX = targetX, dotY = targetY;
 
-        if (motion && motion.animate) {
-            const { animate } = motion;
-            let latestX = window.innerWidth / 2;
-            let latestY = window.innerHeight / 2;
-            let pending = false;
+        window.addEventListener("mousemove", (e) => {
+            targetX = e.clientX;
+            targetY = e.clientY;
+        }, { passive: true });
 
-            window.addEventListener("mousemove", (e) => {
-                latestX = e.clientX;
-                latestY = e.clientY;
-                if (pending) return;
-                pending = true;
-                requestAnimationFrame(() => {
-                    animate(ring, { x: latestX, y: latestY }, { type: "spring", stiffness: 220, damping: 28, mass: 0.6 });
-                    animate(dot, { x: latestX, y: latestY }, { type: "spring", stiffness: 600, damping: 40, mass: 0.3 });
-                    pending = false;
-                });
-            }, { passive: true });
-        } else {
-            let targetX = window.innerWidth / 2;
-            let targetY = window.innerHeight / 2;
-            let ringX = targetX, ringY = targetY;
-            let dotX = targetX, dotY = targetY;
-
-            const setXRing = gsap.quickSetter(ring, "x", "px");
-            const setYRing = gsap.quickSetter(ring, "y", "px");
-            const setXDot = gsap.quickSetter(dot, "x", "px");
-            const setYDot = gsap.quickSetter(dot, "y", "px");
-
-            window.addEventListener("mousemove", (e) => {
-                targetX = e.clientX;
-                targetY = e.clientY;
-            }, { passive: true });
-
-            gsap.ticker.add(() => {
-                ringX += (targetX - ringX) * 0.18;
-                ringY += (targetY - ringY) * 0.18;
-                dotX += (targetX - dotX) * 0.42;
-                dotY += (targetY - dotY) * 0.42;
-                setXRing(ringX);
-                setYRing(ringY);
-                setXDot(dotX);
-                setYDot(dotY);
-            });
-        }
+        const tick = () => {
+            ringX += (targetX - ringX) * 0.32;
+            ringY += (targetY - ringY) * 0.32;
+            dotX += (targetX - dotX) * 0.7;
+            dotY += (targetY - dotY) * 0.7;
+            // CSS handles centering via negative margin; we just position.
+            ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+            dot.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`;
+            requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
 
         const linkSelector = "a, button, .mn-cta, .mc-btn, .mw-apply";
         document.querySelectorAll(linkSelector).forEach((el) => {
@@ -936,11 +913,8 @@
         const canvas = document.getElementById("m3dEarth");
         if (!canvas) return;
 
-        // Try shader orb first — no Three.js required, lighter, theme-aware
-        const orbOk = initShaderOrb();
-        if (orbOk) return;
-
-        // Fallback: lazy-load Three and run the Earth scene
+        // Earth is the primary scene (per user preference, 2026-04-24).
+        // Lazy-load Three then run the Earth continent tour.
         const kick = () => {
             loadThreeJS()
                 .then(() => runScene3D(canvas))
