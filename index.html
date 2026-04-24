@@ -11,12 +11,22 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://rmkaav.com/">
 
+    <!-- Google Analytics 4 — fires page_view on load; custom events wired in script.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9B1258SHLT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-9B1258SHLT', { send_page_view: true });
+        window.gtag = gtag;
+    </script>
+
     <!-- Fonts: Fraunces (display serif) + Inter (sans) via Google Fonts CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body class="mont-body">
 
@@ -709,6 +719,6 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
-    <script defer src="script.js?v=4"></script>
+    <script defer src="script.js?v=5"></script>
 </body>
 </html>

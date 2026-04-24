@@ -83,6 +83,51 @@
     }
 
     /* =============================================================
+       PHASE D.2 — GA4 EVENT HELPERS
+       ============================================================= */
+    function trackEvent(name, params) {
+        if (typeof window.gtag === "function") {
+            try { window.gtag("event", name, params || {}); } catch (e) { /* swallow */ }
+        }
+    }
+    // Expose for inline/event-attribute usage and other init funcs
+    window.trackEvent = trackEvent;
+
+    function initAnalytics() {
+        // Nav link clicks
+        document.querySelectorAll(".mn-links a").forEach((a) => {
+            a.addEventListener("click", () => {
+                const section = (a.getAttribute("href") || "").replace("#", "") || "unknown";
+                trackEvent("nav_click", { section: section });
+            });
+        });
+
+        // Pricing tier "Start this" clicks
+        document.querySelectorAll(".mpr-cta[data-service]").forEach((el) => {
+            el.addEventListener("click", () => {
+                trackEvent("pricing_click", { tier: el.dataset.service });
+            });
+        });
+
+        // Scroll-depth at 25/50/75/100%
+        const fired = { 25: false, 50: false, 75: false, 100: false };
+        const onScroll = () => {
+            const doc = document.documentElement;
+            const scrollTop = window.scrollY || doc.scrollTop;
+            const trackHeight = doc.scrollHeight - doc.clientHeight;
+            if (trackHeight <= 0) return;
+            const pct = (scrollTop / trackHeight) * 100;
+            [25, 50, 75, 100].forEach((mark) => {
+                if (!fired[mark] && pct >= mark) {
+                    fired[mark] = true;
+                    trackEvent("scroll_depth", { percent: mark });
+                }
+            });
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+    }
+
+    /* =============================================================
        SECTION INITS
        ============================================================= */
 
@@ -1010,6 +1055,7 @@
         initMagnetic();
         initActiveNav();
         initScene3D();
+        initAnalytics();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }
