@@ -2927,3 +2927,127 @@ body.mont-body .mct-meta {
     }
 }
 
+/* =============================================================
+   PHASE D.5 — contact-form status states (EmailJS wiring)
+   ============================================================= */
+body.mont-body .mct-status.is-info {
+    color: var(--cream-muted);
+}
+body.mont-body .mct-status.is-pending {
+    color: var(--accent-2, var(--accent));
+    position: relative;
+    padding-left: 22px;
+}
+body.mont-body .mct-status.is-pending::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    animation: mct-spin 0.8s linear infinite;
+}
+@keyframes mct-spin {
+    to { transform: rotate(360deg); }
+}
+body.mont-body .mct-submit:disabled {
+    opacity: 0.55;
+    cursor: progress;
+    pointer-events: none;
+}
+
+/* reCAPTCHA v3 badge — hidden; required attribution line added to the
+   contact-form disclaimer to stay compliant with Google's ToS. */
+.grecaptcha-badge {
+    visibility: hidden !important;
+}
+body.mont-body .mct-legal {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    opacity: 0.6;
+    letter-spacing: 0.02em;
+}
+body.mont-body .mct-legal a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* =============================================================
+   PHASE D.7 — "Pause animations" toggle
+   ============================================================= */
+body.mont-body .reduce-motion-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--cream-muted);
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+body.mont-body .reduce-motion-toggle:hover,
+body.mont-body .reduce-motion-toggle:focus-visible {
+    color: var(--cream);
+    border-color: var(--border-strong, rgba(240,240,245,0.28));
+    outline: none;
+}
+body.mont-body .reduce-motion-toggle .rmt-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+body.mont-body.reduce-motion .reduce-motion-toggle[aria-pressed="true"] .rmt-dot {
+    background: var(--cream-muted);
+    box-shadow: none;
+}
+
+/* Global motion kill-switch. Broad but scoped to the toggled class so
+   nothing animates outside an explicit opt-out. Transitions and CSS
+   animations are nuked; GSAP timelines are paused from JS. */
+body.mont-body.reduce-motion *,
+body.mont-body.reduce-motion *::before,
+body.mont-body.reduce-motion *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+}
+/* Stop the decorative marquees and drift elements */
+body.mont-body.reduce-motion .mm-track,
+body.mont-body.reduce-motion .mh-drift,
+body.mont-body.reduce-motion .mont-grain,
+body.mont-body.reduce-motion .m3d-stars,
+body.mont-body.reduce-motion .m3d-earth-glow {
+    animation: none !important;
+    transform: none !important;
+}
+body.mont-body.reduce-motion .mont-scene3d {
+    opacity: 0.55;
+    transition: none !important;
+}
+
+/* =============================================================
+   PHASE D.8 — footer without dead socials (2-col layout)
+   ============================================================= */
+body.mont-body .mf-top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1200px;
+}
+@media (max-width: 900px) {
+    body.mont-body .mf-top {
+        grid-template-columns: 1fr;
+    }
+}
+

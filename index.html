@@ -10,13 +10,31 @@
     <meta property="og:description" content="We design, automate and market — so your business moves faster.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://rmkaav.com/">
+    <meta property="og:image" content="https://rmkaav.com/assets/og/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="RMKAAV — Studio of Craft. Mumbai, est. 2026.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RMKAAV Solutions — Studio of Craft">
+    <meta name="twitter:description" content="We design, automate and market — for brands that want to move faster.">
+    <meta name="twitter:image" content="https://rmkaav.com/assets/og/og-image.png">
+
+    <!-- Google Analytics 4 — fires page_view on load; custom events wired in script.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9B1258SHLT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-9B1258SHLT', { send_page_view: true });
+        window.gtag = gtag;
+    </script>
 
     <!-- Fonts: Fraunces (display serif) + Inter (sans) via Google Fonts CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body class="mont-body">
 
@@ -652,7 +670,7 @@
                         Send inquiry
                         <span class="mc-arrow">&rarr;</span>
                     </button>
-                    <p class="mct-disclaimer">Submitting opens your email app with the message prefilled. Goes to <a href="mailto:info@rmkaav.com">info@rmkaav.com</a>.</p>
+                    <p class="mct-disclaimer">Your message lands in <a href="mailto:info@rmkaav.com">info@rmkaav.com</a>. We reply within one working day. <span class="mct-legal">Protected by reCAPTCHA &mdash; Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> &amp; <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a> apply.</span></p>
                 </div>
 
                 <div class="mct-status" id="mctStatus" role="status" aria-live="polite"></div>
@@ -691,17 +709,22 @@
                 <p><a href="mailto:info@rmkaav.com">info@rmkaav.com</a></p>
                 <p><a href="tel:+917977992054">+91 7977 992 054</a></p>
             </div>
-            <div class="mf-col">
-                <span class="ms-label">Elsewhere</span>
-                <p><a href="#" rel="noopener">Instagram</a></p>
-                <p><a href="#" rel="noopener">LinkedIn</a></p>
-            </div>
         </div>
         <div class="mf-bottom">
             <span>&copy; 2026 RMKAAV Solutions</span>
+            <button type="button" class="reduce-motion-toggle" id="reduceMotionToggle" aria-pressed="false">
+                <span class="rmt-dot" aria-hidden="true"></span>
+                <span class="rmt-label">Pause animations</span>
+            </button>
             <span>Made in Mumbai</span>
         </div>
     </footer>
+
+    <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
+    <script defer src="config.js?v=9"></script>
+
+    <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
+    <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
 
     <!-- Libraries: all bundled locally (offline-safe, no CDN runtime dep) -->
     <script defer src="vendor/lenis.min.js"></script>
@@ -709,6 +732,7 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
-    <script defer src="script.js?v=4"></script>
+    <script defer src="vendor/emailjs.min.js"></script>
+    <script defer src="script.js?v=9"></script>
 </body>
 </html>

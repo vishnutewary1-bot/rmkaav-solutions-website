@@ -5,3 +5,11 @@ Thumbs.db
 .claude/
 .vercel
 firebase-debug.log
+
+# Secrets & local config (never commit)
+.mcp.json
+.env
+.env.local
+.env.*.local
+*.key
+*.pem

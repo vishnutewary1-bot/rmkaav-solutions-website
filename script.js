@@ -83,6 +83,72 @@
     }
 
     /* =============================================================
+       PHASE D.4 — reCAPTCHA v3 HELPER
+       ============================================================= */
+    function getRecaptchaToken(action) {
+        const siteKey = (window.RMKAAV_CONFIG && window.RMKAAV_CONFIG.RECAPTCHA_SITE_KEY) || "";
+        if (!siteKey || typeof window.grecaptcha === "undefined" || !window.grecaptcha.execute) {
+            return Promise.resolve(null);
+        }
+        return new Promise((resolve) => {
+            try {
+                window.grecaptcha.ready(() => {
+                    window.grecaptcha.execute(siteKey, { action: action || "submit" })
+                        .then((token) => resolve(token || null))
+                        .catch(() => resolve(null));
+                });
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    /* =============================================================
+       PHASE D.2 — GA4 EVENT HELPERS
+       ============================================================= */
+    function trackEvent(name, params) {
+        if (typeof window.gtag === "function") {
+            try { window.gtag("event", name, params || {}); } catch (e) { /* swallow */ }
+        }
+    }
+    // Expose for inline/event-attribute usage and other init funcs
+    window.trackEvent = trackEvent;
+
+    function initAnalytics() {
+        // Nav link clicks
+        document.querySelectorAll(".mn-links a").forEach((a) => {
+            a.addEventListener("click", () => {
+                const section = (a.getAttribute("href") || "").replace("#", "") || "unknown";
+                trackEvent("nav_click", { section: section });
+            });
+        });
+
+        // Pricing tier "Start this" clicks
+        document.querySelectorAll(".mpr-cta[data-service]").forEach((el) => {
+            el.addEventListener("click", () => {
+                trackEvent("pricing_click", { tier: el.dataset.service });
+            });
+        });
+
+        // Scroll-depth at 25/50/75/100%
+        const fired = { 25: false, 50: false, 75: false, 100: false };
+        const onScroll = () => {
+            const doc = document.documentElement;
+            const scrollTop = window.scrollY || doc.scrollTop;
+            const trackHeight = doc.scrollHeight - doc.clientHeight;
+            if (trackHeight <= 0) return;
+            const pct = (scrollTop / trackHeight) * 100;
+            [25, 50, 75, 100].forEach((mark) => {
+                if (!fired[mark] && pct >= mark) {
+                    fired[mark] = true;
+                    trackEvent("scroll_depth", { percent: mark });
+                }
+            });
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+    }
+
+    /* =============================================================
        SECTION INITS
        ============================================================= */
 
@@ -869,14 +935,23 @@
         });
     }
 
-    /* ---------- Contact form (submits via mailto: to info@rmkaav.com) ---------- */
+    /* ---------- Contact form — EmailJS dispatch (D.5) with mailto fallback ---------- */
     function initContactForm() {
         const form = document.getElementById("contactForm");
         if (!form) return;
 
         const status = document.getElementById("mctStatus");
+        const submitBtn = form.querySelector(".mct-submit");
         const motion = window.Motion;
         const useMotion = motion && motion.animate;
+        const cfg = window.RMKAAV_CONFIG || {};
+
+        // Initialise EmailJS (safe to call multiple times; no-op if lib missing)
+        if (window.emailjs && cfg.EMAILJS_PUBLIC_KEY) {
+            try {
+                window.emailjs.init({ publicKey: cfg.EMAILJS_PUBLIC_KEY });
+            } catch (e) { /* library may already be initialised */ }
+        }
 
         // Pre-select service radio when user clicks a pricing CTA
         const serviceMap = {
@@ -890,7 +965,6 @@
                 if (!val) return;
                 const radio = form.querySelector('input[name="service"][value="' + val + '"]');
                 if (radio) radio.checked = true;
-                // Subtle confirmation flash on the chip once form comes into view
                 setTimeout(() => {
                     const chip = radio ? radio.closest(".mct-chip") : null;
                     if (chip && useMotion) {
@@ -903,11 +977,29 @@
         const setStatus = (msg, kind) => {
             if (!status) return;
             status.textContent = msg;
-            status.classList.remove("is-error", "is-success", "is-info");
+            status.classList.remove("is-error", "is-success", "is-info", "is-pending");
             if (kind) status.classList.add("is-" + kind);
         };
 
-        form.addEventListener("submit", (e) => {
+        const buildMailtoFallback = (params) => {
+            const subject = "[" + params.service + "] New inquiry from " + params.from_name;
+            const lines = [
+                "Name: " + params.from_name,
+                "Email: " + params.from_email
+            ];
+            if (params.company) lines.push("Company: " + params.company);
+            lines.push("Service: " + params.service);
+            lines.push("Budget: " + params.budget);
+            lines.push("");
+            lines.push("— Message —");
+            lines.push(params.message);
+            lines.push("");
+            lines.push("— Sent from rmkaav.com —");
+            const body = lines.join("\n");
+            return "mailto:info@rmkaav.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        };
+
+        form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const name = form.name.value.trim();
@@ -927,32 +1019,51 @@
             const service = form.service.value || "Not specified";
             const budget = form.budget.value || "Not specified";
 
-            const subject = "[" + service + "] New inquiry from " + name;
-            const lines = [
-                "Name: " + name,
-                "Email: " + email
-            ];
-            if (company) lines.push("Company: " + company);
-            lines.push("Service: " + service);
-            lines.push("Budget: " + budget);
-            lines.push("");
-            lines.push("— Message —");
-            lines.push(message);
-            lines.push("");
-            lines.push("— Sent from rmkaav.com —");
-            const body = lines.join("\n");
+            const params = {
+                from_name: name,
+                from_email: email,
+                company: company,
+                service: service,
+                budget: budget,
+                message: message,
+                recaptcha_token: ""
+            };
 
-            const mailto = "mailto:info@rmkaav.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+            // Lock submit button + show pending
+            if (submitBtn) submitBtn.disabled = true;
+            setStatus("Sending…", "pending");
 
-            setStatus("Opening your email app — hit send to deliver.", "success");
+            // reCAPTCHA token — non-blocking on failure
+            try {
+                const token = await getRecaptchaToken("submit_contact");
+                if (token) params.recaptcha_token = token;
+            } catch (e) { /* continue without token */ }
 
-            // Small delay so the status message is visible before mailto takes over
+            // Try EmailJS, fall back to mailto on any failure
+            const canSend = window.emailjs && cfg.EMAILJS_SERVICE_ID && cfg.EMAILJS_TEMPLATE_ID;
+            if (canSend) {
+                try {
+                    await window.emailjs.send(cfg.EMAILJS_SERVICE_ID, cfg.EMAILJS_TEMPLATE_ID, params);
+                    setStatus("Sent — we'll reply within one working day.", "success");
+                    trackEvent("form_submit", { service: service });
+                    form.reset();
+                    if (submitBtn) submitBtn.disabled = false;
+                    return;
+                } catch (err) {
+                    console.warn("[contact] EmailJS send failed, falling back to mailto:", err);
+                }
+            }
+
+            // Fallback path — mailto
+            setStatus("Opening your email app as a backup — hit send to deliver.", "info");
+            trackEvent("form_submit", { service: service, fallback: "mailto" });
+            if (submitBtn) submitBtn.disabled = false;
             setTimeout(() => {
-                window.location.href = mailto;
+                window.location.href = buildMailtoFallback(params);
             }, 450);
         });
 
-        // Subtle Motion flash on focus (accent glow)
+        // Subtle Motion flash on focus
         if (useMotion) {
             form.querySelectorAll("input, textarea, select").forEach((el) => {
                 el.addEventListener("focus", () => {
@@ -960,6 +1071,58 @@
                 });
             });
         }
+    }
+
+    /* =============================================================
+       PHASE D.7 — "Pause animations" toggle
+       ============================================================= */
+    const MOTION_STORAGE_KEY = "rmkaav_motion_paused";
+
+    function applyMotionPaused(paused) {
+        const btn = document.getElementById("reduceMotionToggle");
+        if (paused) {
+            body.classList.add("reduce-motion");
+            if (btn) {
+                btn.setAttribute("aria-pressed", "true");
+                const label = btn.querySelector(".rmt-label");
+                if (label) label.textContent = "Resume animations";
+            }
+            try { gsap.globalTimeline.pause(); } catch (e) {}
+            try {
+                ScrollTrigger.getAll().forEach((st) => st.disable(false));
+            } catch (e) {}
+            // Three.js / Earth ticker runs via rAF inside initScene3D —
+            // the `body.reduce-motion` class is read there to short-circuit.
+        } else {
+            body.classList.remove("reduce-motion");
+            if (btn) {
+                btn.setAttribute("aria-pressed", "false");
+                const label = btn.querySelector(".rmt-label");
+                if (label) label.textContent = "Pause animations";
+            }
+            try { gsap.globalTimeline.resume(); } catch (e) {}
+            try {
+                ScrollTrigger.getAll().forEach((st) => st.enable());
+                ScrollTrigger.refresh();
+            } catch (e) {}
+        }
+    }
+
+    function initMotionToggle() {
+        const btn = document.getElementById("reduceMotionToggle");
+        if (!btn) return;
+
+        let stored = null;
+        try { stored = localStorage.getItem(MOTION_STORAGE_KEY); } catch (e) {}
+        if (stored === "1") applyMotionPaused(true);
+
+        btn.addEventListener("click", () => {
+            const wasPaused = body.classList.contains("reduce-motion");
+            const nextPaused = !wasPaused;
+            applyMotionPaused(nextPaused);
+            try { localStorage.setItem(MOTION_STORAGE_KEY, nextPaused ? "1" : "0"); } catch (e) {}
+            trackEvent("motion_toggle", { state: nextPaused ? "paused" : "resumed" });
+        });
     }
 
     /* ---------- Active section → nav link highlight ---------- */
@@ -1010,6 +1173,8 @@
         initMagnetic();
         initActiveNav();
         initScene3D();
+        initAnalytics();
+        initMotionToggle();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }
