@@ -34,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body class="mont-body">
 
@@ -794,9 +794,12 @@
                     <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
                     <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.5"/>
                 </svg>
-                <span class="mt-num" data-count="1">0</span>
-                <span class="mt-label">Focused team</span>
-                <p class="mt-context">Small on purpose. Two partners, one shared keyboard, zero account managers.</p>
+                <span class="mt-num-compound">
+                    <span class="mt-num" data-count="1">0</span>
+                    <span class="mt-num-plus">+3</span>
+                </span>
+                <span class="mt-label">Solo + network</span>
+                <p class="mt-context">One accountable founder. Three deep collaborators for motion, copy, and devops &mdash; zero account managers.</p>
             </article>
             <article class="mt-cell mt-cell-wide" data-stat="revisions">
                 <svg class="mt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1079,7 +1082,7 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=14"></script>
+    <script defer src="config.js?v=15"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -1091,6 +1094,6 @@
     <script defer src="vendor/three.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=14"></script>
+    <script defer src="script.js?v=15"></script>
 </body>
 </html>

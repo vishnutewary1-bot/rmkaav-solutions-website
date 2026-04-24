@@ -3052,6 +3052,26 @@ body.mont-body .mf-top {
 }
 
 /* =============================================================
+   PHASE E.6 — stat truthing (1+3 compound)
+   ============================================================= */
+body.mont-body .mt-num-compound {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+}
+body.mont-body .mt-num-compound > .mt-num {
+    display: inline-block;
+}
+body.mont-body .mt-num-plus {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 0.55em;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    opacity: 0.85;
+}
+
+/* =============================================================
    PHASE E.5 — FAQ
    ============================================================= */
 body.mont-body .mont-faq {
