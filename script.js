@@ -935,14 +935,23 @@
         });
     }
 
-    /* ---------- Contact form (submits via mailto: to info@rmkaav.com) ---------- */
+    /* ---------- Contact form — EmailJS dispatch (D.5) with mailto fallback ---------- */
     function initContactForm() {
         const form = document.getElementById("contactForm");
         if (!form) return;
 
         const status = document.getElementById("mctStatus");
+        const submitBtn = form.querySelector(".mct-submit");
         const motion = window.Motion;
         const useMotion = motion && motion.animate;
+        const cfg = window.RMKAAV_CONFIG || {};
+
+        // Initialise EmailJS (safe to call multiple times; no-op if lib missing)
+        if (window.emailjs && cfg.EMAILJS_PUBLIC_KEY) {
+            try {
+                window.emailjs.init({ publicKey: cfg.EMAILJS_PUBLIC_KEY });
+            } catch (e) { /* library may already be initialised */ }
+        }
 
         // Pre-select service radio when user clicks a pricing CTA
         const serviceMap = {
@@ -956,7 +965,6 @@
                 if (!val) return;
                 const radio = form.querySelector('input[name="service"][value="' + val + '"]');
                 if (radio) radio.checked = true;
-                // Subtle confirmation flash on the chip once form comes into view
                 setTimeout(() => {
                     const chip = radio ? radio.closest(".mct-chip") : null;
                     if (chip && useMotion) {
@@ -969,11 +977,29 @@
         const setStatus = (msg, kind) => {
             if (!status) return;
             status.textContent = msg;
-            status.classList.remove("is-error", "is-success", "is-info");
+            status.classList.remove("is-error", "is-success", "is-info", "is-pending");
             if (kind) status.classList.add("is-" + kind);
         };
 
-        form.addEventListener("submit", (e) => {
+        const buildMailtoFallback = (params) => {
+            const subject = "[" + params.service + "] New inquiry from " + params.from_name;
+            const lines = [
+                "Name: " + params.from_name,
+                "Email: " + params.from_email
+            ];
+            if (params.company) lines.push("Company: " + params.company);
+            lines.push("Service: " + params.service);
+            lines.push("Budget: " + params.budget);
+            lines.push("");
+            lines.push("— Message —");
+            lines.push(params.message);
+            lines.push("");
+            lines.push("— Sent from rmkaav.com —");
+            const body = lines.join("\n");
+            return "mailto:info@rmkaav.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        };
+
+        form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const name = form.name.value.trim();
@@ -993,32 +1019,51 @@
             const service = form.service.value || "Not specified";
             const budget = form.budget.value || "Not specified";
 
-            const subject = "[" + service + "] New inquiry from " + name;
-            const lines = [
-                "Name: " + name,
-                "Email: " + email
-            ];
-            if (company) lines.push("Company: " + company);
-            lines.push("Service: " + service);
-            lines.push("Budget: " + budget);
-            lines.push("");
-            lines.push("— Message —");
-            lines.push(message);
-            lines.push("");
-            lines.push("— Sent from rmkaav.com —");
-            const body = lines.join("\n");
+            const params = {
+                from_name: name,
+                from_email: email,
+                company: company,
+                service: service,
+                budget: budget,
+                message: message,
+                recaptcha_token: ""
+            };
 
-            const mailto = "mailto:info@rmkaav.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+            // Lock submit button + show pending
+            if (submitBtn) submitBtn.disabled = true;
+            setStatus("Sending…", "pending");
 
-            setStatus("Opening your email app — hit send to deliver.", "success");
+            // reCAPTCHA token — non-blocking on failure
+            try {
+                const token = await getRecaptchaToken("submit_contact");
+                if (token) params.recaptcha_token = token;
+            } catch (e) { /* continue without token */ }
 
-            // Small delay so the status message is visible before mailto takes over
+            // Try EmailJS, fall back to mailto on any failure
+            const canSend = window.emailjs && cfg.EMAILJS_SERVICE_ID && cfg.EMAILJS_TEMPLATE_ID;
+            if (canSend) {
+                try {
+                    await window.emailjs.send(cfg.EMAILJS_SERVICE_ID, cfg.EMAILJS_TEMPLATE_ID, params);
+                    setStatus("Sent — we'll reply within one working day.", "success");
+                    trackEvent("form_submit", { service: service });
+                    form.reset();
+                    if (submitBtn) submitBtn.disabled = false;
+                    return;
+                } catch (err) {
+                    console.warn("[contact] EmailJS send failed, falling back to mailto:", err);
+                }
+            }
+
+            // Fallback path — mailto
+            setStatus("Opening your email app as a backup — hit send to deliver.", "info");
+            trackEvent("form_submit", { service: service, fallback: "mailto" });
+            if (submitBtn) submitBtn.disabled = false;
             setTimeout(() => {
-                window.location.href = mailto;
+                window.location.href = buildMailtoFallback(params);
             }, 450);
         });
 
-        // Subtle Motion flash on focus (accent glow)
+        // Subtle Motion flash on focus
         if (useMotion) {
             form.querySelectorAll("input, textarea, select").forEach((el) => {
                 el.addEventListener("focus", () => {
