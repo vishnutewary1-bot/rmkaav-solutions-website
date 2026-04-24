@@ -3055,6 +3055,12 @@ body.mont-body .mf-top {
    PHASE J — Universal scroll-reveal (mobile + desktop)
    Lightweight fade-up triggered by IntersectionObserver.
    ============================================================= */
+/* Mission headline is now static per user request (2026-04-24) —
+   override the clip-path hidden initial state so words show full. */
+body.mont-body .ms-line .word {
+    clip-path: none !important;
+}
+
 body.mont-body .reveal-init {
     opacity: 0;
     transform: translate3d(0, 48px, 0);

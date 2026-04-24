@@ -241,27 +241,11 @@
 
     /* ---------- Mission word reveal ---------- */
     function initMission() {
+        // User removed the scroll-scrub word reveal for the mission
+        // headline (2026-04-24) — now renders the full line static.
+        // CSS override also removes the clip-path hidden state.
         const section = document.getElementById("mission");
         if (!section) return;
-        const words = section.querySelectorAll(".word");
-        if (!words.length) return;
-
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: section,
-                start: "top 75%",
-                end: "bottom 45%",
-                scrub: 0.6
-            }
-        });
-
-        words.forEach((w, i) => {
-            tl.to(w, {
-                clipPath: "inset(0 0% 0 0)",
-                duration: 0.22,
-                ease: "none"
-            }, i * 0.04);
-        });
     }
 
     /* ---------- Services horizontal scroll ---------- */
