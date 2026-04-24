@@ -708,13 +708,46 @@
         });
     }
 
+    /* ---------- Three.js lazy-loader (F.1) ----------
+       Defers the 660KB vendor/three.min.js load until the browser is idle,
+       so hero TTI doesn't pay for it. Returns a Promise<window.THREE>. */
+    let _threeLoadingPromise = null;
+    function loadThreeJS() {
+        if (window.THREE) return Promise.resolve(window.THREE);
+        if (_threeLoadingPromise) return _threeLoadingPromise;
+        _threeLoadingPromise = new Promise((resolve, reject) => {
+            const tag = document.createElement("script");
+            tag.src = "vendor/three.min.js";
+            tag.async = true;
+            tag.onload = () => resolve(window.THREE);
+            tag.onerror = () => reject(new Error("three.js failed to load"));
+            document.head.appendChild(tag);
+        });
+        return _threeLoadingPromise;
+    }
+
     /* ---------- Realistic Earth (Three.js, scroll-reactive) ----------
        Cinematic continent tour: Asia → Europe → Americas → Oceania,
        with zoom-ins at each stop and a full-view reset at the end.
-       Atmospheric fresnel shell + idle spin + cursor parallax. */
+       Atmospheric fresnel shell + idle spin + cursor parallax.
+       Lazy-loads three.js on first frame idle (or 1s timeout). */
     function initScene3D() {
         const canvas = document.getElementById("m3dEarth");
         if (!canvas) return;
+
+        const kick = () => {
+            loadThreeJS()
+                .then(() => runScene3D(canvas))
+                .catch(() => { canvas.parentElement.style.display = "none"; });
+        };
+        if (window.requestIdleCallback) {
+            requestIdleCallback(kick, { timeout: 1200 });
+        } else {
+            setTimeout(kick, 800);
+        }
+    }
+
+    function runScene3D(canvas) {
         if (!window.THREE) {
             console.warn("[mont] three.js missing — earth disabled.");
             canvas.parentElement.style.display = "none";
