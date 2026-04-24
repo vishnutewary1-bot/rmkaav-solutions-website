@@ -83,6 +83,27 @@
     }
 
     /* =============================================================
+       PHASE D.4 — reCAPTCHA v3 HELPER
+       ============================================================= */
+    function getRecaptchaToken(action) {
+        const siteKey = (window.RMKAAV_CONFIG && window.RMKAAV_CONFIG.RECAPTCHA_SITE_KEY) || "";
+        if (!siteKey || typeof window.grecaptcha === "undefined" || !window.grecaptcha.execute) {
+            return Promise.resolve(null);
+        }
+        return new Promise((resolve) => {
+            try {
+                window.grecaptcha.ready(() => {
+                    window.grecaptcha.execute(siteKey, { action: action || "submit" })
+                        .then((token) => resolve(token || null))
+                        .catch(() => resolve(null));
+                });
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    /* =============================================================
        PHASE D.2 — GA4 EVENT HELPERS
        ============================================================= */
     function trackEvent(name, params) {
