@@ -3052,6 +3052,164 @@ body.mont-body .mf-top {
 }
 
 /* =============================================================
+   PHASE E.4 — Testimonials
+   ============================================================= */
+body.mont-body .mont-testimonials {
+    padding: 140px 6vw 160px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+body.mont-body .mtm-head {
+    max-width: 780px;
+    margin-bottom: 72px;
+}
+body.mont-body .mtm-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2.4rem, 5vw, 4.6rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin: 10px 0 18px;
+}
+body.mont-body .mtm-title em {
+    font-style: italic;
+    background: var(--grad-brand, linear-gradient(135deg, var(--accent), var(--accent-2, var(--accent)), var(--accent-3, var(--accent))));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+body.mont-body .mtm-sub {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--cream-muted);
+    margin: 0;
+}
+body.mont-body .mtm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+body.mont-body .mtm-card {
+    position: relative;
+    padding: 30px 26px 26px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: linear-gradient(170deg, rgba(255,255,255,0.025), transparent 60%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow: hidden;
+    transition: transform 0.3s var(--ease-out), border-color 0.3s ease;
+}
+body.mont-body .mtm-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent-soft, rgba(99,102,241,0.35)), transparent 60%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+body.mont-body .mtm-card:hover {
+    transform: translateY(-3px);
+}
+body.mont-body .mtm-card[data-status="pending"] {
+    opacity: 0.9;
+}
+body.mont-body .mtm-card[data-status="pending"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            135deg,
+            rgba(240,240,245,0.012) 0 10px,
+            transparent 10px 22px
+        );
+    pointer-events: none;
+    border-radius: 14px;
+    opacity: 0.6;
+}
+body.mont-body .mtm-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(236,72,153,0.12));
+    border: 1px solid var(--border-strong, rgba(240,240,245,0.18));
+    display: grid;
+    place-items: center;
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    flex-shrink: 0;
+}
+body.mont-body .mtm-quote {
+    margin: 0;
+    padding: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--cream);
+    opacity: 0.92;
+    flex: 1;
+}
+body.mont-body .mtm-pending-kicker {
+    display: block;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+body.mont-body .mtm-card[data-status="in-build"] .mtm-pending-kicker {
+    color: #fbbf24;
+}
+body.mont-body .mtm-attrib {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+body.mont-body .mtm-name {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+}
+body.mont-body .mtm-role {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--cream-muted);
+}
+body.mont-body .mtm-role a {
+    color: var(--cream-muted);
+    border-bottom: 1px solid var(--border-strong, rgba(240,240,245,0.18));
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+body.mont-body .mtm-role a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+@media (max-width: 600px) {
+    body.mont-body .mont-testimonials { padding: 80px 20px 100px; }
+    body.mont-body .mtm-grid { grid-template-columns: 1fr; }
+}
+
+/* =============================================================
    PHASE E.3 — About / Team section
    ============================================================= */
 body.mont-body .mont-about {
