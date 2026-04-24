@@ -5993,21 +5993,27 @@ html.mont[data-theme="light"] body.mont-body .m3d-earth-glow {
    rendered in a 3D perspective look.
    ============================================================= */
 
-/* 1 — Kill the Earth + all cosmos objects (both themes).
-      Keep only stars + nebulae for subtle space ambience. */
-body.mont-body .m3d-earth-wrap,
-body.mont-body .m3d-earth-glow,
+/* 1 — Kill everything except the Earth. User wants Earth ONLY —
+      no cosmos planets, no sun, no galaxy, no stars, no nebulae. */
 body.mont-body .m3d-galaxy,
 body.mont-body .m3d-sun,
 body.mont-body .m3d-saturn,
 body.mont-body .m3d-mars,
-body.mont-body .m3d-jupiter {
+body.mont-body .m3d-jupiter,
+body.mont-body .m3d-stars-far,
+body.mont-body .m3d-stars-mid,
+body.mont-body .m3d-stars-near,
+body.mont-body .m3d-stars-twinkle,
+body.mont-body .m3d-nebula-a,
+body.mont-body .m3d-nebula-b {
     display: none !important;
 }
-
-/* 2 — Tame nebulae a touch now that Earth isn't anchoring the scene */
-body.mont-body .m3d-nebula-a { opacity: 0.7; }
-body.mont-body .m3d-nebula-b { opacity: 0.6; }
+/* Restore Earth in both themes (Phase L hid it in light; un-hide) */
+html.mont[data-theme="light"] body.mont-body .m3d-earth-wrap,
+html.mont[data-theme="light"] body.mont-body .m3d-earth-glow {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
 
 /* 3 — Revert CrowdRaise phone chrome (project 01) */
 body.mont-body .mw-stage[data-project="01"] .mw-frame {
