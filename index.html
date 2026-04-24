@@ -104,7 +104,7 @@
     <link rel="preload" as="style" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
     <link rel="stylesheet" fetchpriority="high" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=21">
+    <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body class="mont-body">
 
@@ -999,6 +999,67 @@
             <span>Bigger scope? Bundles &amp; long-term retainers available.</span>
             <a href="#contact" class="mpr-quote">Get a custom quote <span class="mc-arrow">&rarr;</span></a>
         </footer>
+
+        <!-- BUILD YOUR OWN — toggle-chip pricing builder (G.4) -->
+        <div class="mpr-builder" id="pricingBuilder">
+            <header class="mpb-head">
+                <span class="mpb-kicker">Build your own</span>
+                <h4 class="mpb-title">Pick features. <em>Watch the total move.</em></h4>
+                <p class="mpb-sub">Click any chip to toggle it in or out. The total is indicative; the final quote arrives after a 20-min call.</p>
+            </header>
+
+            <div class="mpb-chips" role="group" aria-label="Features">
+                <button type="button" class="mpb-chip" data-price="15000" data-label="16 posts / month">
+                    <span class="mpb-chip-label">16 posts / mo</span>
+                    <span class="mpb-chip-price">&#8377;15,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="12000" data-label="4 reels / month">
+                    <span class="mpb-chip-label">4 reels / mo</span>
+                    <span class="mpb-chip-price">&#8377;12,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="45000" data-label="Custom GPT chatbot">
+                    <span class="mpb-chip-label">Custom GPT chatbot</span>
+                    <span class="mpb-chip-price">&#8377;45,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="35000" data-label="Zapier / Make workflow">
+                    <span class="mpb-chip-label">Zapier / Make flows</span>
+                    <span class="mpb-chip-price">&#8377;35,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="85000" data-label="8-page editorial site">
+                    <span class="mpb-chip-label">8-page editorial site</span>
+                    <span class="mpb-chip-price">&#8377;85,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="28000" data-label="3D / motion system">
+                    <span class="mpb-chip-label">3D &amp; motion system</span>
+                    <span class="mpb-chip-price">&#8377;28,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="22000" data-label="CMS wiring">
+                    <span class="mpb-chip-label">CMS wiring</span>
+                    <span class="mpb-chip-price">&#8377;22,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="18000" data-label="SEO + analytics wiring">
+                    <span class="mpb-chip-label">SEO + analytics</span>
+                    <span class="mpb-chip-price">&#8377;18,000</span>
+                </button>
+                <button type="button" class="mpb-chip" data-price="40000" data-label="Monthly ops retainer">
+                    <span class="mpb-chip-label">Monthly ops retainer</span>
+                    <span class="mpb-chip-price">&#8377;40,000 / mo</span>
+                </button>
+            </div>
+
+            <footer class="mpb-foot">
+                <div class="mpb-total">
+                    <span class="mpb-total-label">Your mix &middot; <span id="mpbCount">0</span> features</span>
+                    <span class="mpb-total-num">
+                        <span class="mpb-currency">&#8377;</span><span id="mpbTotal">0</span>
+                    </span>
+                </div>
+                <a href="#contact" class="mc-btn mpb-cta" id="mpbCta">
+                    Get this package
+                    <span class="mc-arrow">&rarr;</span>
+                </a>
+            </footer>
+        </div>
     </section>
 
     <!-- =========================================================
@@ -1190,7 +1251,7 @@
     </footer>
 
     <!-- Site config (loaded before libraries so window.RMKAAV_CONFIG is available) -->
-    <script defer src="config.js?v=21"></script>
+    <script defer src="config.js?v=22"></script>
 
     <!-- reCAPTCHA v3 — loads silently; token fetched in contact form submit -->
     <script defer src="https://www.recaptcha.net/recaptcha/api.js?render=6Ldc76QsAAAAAKhU8UoxXDMCm3WDgPGQl48BvsFd"></script>
@@ -1202,6 +1263,6 @@
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/motion.min.js"></script>
     <script defer src="vendor/emailjs.min.js"></script>
-    <script defer src="script.js?v=21"></script>
+    <script defer src="script.js?v=22"></script>
 </body>
 </html>

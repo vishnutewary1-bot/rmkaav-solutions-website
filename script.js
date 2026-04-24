@@ -1315,6 +1315,87 @@
     }
 
     /* =============================================================
+       PHASE G.4 — Build-your-own pricing builder
+       Toggle chips → update total → "Get this package" pre-fills contact form
+       ============================================================= */
+    function initPricingBuilder() {
+        const panel = document.getElementById("pricingBuilder");
+        if (!panel) return;
+        const chips = panel.querySelectorAll(".mpb-chip");
+        const totalEl = document.getElementById("mpbTotal");
+        const countEl = document.getElementById("mpbCount");
+        const cta = document.getElementById("mpbCta");
+        if (!totalEl || !cta) return;
+
+        const motion = window.Motion;
+        const useMotion = motion && motion.animate;
+        const selected = new Set();
+
+        const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        const updateTotal = () => {
+            let total = 0;
+            selected.forEach((el) => { total += parseInt(el.dataset.price, 10) || 0; });
+            totalEl.textContent = fmt(total);
+            if (countEl) countEl.textContent = selected.size;
+            if (useMotion && total > 0) {
+                motion.animate(
+                    totalEl,
+                    { scale: [1.08, 1] },
+                    { type: "spring", stiffness: 300, damping: 14 }
+                );
+            }
+        };
+
+        chips.forEach((chip) => {
+            chip.addEventListener("click", () => {
+                const isOn = chip.classList.toggle("is-selected");
+                if (isOn) selected.add(chip);
+                else selected.delete(chip);
+                updateTotal();
+                if (useMotion) {
+                    motion.animate(
+                        chip,
+                        { scale: [0.94, 1] },
+                        { type: "spring", stiffness: 400, damping: 14 }
+                    );
+                }
+                trackEvent("pricing_builder_toggle", { label: chip.dataset.label, on: isOn });
+            });
+        });
+
+        cta.addEventListener("click", (e) => {
+            // Don't prevent default — anchor jumps to #contact. We pre-fill after jump.
+            const items = Array.from(selected).map((c) => `• ${c.dataset.label} (₹${fmt(parseInt(c.dataset.price, 10))})`);
+            if (!items.length) return;
+            const total = Array.from(selected).reduce((s, c) => s + (parseInt(c.dataset.price, 10) || 0), 0);
+            const lines = [
+                "Hi — I built the following package via the builder:",
+                "",
+                ...items,
+                "",
+                `Indicative total: ₹${fmt(total)}`,
+                "",
+                "Happy to chat about specifics."
+            ];
+            trackEvent("pricing_builder_cta", { count: selected.size, total: total });
+            setTimeout(() => {
+                const msg = document.querySelector('textarea[name="message"]');
+                if (msg) {
+                    msg.value = lines.join("\n");
+                    msg.dispatchEvent(new Event("input"));
+                    if (useMotion) {
+                        motion.animate(msg, { borderColor: ["var(--accent)", "var(--border-strong)"] }, { duration: 1 });
+                    }
+                }
+                // Check "Multiple / Not sure" service radio
+                const multi = document.querySelector('input[name="service"][value="Multiple / Not sure"]');
+                if (multi) multi.checked = true;
+            }, 600);
+        });
+    }
+
+    /* =============================================================
        PHASE G.5 — Work card parallax tilt
        Desktop only. Follows cursor within the case-study viewport;
        cards tilt ±6deg on X and Y with spring damping via Motion.
@@ -1595,6 +1676,7 @@
         initStickyCta();
         initTheme();
         initWorkParallax();
+        initPricingBuilder();
         // Final refresh after all triggers registered.
         requestAnimationFrame(() => ScrollTrigger.refresh());
     }

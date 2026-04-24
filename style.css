@@ -3052,6 +3052,157 @@ body.mont-body .mf-top {
 }
 
 /* =============================================================
+   PHASE G.4 — Build-your-own pricing builder
+   ============================================================= */
+body.mont-body .mpr-builder {
+    margin-top: 96px;
+    padding: 48px 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: linear-gradient(165deg, rgba(99,102,241,0.04), transparent 70%);
+    position: relative;
+    overflow: hidden;
+}
+body.mont-body .mpr-builder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent-soft, rgba(99,102,241,0.35)), transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+body.mont-body .mpb-head { margin-bottom: 32px; }
+body.mont-body .mpb-kicker {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+}
+body.mont-body .mpb-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin: 0 0 10px;
+}
+body.mont-body .mpb-title em {
+    font-style: italic;
+    background: var(--grad-brand, linear-gradient(135deg, var(--accent), var(--accent-2, var(--accent)), var(--accent-3, var(--accent))));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+body.mont-body .mpb-sub {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--cream-muted);
+    margin: 0;
+    max-width: 560px;
+}
+body.mont-body .mpb-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 32px 0 40px;
+}
+body.mont-body .mpb-chip {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong, rgba(240,240,245,0.22));
+    background: transparent;
+    color: var(--cream);
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: transform 0.25s var(--ease-out), border-color 0.3s ease, background 0.3s ease;
+}
+body.mont-body .mpb-chip:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+}
+body.mont-body .mpb-chip.is-selected {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(99,102,241,0.22), rgba(236,72,153,0.12));
+    box-shadow: 0 10px 24px -12px rgba(99,102,241,0.7);
+}
+body.mont-body .mpb-chip.is-selected::before {
+    content: "✓";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+    margin-right: 4px;
+}
+body.mont-body .mpb-chip-price {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--cream-muted);
+}
+body.mont-body .mpb-chip.is-selected .mpb-chip-price {
+    color: var(--accent);
+}
+body.mont-body .mpb-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+body.mont-body .mpb-total {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+body.mont-body .mpb-total-label {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--cream-muted);
+}
+body.mont-body .mpb-total-num {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+}
+body.mont-body .mpb-currency { font-size: 0.6em; opacity: 0.8; }
+body.mont-body .mpb-cta {
+    font-size: 14px;
+}
+@media (max-width: 600px) {
+    body.mont-body .mpr-builder { padding: 32px 22px; margin-top: 64px; }
+    body.mont-body .mpb-foot { flex-direction: column; align-items: stretch; }
+    body.mont-body .mpb-cta { justify-content: center; text-align: center; }
+}
+
+/* =============================================================
    PHASE H — Light / Dark theme (beta)
    Dark stays the default via existing html.mont tokens.
    Light theme overrides the token set when data-theme="light".
