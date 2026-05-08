@@ -20,6 +20,29 @@
 
     const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
 
+    /* ---------- Device capability detection for low-end phones ---------- */
+    function isLowEndDevice() {
+        // Check RAM (navigator.deviceMemory returns GB: 0.25, 0.5, 1, 2, 4, 8)
+        const ram = navigator.deviceMemory;
+        if (ram && ram <= 4) return true;
+
+        // Check CPU cores (low-end = 2 or fewer cores)
+        const cores = navigator.hardwareConcurrency;
+        if (cores && cores <= 2) return true;
+
+        // Check connection speed (slow = 2g, 3g)
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn && (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')) return true;
+
+        // Check if device is requesting reduced data
+        if (navigator.connection && navigator.connection.saveData) return true;
+
+        return false;
+    }
+
+    // Store result globally for other functions
+    const LOW_END_DEVICE = isLowEndDevice();
+
     /* ---------- Watchdog: force-ready after 4s no matter what ---------- */
     const readyWatchdog = setTimeout(() => {
         if (!body.classList.contains("mont-ready")) {
@@ -896,6 +919,14 @@
     function initScene3D() {
         const canvas = document.getElementById("m3dEarth");
         if (!canvas) return;
+
+        // Skip Three.js entirely on low-end devices — show CSS fallback instead
+        if (LOW_END_DEVICE) {
+            console.log("[mont] low-end device detected — using CSS fallback instead of 3D Earth");
+            canvas.style.display = "none";
+            document.body.classList.add("no-webgl");
+            return; // Don't load Three.js at all — saves 655KB + 1.3MB textures
+        }
 
         // Earth is the primary scene (per user preference, 2026-04-24).
         // Lazy-load Three then run the Earth continent tour.
